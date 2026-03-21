@@ -9,6 +9,18 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "connect-mongo": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "csurf": "^1.11.0",
+    "dotenv": "^17.3.1",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "express-validator": "^7.3.1",
+    "mongoose": "^9.3.1",
+    "mongoose-paginate-v2": "^1.9.3",
+    "multer": "^2.1.1",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4"
