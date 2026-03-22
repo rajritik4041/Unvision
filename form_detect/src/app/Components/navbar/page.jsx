@@ -32,7 +32,7 @@ function navbar() {
                         <ul className='decoration-0 flex w-full   items-center  m-1' >
                             {/* Isme edit karo ye Link hai ek me use karoge 4 me atometic hoga  */}
                             {Navbar.map((item) => (
-                                <li key={item.id} className='hover:text-[18px]  px-2 '>
+                                <li key={item.id} className=' px-2 '>
                                     <Link href={item.link}>{item.name}</Link>
                                 </li>
                             ))}
@@ -42,7 +42,7 @@ function navbar() {
                         {/* Isme edit karo ye button hai ek me use karoge dusra atometic hoga  */}
                         {
                             btnname.map((item) => (
-                                <button className='h-10 p-1 m-1.5 w-28 text-[15px] font-bold bg-white rounded-[11px] hover:text-[21px]' key={item.id}>
+                                <button className='h-10 p-1 m-1.5  w-28 text-[15px] font-bold bg-white rounded-[11px] ' key={item.id}>
                                     <Link className='text-black h-10 w-[150px]' href={item.link}>{item.name}</Link>
                                 </button>
                             ))
