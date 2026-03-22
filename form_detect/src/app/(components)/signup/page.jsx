@@ -22,8 +22,6 @@ function page() {
       },
       body: JSON.stringify(user)
     })
-    const data = await res.json()
-
   }
 
 

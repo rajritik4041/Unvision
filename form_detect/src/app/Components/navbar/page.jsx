@@ -29,6 +29,7 @@ function navbar() {
                 <div className='flex   justify-between items-center text-[20px] h-full '>
                     <div> <h2 className='font-bold p-1'> PLANT DISEASE DETECTION</h2></div>
                     <div className='display-none '>
+
                         <ul className='decoration-0 flex w-full   items-center  m-1' >
                             {/* Isme edit karo ye Link hai ek me use karoge 4 me atometic hoga  */}
                             {Navbar.map((item) => (
