@@ -27,23 +27,25 @@ function page() {
 
   return (
     <div>
-      <div className='flex justify-center items-center h-[100vh]'>
-        <div className='border-2 rounded-[4px] h-96 w-2xl flex  justify-center gap-4 p-2'>
+      <div className='flex justify-center items-center h-screen bg-blue-400'>
+        
+        <div className='border-2 rounded-lg h-96 w-200 flex  justify-center gap-4 p-2 bg-white font-mono font-bold'>
           <form onSubmit={handleSubmit(submitdata)}>
-           <div>
-            <label htmlFor="text">text</label>
-             <input type="text" name="text" placeholder='text' className='border-2 m-2' />
+
+           <div className='m-1'>
+            <label htmlFor="text" className='p-1 m-1 font-mono'>Text</label>
+             <input type="text" name="text" placeholder='text' className='border-2 w-96 m-2 rounded-sm'/>
              </div>
 
-            <div> 
-              <label htmlFor="username">Username </label>
-            <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5' /> 
+            <div className='p-1.5'> 
+              <label htmlFor="username" className='p-1 m-1 font-mono '>Username </label>
+            <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5 w-96 rounded-sm' /> 
             </div>
 
            <div> 
-            <label htmlFor="state">state</label>
-            <select className='border-2 p-0.5 m-2'>
-              <option value="state">down</option>
+            <label htmlFor="state" className='p-1 m-1 font-mono'>State</label>
+            <select className='border-2 p-0.5 m-2 rounded-sm'>
+              <option value="state">select</option>
               <option value="state">Andhra Pradesh (AP)</option>
               <option value="state">Arunachal Pradesh (AR) </option>
               <option value="state">Assam (AS)</option>
@@ -73,15 +75,15 @@ function page() {
               <option value="state">Uttar Pradesh (UP)</option>
               <option value="state">  West Bengal (WB)</option>
             </select>
-            <label htmlFor="state"> country</label>
-            <select className='border-2 p-0.5'>
+            <label htmlFor="state" className='p-1 m-1 font-mono'> Country</label>
+            <select className='border-2 p-0.5 rounded-sm'>
               <option value="country">select</option>
               <option value="country">india</option>
               <option value="country">usa</option>
               <option value="country">germany</option>
               <option value="country">russia</option>
-            </select> <label htmlFor="district"> district</label>
-            <select className='border-2 p-0.5'>
+            </select> <label htmlFor="district" className='p-1 m-1'> District</label>
+            <select  className='border-2 p-0.5 rounded-sm'>
               <option value="country">select</option>
               <option value="country">india</option>
               <option value="country">usa</option>
@@ -91,21 +93,21 @@ function page() {
             </div>
 
             <div>
-              <label htmlFor="email"> Email</label>
-               <input type="email" placeholder='Email' value={user.email} name='email' onChange={setdata} />
-               <button>
+              <label htmlFor="email" className='p-1 m-1 font-mono'> Email</label>
+               <input type="email" placeholder='Email' value={user.email} name='email' onChange={setdata} className='border-2 rounded-sm'/>
+               <button className='p-1 m-1 rounded-sm border-2 text-white bg-blue-500'>
               Generate OTP
              </button>
-             <input type="number" />
+             <input type="number"  className='p-1 m-1 rounded-sm border-2 '/>
                </div>
           <div> 
-            <label htmlFor="password">Password</label>
-             <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata} />
-             <input type="c" placeholder='c' value={user.password} name='password' onChange={setdata} />
+            <label htmlFor="password" className='p-1 m-1 font-poppins'>Password</label>
+             <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata}  className='border-2 rounded-sm m-0.5'/>
+             <input type="c" placeholder='comform password' value={user.password} name='password' onChange={setdata} className='border-2 rounded-sm m-0.5'/>
              
              </div>
            <div>
-             <input type="submit" value="Submit" />
+             <input type="submit" value="Submit" className='p-1 m-1 border-2 rounded-sm w-30 bg-blue-500 text-white font-mono'/>
              
              </div>
           </form>
