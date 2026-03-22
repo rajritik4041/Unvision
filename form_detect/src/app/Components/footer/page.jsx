@@ -1,7 +1,10 @@
 "use client"
 import React from 'react'
+import path from 'path'
 
 function footer() {
+  console.log("footer")
+  console.log(path.dirname(__dirname))
   return (
     <>
     <div>
