@@ -2,19 +2,62 @@
 import React from 'react'
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
+import { Country, State, City } from "country-state-city";
 
 function page() {
   const { register, handleSubmit, formState: { errors } } = useForm();
+  const [otp, setOtp] = useState("");
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+
+  useEffect(() => {
+    setCountries(Country.getAllCountries());
+  }, []);
+
+
+  useEffect(() => {
+    if (selectedCountry) {
+      setStates(State.getStatesOfCountry(selectedCountry));
+      setCities([]);
+    }
+  }, [selectedCountry]);
+
+
+  useEffect(() => {
+    if (selectedCountry && selectedState) {
+      setCities(City.getCitiesOfState(selectedCountry, selectedState));
+    }
+  }, [selectedState]);
+
   const [user, setuser] = useState({
     username: "",
     email: "",
-    password: ""
-  })
+    password: "",
+    confirmPassword: "",
+    country: "",
+    state: "",
+    city: "",
+    otp: ""
+  });
 
-  const setdata = async (e) => {
-    setuser({ ...user, [e.target.name]: e.target.value })
-  }
+
+  const setdata = (e) => {
+    const { name, value, options, selectedIndex } = e.target;
+    setuser({ ...user,  [name]: e.target.tagName === "SELECT" ? options[selectedIndex].text  : value    }); };
+
   const submitdata = async () => {
+    if (user.otp !== otp) {
+      alert("Invalid OTP. Please try again.");
+      return;
+    }
+    if (user.password !== user.confirmPassword) {
+      alert("Passwords do not match. Please try again.");
+      return;
+    }
     const res = await fetch("/api/signup", {
       method: "POST",
       headers: {
@@ -22,6 +65,20 @@ function page() {
       },
       body: JSON.stringify(user)
     })
+    console.log(user.name, user.email, user.password, user.country, user.state, user.city)
+  }
+  const generateOTP = () => {
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    setOtp(otp);
+    console.log("Generated OTP:", otp);
+    const email = user.email;
+    const res = fetch("/api/send-otp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, otp })
+    });
   }
 
 
@@ -31,85 +88,80 @@ function page() {
         
         <div className='border-2 rounded-lg h-96 w-200 flex  justify-center gap-4 p-2 bg-white font-mono font-bold'>
           <form onSubmit={handleSubmit(submitdata)}>
-
-           <div className='m-1'>
-            <label htmlFor="text" className='p-1 m-1 font-mono'>Text</label>
-             <input type="text" name="text" placeholder='text' className='border-2 w-96 m-2 rounded-sm'/>
-             </div>
-
-            <div className='p-1.5'> 
-              <label htmlFor="username" className='p-1 m-1 font-mono '>Username </label>
-            <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5 w-96 rounded-sm' /> 
-            </div>
-
-           <div> 
-            <label htmlFor="state" className='p-1 m-1 font-mono'>State</label>
-            <select className='border-2 p-0.5 m-2 rounded-sm'>
-              <option value="state">select</option>
-              <option value="state">Andhra Pradesh (AP)</option>
-              <option value="state">Arunachal Pradesh (AR) </option>
-              <option value="state">Assam (AS)</option>
-              <option value="state">Bihar (BR)</option>
-              <option value="state">Chhattisgarh (CG/CT)</option>
-              <option value="state">Goa (GA)</option>
-              <option value="state">Gujarat (GJ)</option>
-              <option value="state">Haryana (HR)</option>
-              <option value="state">Himachal Pradesh (HP)</option>
-              <option value="state">Jharkhand (JH)</option>
-              <option value="state">Karnataka (KA)</option>
-              <option value="state">Kerala (KL)</option>
-              <option value="state">Madhya Pradesh (MP)</option>
-              <option value="state">Maharashtra (MH)</option>
-              <option value="state">Manipur (MN)</option>
-              <option value="state">Meghalaya (ML)</option>
-              <option value="state"> Mizoram (MZ)</option>
-              <option value="state"> Nagaland (NL)</option>
-              <option value="state">Odisha (OR/OD)</option>
-              <option value="state">Punjab (PB)</option>
-              <option value="state">Rajasthan (RJ)</option>
-              <option value="state">Sikkim (SK)</option>
-              <option value="state">Tamil Nadu (TN)</option>
-              <option value="state">Telangana (TG/TS)</option>
-              <option value="state">Tripura (TR)</option>
-              <option value="state">Uttarakhand (UK/UT)</option>
-              <option value="state">Uttar Pradesh (UP)</option>
-              <option value="state">  West Bengal (WB)</option>
-            </select>
-            <label htmlFor="state" className='p-1 m-1 font-mono'> Country</label>
-            <select className='border-2 p-0.5 rounded-sm'>
-              <option value="country">select</option>
-              <option value="country">india</option>
-              <option value="country">usa</option>
-              <option value="country">germany</option>
-              <option value="country">russia</option>
-            </select> <label htmlFor="district" className='p-1 m-1'> District</label>
-            <select  className='border-2 p-0.5 rounded-sm'>
-              <option value="country">select</option>
-              <option value="country">india</option>
-              <option value="country">usa</option>
-              <option value="country">germany</option>
-              <option value="country">russia</option>
-            </select>
+            
+                <input  type="text" name="text" placeholder='text' className='hidden border-2 m-2' />
+            
+            <div>
+              <label htmlFor="username">Username </label>
+              <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5' />
             </div>
 
             <div>
-              <label htmlFor="email" className='p-1 m-1 font-mono'> Email</label>
-               <input type="email" placeholder='Email' value={user.email} name='email' onChange={setdata} className='border-2 rounded-sm'/>
-               <button className='p-1 m-1 rounded-sm border-2 text-white bg-blue-500'>
-              Generate OTP
-             </button>
-             <input type="number"  className='p-1 m-1 rounded-sm border-2 '/>
-               </div>
-          <div> 
-            <label htmlFor="password" className='p-1 m-1 font-poppins'>Password</label>
-             <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata}  className='border-2 rounded-sm m-0.5'/>
-             <input type="c" placeholder='comform password' value={user.password} name='password' onChange={setdata} className='border-2 rounded-sm m-0.5'/>
-             
-             </div>
-           <div>
-             <input type="submit" value="Submit" className='p-1 m-1 border-2 rounded-sm w-30 bg-blue-500 text-white font-mono'/>
-             
-             </div>
+              <div>
+                <label htmlFor="state"> country</label>
+                <select name='country' className='border-2 p-0.5' onChange={(e) => {
+                  setSelectedCountry(e.target.value);
+                  setdata(e); 
+                }} >
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.isoCode}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="state">state</label>
+                <select name='state' className='border-2 p-0.5 ' onChange={(e) => {
+                  setSelectedState(e.target.value); 
+                  setdata(e); 
+                }} >
+                  <option value="">Select State</option>
+                  {states.map((state) => (
+                    <option key={state.isoCode} value={state.isoCode}>
+                      {state.name}
+                    </option>
+                  ))}
+                </select><br />
+              </div>
+
+              <div>
+                <label htmlFor="district"> district</label>
+                <select name='city' className='border-2 p-0.5 ' onChange={(e) => {
+                  setSelectedCity(e.target.value); 
+                  setdata(e); 
+                }} >
+                  <option value="">Select District</option>
+                  {cities.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="email"> Email</label>
+              <input type="email" placeholder='Email' value={user.email} name='email' onChange={setdata} />
+              <button
+                type="button"
+                onClick={generateOTP}
+                className="w-full bg-blue-500 text-white p-2 rounded">
+                Generate OTP
+              </button>
+              <input type="number" placeholder='otpverify' value={user.otp} name='otp' onChange={setdata} />
+            </div>
+            <div>
+              <label htmlFor="password">Password</label>
+              <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata} />
+              <input type="password" placeholder='Confirm Password' value={user.confirmPassword} name='confirmPassword' onChange={setdata} />
+            </div>
+            <div>
+              <input type="submit" value="Submit" />
+            </div>
           </form>
         </div>
       </div>
