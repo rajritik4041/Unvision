@@ -44,6 +44,10 @@ function page() {
   }, [selectedState]);
 
   const [user, setuser] = useState({
+    first_name: "",
+    last_name: "",
+    date_of_birth: "",
+    age: "",
     username: "",
     email: "",
     password: "",
@@ -93,8 +97,10 @@ function page() {
       body: JSON.stringify({ email, otp })
     });
   }
-
-
+  const Gender = [
+    { id: 1, key: "Male", value: "Male" },
+    { id: 2, key: "Female", value: "Female" },
+    { id: 3, key: "Other", value: "Other" }]
   return (
     <div>
       <div className='flex justify-center items-center h-screen bg-blue-400'>
@@ -107,27 +113,29 @@ function page() {
             <div>
 
               <label htmlFor="firstname" className='p-1 m-1 font-mono '> First Name :</label>
-              <input type="text" className='border-2 p-0.5 m-1 rounded-sm' />
+              <input type="text" name='first_name' onChange={setdata} className='border-2 p-0.5 m-1 rounded-sm' />
 
               <label htmlFor="lastname" className='p-1 m-1 font-mono '>Last Name :</label>
-              <input type="text" className='border-2 p-0.5 m-1 rounded-sm' />
+              <input type="text" name='last_name' onChange={setdata} className='border-2 p-0.5 m-1 rounded-sm' />
 
             </div>
 
             <div className=''>
 
               <label htmlFor="dateofbirth" className='p-1 m-2 font-mono '>D.O.B :</label>
-              <input type="date" className='border-2 p-0.5 m-2 rounded-sm' />
+              <input type="date" name='date_of_birth' onChange={setdata} className='border-2 p-0.5 m-2 rounded-sm' />
 
               <label htmlFor="age" className='p-1 m-2 font-mono ' >Age :</label>
-              <input type="number" className='border-2 p-0.5 m-2 w-15 rounded-sm' />
+              <input type="number" name='age' onChange={setdata} className='border-2 p-0.5 m-2 w-15 rounded-sm' />
 
               <label htmlFor="gender" className='p-1 m-2.5 font-mono '>Gender :</label>
-              <select className='border-2 p-0.5 m-2 rounded-sm'>
-                <option value="select" >select</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+              <select name='gender' onChange={setdata} className='border-2 p-0.5 m-2 rounded-sm'>
+                <option value="select" type="disabled">select</option>
+                {Gender.map((gender) => (
+                  <option key={gender.id} value={gender.value}>
+                    {gender.key}
+                  </option>
+                ))}
               </select>
             </div>
 

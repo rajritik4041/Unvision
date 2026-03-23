@@ -3,6 +3,9 @@ import nodemailer from 'nodemailer';
 export async function POST(req) {
     const body = await req.json();
     const { email, otp } = body;
+
+    
+
     console.log("Received OTP request for email:", email, "with OTP:", otp);
 
    
