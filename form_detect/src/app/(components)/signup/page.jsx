@@ -84,14 +84,13 @@ function page() {
 
   return (
     <div>
-      <div className='flex justify-center items-center h-[100vh]'>
-        <div className='border-2 rounded-[4px] h-96 w-2xl flex  justify-center gap-4 p-2'>
+      <div className='flex justify-center items-center h-screen bg-blue-400'>
+        
+        <div className='border-2 rounded-lg h-96 w-200 flex  justify-center gap-4 p-2 bg-white font-mono font-bold'>
           <form onSubmit={handleSubmit(submitdata)}>
-            <div>
-              <label htmlFor="text">text</label>
-              <input type="text" name="text" placeholder='text' className='border-2 m-2' />
-            </div>
-
+            
+                <input  type="text" name="text" placeholder='text' className='hidden border-2 m-2' />
+            
             <div>
               <label htmlFor="username">Username </label>
               <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5' />
@@ -162,7 +161,6 @@ function page() {
             </div>
             <div>
               <input type="submit" value="Submit" />
-
             </div>
           </form>
         </div>

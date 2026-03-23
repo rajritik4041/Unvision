@@ -44,7 +44,7 @@ function navbar() {
                         {
                             btnname.map((item) => (
                                 <button className='h-10 p-1 m-1.5  w-28 text-[15px] font-bold bg-white rounded-[11px] ' key={item.id}>
-                                    <Link className='text-black h-10 w-[150px]' href={item.link}>{item.name}</Link>
+                                    <Link className='text-black h-10 w-37.5' href={item.link}>{item.name}</Link>
                                 </button>
                             ))
                         }
