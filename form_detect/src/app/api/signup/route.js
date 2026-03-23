@@ -5,10 +5,10 @@ import cookieParser from "cookie-parser";
 
 
 export async function POST(req) {
-   await connectDB()
+  await connectDB()
   const body = await req.json()
   const { username, email, password } = body
-  console.log(body)
+  console.log(body.name, body.email, body.password, body.country, body.state,body.csrfToken , body.city)
   const colection = await User.create({ username, email, password })
   return Response.json({
     success: true,
