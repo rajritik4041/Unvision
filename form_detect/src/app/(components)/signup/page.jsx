@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
 
+
 function page() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [otp, setOtp] = useState("");
@@ -13,11 +14,20 @@ function page() {
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
+  const [csrfToken, setCsrfToken] = useState("");
 
   useEffect(() => {
     setCountries(Country.getAllCountries());
   }, []);
 
+  useEffect(() => {
+    fetch("/api/csrf-token")
+      .then(res => res.json())
+      .then(data => {
+        setCsrfToken(data.csrfToken);
+        console.log("CSRF Token:", data.csrfToken);
+      });
+  }, []);
 
   useEffect(() => {
     if (selectedCountry) {
@@ -41,13 +51,15 @@ function page() {
     country: "",
     state: "",
     city: "",
-    otp: ""
+    otp: "" ,
+    csrfToken: ""
   });
 
 
   const setdata = (e) => {
     const { name, value, options, selectedIndex } = e.target;
-    setuser({ ...user,  [name]: e.target.tagName === "SELECT" ? options[selectedIndex].text  : value    }); };
+    setuser({ ...user, [name]: e.target.tagName === "SELECT" ? options[selectedIndex].text : value });
+  };
 
   const submitdata = async () => {
     if (user.otp !== otp) {
@@ -61,7 +73,8 @@ function page() {
     const res = await fetch("/api/signup", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "CSRF-Token": csrfToken
       },
       body: JSON.stringify(user)
     })
@@ -85,12 +98,12 @@ function page() {
   return (
     <div>
       <div className='flex justify-center items-center h-screen bg-blue-400'>
-        
+
         <div className='border-2 rounded-lg h-96 w-200 flex  justify-center gap-4 p-2 bg-white font-mono font-bold'>
           <form onSubmit={handleSubmit(submitdata)}>
-            
-                <input  type="text" name="text" placeholder='text' className='hidden border-2 m-2' />
-            
+
+            <input type="hidden" name="_csrf" value={csrfToken || ""}  placeholder='text' className='border-2 m-2' />
+
             <div>
               <label htmlFor="username">Username </label>
               <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5' />
@@ -101,7 +114,7 @@ function page() {
                 <label htmlFor="state"> country</label>
                 <select name='country' className='border-2 p-0.5' onChange={(e) => {
                   setSelectedCountry(e.target.value);
-                  setdata(e); 
+                  setdata(e);
                 }} >
                   <option value="">Select Country</option>
                   {countries.map((country) => (
@@ -115,8 +128,8 @@ function page() {
               <div>
                 <label htmlFor="state">state</label>
                 <select name='state' className='border-2 p-0.5 ' onChange={(e) => {
-                  setSelectedState(e.target.value); 
-                  setdata(e); 
+                  setSelectedState(e.target.value);
+                  setdata(e);
                 }} >
                   <option value="">Select State</option>
                   {states.map((state) => (
@@ -130,8 +143,8 @@ function page() {
               <div>
                 <label htmlFor="district"> district</label>
                 <select name='city' className='border-2 p-0.5 ' onChange={(e) => {
-                  setSelectedCity(e.target.value); 
-                  setdata(e); 
+                  setSelectedCity(e.target.value);
+                  setdata(e);
                 }} >
                   <option value="">Select District</option>
                   {cities.map((city) => (
