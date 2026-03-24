@@ -175,7 +175,7 @@ export async function POST(req) {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const colection = await User.create({ first_name, last_name, username, email, date_of_birth, age, country, state, city, hashedPassword })
+  const colection = await User.create({ first_name, last_name, username, email, date_of_birth, age, country, state, city,   password: hashedPassword })
   if (colection) {
     await Otp.deleteOne({ email });
   }

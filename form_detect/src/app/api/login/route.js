@@ -1,8 +1,9 @@
 import connectDB from "@/config/mongodb";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
-import { body, validationResult } from "express-validator"
-import { error } from "node:console";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv";
+dotenv.config()
 
 export async function POST(req) {
     await connectDB();
@@ -24,16 +25,24 @@ export async function POST(req) {
         });
     }
 
-    const isMatch = await bcrypt.compare(password, user.hashedPassword);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         return Response.json({
             success: false,
             message: "Invalid Password"
         });
     }
-
-    return Response.json({
-        success: true,
-        message: "Login successful"
-    });
+    let token ;
+    if (isMatch) {
+        token = jwt.sign(
+            { id: user._id, email: user.email },
+            process.env.SECRET_KEY,
+            { expiresIn: "1h" }
+        );
+        return Response.json({
+            success: true,
+            message: "Login successful",
+            token
+        });
+    }
 }
