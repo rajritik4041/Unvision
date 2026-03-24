@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation'
 
 
 function page() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit } = useForm();
   const [otp, setOtp] = useState("");
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
@@ -18,11 +18,12 @@ function page() {
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
   const [csrfToken, setCsrfToken] = useState("");
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     setCountries(Country.getAllCountries());
   }, []);
-const router = useRouter()
+  const router = useRouter()
   useEffect(() => {
     fetch("/api/csrf-token")
       .then(res => res.json())
@@ -77,7 +78,19 @@ const router = useRouter()
       },
       body: JSON.stringify(user)
     })
-   router.push('/login')
+
+    const data = await res.json();
+
+    if (!data.success) {
+      const errorObj = {};
+      data.errors.forEach((err) => {
+        errorObj[err.path] = err.msg;
+      });
+      setErrors(errorObj);
+    } else {
+      alert("Signup success");
+      router.push('/login')
+    }
   }
   const generateOTP = () => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
@@ -109,19 +122,22 @@ const router = useRouter()
 
               <label htmlFor="firstname" className='p-1 m-1 font-mono '> First Name :</label>
               <input type="text" name='first_name' onChange={setdata} className='border-2 p-0.5 m-1 rounded-sm' />
+              {errors.first_name && (<p style={{ color: "red" }}>{errors.first_name}</p>)}
 
               <label htmlFor="lastname" className='p-1 m-1 font-mono '>Last Name :</label>
               <input type="text" name='last_name' onChange={setdata} className='border-2 p-0.5 m-1 rounded-sm' />
+              {errors.last_name && (<p style={{ color: "red" }}>{errors.last_name}</p>)}
 
             </div>
-
             <div className=''>
 
               <label htmlFor="dateofbirth" className='p-1 m-2 font-mono '>D.O.B :</label>
               <input type="date" name='date_of_birth' onChange={setdata} className='border-2 p-0.5 m-2 rounded-sm' />
+              {errors.date_of_birth && (<p style={{ color: "red" }}>{errors.date_of_birth}</p>)}
 
               <label htmlFor="age" className='p-1 m-2 font-mono ' >Age :</label>
               <input type="number" name='age' onChange={setdata} className='border-2 p-0.5 m-2 w-15 rounded-sm' />
+              {errors.age && (<p style={{ color: "red" }}>{errors.age}</p>)}
 
               <label htmlFor="gender" className='p-1 m-2.5 font-mono '>Gender :</label>
               <select name='gender' onChange={setdata} className='border-2 p-0.5 m-2 rounded-sm'>
@@ -132,12 +148,14 @@ const router = useRouter()
                   </option>
                 ))}
               </select>
+              {errors.gender && (<p style={{ color: "red" }}>{errors.gender}</p>)}
             </div>
 
 
             <div className='p-1.5'>
               <label htmlFor="username" className='p-1 m-2 font-mono '>UserName :</label>
               <input type="text" placeholder='Username' name='username' value={user.username} onChange={setdata} className='border-2 p-0.5 w-96 rounded-sm' />
+              {errors.username && (<p style={{ color: "red" }}>{errors.username}</p>)}
             </div>
 
 
@@ -154,6 +172,7 @@ const router = useRouter()
                   </option>
                 ))}
               </select>
+              {errors.country && (<p style={{ color: "red" }}>{errors.country}</p>)}
 
               <label htmlFor="state" className='p-1 m-2 font-mono'>State :</label>
               <select name='state' className='border-2 p-0.5 m-2 rounded-sm w-41.25' onChange={(e) => {
@@ -166,7 +185,9 @@ const router = useRouter()
                     {state.name}
                   </option>
                 ))}
-              </select><br />
+              </select>
+              {errors.state && (<p style={{ color: "red" }}>{errors.state}</p>)}
+              <br />
 
               <label htmlFor="district" className=' p-0.5 m-2 font-mono '> District :</label>
               <select name='city' className='border-2 p-0.5 m-2 rounded-sm w-41.25' onChange={(e) => {
@@ -180,12 +201,14 @@ const router = useRouter()
                   </option>
                 ))}
               </select>
+              {errors.city && (<p style={{ color: "red" }}>{errors.city}</p>)}
             </div>
 
 
             <div>
               <label htmlFor="email" className='p-1 m-2 font-mono '> Email :</label>
               <input type="email" placeholder='Email' value={user.email} name='email' onChange={setdata} className='border-2 rounded-sm' />
+              {errors.email && (<p style={{ color: "red" }}>{errors.email}</p>)}
               <button
                 type="button"
                 onClick={generateOTP}
@@ -193,11 +216,14 @@ const router = useRouter()
                 Generate OTP
               </button>
               <input type="number" placeholder='OTP-verify' value={user.otp} name='otp' onChange={setdata} className='p-1 m-1 rounded-sm border-2 ' />
+              {errors.otp && (<p style={{ color: "red" }}>{errors.otp}</p>)}
             </div>
             <div>
               <label htmlFor="password" className='p-1 m-2 font-poppins '>Password :</label>
               <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata} className='border-2 rounded-sm m-1' />
+              {errors.password && (<p style={{ color: "red" }}>{errors.password}</p>)}
               <input type="password" placeholder='Confirm Password' value={user.confirmPassword} name='confirmPassword' onChange={setdata} className='border-2 rounded-sm m-1' />
+              {errors.confirmPassword && (<p style={{ color: "red" }}>{errors.confirmPassword}</p>)}
             </div>
             <div className='flex justify-center items-center'>
               <input type="submit" value="Submit" className='p-1 m-3 border-black border-2 rounded-sm w-30 bg-blue-500 text-white font-mono ' />
