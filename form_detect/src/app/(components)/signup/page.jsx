@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
 import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/navigation'
-
+import Link from "next/link"
 
 
 function page() {
@@ -160,8 +160,8 @@ function page() {
 
 
             <div>
-              <label htmlFor="state" className='p-1 m-2 font-mono '> Country :</label>
-              <select name='country' className='border-2 p-0.5 m-2 rounded-sm w-41.25' onChange={(e) => {
+              <label htmlFor="state" className='p-1 my-3  font-mono '> Country :</label>
+              <select name='country' className='border-2 p-0.5  my-3  rounded-sm w-41.25' onChange={(e) => {
                 setSelectedCountry(e.target.value);
                 setdata(e);
               }} >
@@ -189,8 +189,8 @@ function page() {
               {errors.state && (<p style={{ color: "red" }}>{errors.state}</p>)}
               <br />
 
-              <label htmlFor="district" className=' p-0.5 m-2 font-mono '> District :</label>
-              <select name='city' className='border-2 p-0.5 m-2 rounded-sm w-41.25' onChange={(e) => {
+              <label htmlFor="district" className=' p-0.5  my-3  font-mono '> District :</label>
+              <select name='city' className='border-2 p-0.5  my-3  rounded-sm w-41.25' onChange={(e) => {
                 setSelectedCity(e.target.value);
                 setdata(e);
               }} >
@@ -206,27 +206,27 @@ function page() {
 
 
             <div>
-              <label htmlFor="email" className='p-1 m-2 font-mono '> Email :</label>
+              <label htmlFor="email" className='p-1 my-3  font-mono '> Email :</label>
               <input type="email" placeholder='Email' value={user.email} name='email' onChange={setdata} className='border-2 rounded-sm' />
               {errors.email && (<p style={{ color: "red" }}>{errors.email}</p>)}
               <button
                 type="button"
                 onClick={generateOTP}
-                className='p-1 m-2 rounded-sm border-2 border-black text-white bg-blue-500 '>
+                className='p-1  my-3  rounded-sm border-2 border-black text-white bg-blue-500 '>
                 Generate OTP
               </button>
               <input type="number" placeholder='OTP-verify' value={user.otp} name='otp' onChange={setdata} className='p-1 m-1 rounded-sm border-2 ' />
               {errors.otp && (<p style={{ color: "red" }}>{errors.otp}</p>)}
             </div>
-            <div>
-              <label htmlFor="password" className='p-1 m-2 font-poppins '>Password :</label>
+            <div >
+              <label htmlFor="password" className='p-1  my-3  font-poppins '>Password :</label>
               <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata} className='border-2 rounded-sm m-1' />
               {errors.password && (<p style={{ color: "red" }}>{errors.password}</p>)}
               <input type="password" placeholder='Confirm Password' value={user.confirmPassword} name='confirmPassword' onChange={setdata} className='border-2 rounded-sm m-1' />
               {errors.confirmPassword && (<p style={{ color: "red" }}>{errors.confirmPassword}</p>)}
             </div>
             <div className='flex justify-center items-center'>
-              <input type="submit" value="Submit" className='p-1 m-3 border-black border-2 rounded-sm w-30 bg-blue-500 text-white font-mono ' />
+              <input type="submit" value="Submit" className='p-1  my-3  border-black border-2 rounded-sm w-30 bg-blue-500 text-white font-mono ' />
             </div>
           </form>
         </div>
