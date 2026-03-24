@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 function page() {
   const { register, handleSubmit } = useForm()
   const router = useRouter()
+  const [errors, setErrors] = useState({})
   const [verify, setVerify] = useState({
     email: "",
     password: ""
@@ -20,20 +21,36 @@ function page() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(verify)
     })
-    const data = await res.json()
-    console.log(data)
-    if (data.success) {
-      router.push('/')
+
+    const data = await res.json();
+
+    if (!data.success) {
+      const errorObj = {};
+      if (data.errors) {
+        data.errors.forEach((err) => {
+          errorObj[err.path] = err.msg;
+        });
+      } else {
+        errorObj.general = data.message;
+      }
+      setErrors(errorObj);
+      return;
     }
+    router.push('/');
   }
   return (
     <div>
       <div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="email">Email</label>
-          <input type="email" name="email" id="email" value={verify.email} onChange={setdata} /> <br />
+          <input type="email" name="email" id="email" value={verify.email} onChange={setdata} />
+
+          <br />
           <label htmlFor="password">Password</label>
-          <input type="password" name="password" id="password" value={verify.password} onChange={setdata} /> <br />
+          <input type="password" name="password" id="password" value={verify.password} onChange={setdata} />
+
+          <br />
+          {errors.general && (<p style={{ color: "red" }}>{errors.general}</p>)}
           <input type="submit" value="Login" />
         </form>
       </div>

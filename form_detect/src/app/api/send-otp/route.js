@@ -20,7 +20,7 @@ export async function POST(req) {
     });
 
     const info = await transporter.sendMail({
-        from: 'rajritik.23965236@gmail.com',
+        from: 'rajritik.9236@gmail.com',
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otp}`
