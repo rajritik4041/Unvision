@@ -76,7 +76,7 @@ function page() {
               <div onClick={() => signIn("azure-ad")}  className='m-2 text-blue-400'> login with microsoft </div>
             
              
-              <div onClick={() => signIn('apple')}  className='m-2 text-blue-400'> login with apple </div>
+              <div onClick={() => signIn('apple')}  className='m-2 text-blue-400'> login witghghghghhh apple </div>
 
           </div>
         </form>
