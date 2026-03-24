@@ -93,7 +93,7 @@ function page() {
     }
   }
   const generateOTP = () => {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = Math.floor(10000 + Math.random() * 900000).toString();
     setOtp(otp);
     console.log("Generated OTP:", otp);
     const email = user.email;
