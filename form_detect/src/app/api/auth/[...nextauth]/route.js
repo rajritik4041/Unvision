@@ -44,7 +44,23 @@ export const authOptions = {
 
       return true;
     },
-    async jwt({ token }) {
+  //   async jwt({ token }) {
+  //     await connectDB();
+  //     const user = await User.findOne({ email: token.email });
+  //     if (user) {
+  //       token.id = user._id.toString();
+  //       token.isProfileComplete = user.isProfileComplete;
+  //     }
+  //     return token;
+  //   },
+
+  //   async session({ session, token }) {
+  //     session.user.id = token.id;
+  //     session.user.isProfileComplete = token.isProfileComplete;
+  //     return session;
+  //   }
+  // },
+     async jwt({ token }) {
       await connectDB();
       const user = await User.findOne({ email: token.email });
       if (user) {

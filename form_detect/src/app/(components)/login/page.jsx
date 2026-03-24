@@ -15,29 +15,31 @@ function page() {
   const setdata = async (e) => {
     setVerify({ ...verify, [e.target.name]: e.target.value })
   }
-  const onSubmit = async (e) => {
+  const onSubmit = async (data) => {
     const res = await fetch('/api/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(verify)
-    })
+      body: JSON.stringify(verify),
+      credentials: "include",
+    });
 
-    const data = await res.json();
+    const result = await res.json();
 
-    if (!data.success) {
+    if (!result.success) {
       const errorObj = {};
-      if (data.errors) {
-        data.errors.forEach((err) => {
+      if (result.errors) {
+        result.errors.forEach((err) => {
           errorObj[err.path] = err.msg;
         });
       } else {
-        errorObj.general = data.message;
+        errorObj.general = result.message;
       }
       setErrors(errorObj);
       return;
     }
-    router.push('/');
-  }
+
+    router.push("/");
+  };
   return (
     <div>
       <div>

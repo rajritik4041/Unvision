@@ -2,8 +2,7 @@ import connectDB from "@/config/mongodb";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
-import dotenv from "dotenv";
-dotenv.config()
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
     await connectDB();
@@ -11,7 +10,7 @@ export async function POST(req) {
     const { email, password } = await req.json();
 
     if (!email || !password) {
-        return Response.json({
+        return NextResponse.json({
             success: false,
             message: "Email and password required"
         });
@@ -19,7 +18,7 @@ export async function POST(req) {
 
     const user = await User.findOne({ email });
     if (!user) {
-        return Response.json({
+        return NextResponse.json({
             success: false,
             message: "Invalid User"
         });
@@ -27,22 +26,35 @@ export async function POST(req) {
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-        return Response.json({
+        return NextResponse.json({
             success: false,
             message: "Invalid Password"
         });
     }
-    let token ;
+      const SECRET = process.env.SECRET_KEY || "raghupatiraghavrajaram";
     if (isMatch) {
-        token = jwt.sign(
-            { id: user._id, email: user.email },
-            process.env.SECRET_KEY,
-            { expiresIn: "1h" }
-        );
-        return Response.json({
-            success: true,
-            message: "Login successful",
-            token
-        });
-    }
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+     SECRET ,
+      { expiresIn: "10m" }
+    );
+
+    const response = NextResponse.json({
+      success: true,
+      message: "Login successful",
+    });
+
+   response.cookies.set("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 10, 
+});
+
+    console.log("COOKIE SET:", token); 
+
+    return response;
+  }
+
 }

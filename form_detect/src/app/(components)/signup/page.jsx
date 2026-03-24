@@ -215,7 +215,7 @@ function page() {
               <button
                 type="button"
                 onClick={generateOTP}
-                className='p-1 ml-5 my-3  w-50 rounded-lg border-0 border-black text-white bg-blue-500'>
+                className='p-1 ml-5 my-3 px-3 w-50 rounded-lg border-0 border-black text-white bg-blue-500'>
                 Generate OTP
               </button>
               <br />
@@ -231,7 +231,7 @@ function page() {
               {errors.confirmPassword && (<p style={{ color: "red",fontSize:12, }}>{errors.confirmPassword}</p>)}
             </div>
             <div className='flex justify-center items-center'>
-              <input type="submit" value="Submit" className='p-1  my-3 mr-2.5 border-black border-2 rounded-lg w-30 bg-blue-500 text-white font-mono ' />
+              <input type="submit" value="Submit" className='p-1  my-3 mr-2.5 border-black border-4 rounded-lg w-30 bg-blue-500 text-white font-mono ' />
             </div>
 
           </form>
