@@ -20,13 +20,13 @@ export async function POST(req) {
     });
 
     const info = await transporter.sendMail({
-        from: 'rajritik.23965236@gmail.com',
+        from: 'rajritik.9ee236@gmail.com',
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otp}`
     });
 
-    const collection = await Otp.create({ email, otp });
+    // const collection = await Otp.create({ email, otp });
 
     console.log("Email sent:", info.messageId);
     return new Response(JSON.stringify({ message: 'OTP sent successfully' }), {

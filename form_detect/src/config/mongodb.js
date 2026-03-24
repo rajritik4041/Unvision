@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import dns from "dns";
-dns.setServers(["1.1.1.1","8.8.8.8"]);
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
-dotenv.config();
 const connectDB = async () => {
+    await dotenv.config();
     try {
         const uri = process.env.MONGO_URI;
         console.log(uri);

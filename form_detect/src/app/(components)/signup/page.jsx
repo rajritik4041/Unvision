@@ -3,6 +3,9 @@ import React from 'react'
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
+import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/navigation'
+
 
 
 function page() {
@@ -19,7 +22,7 @@ function page() {
   useEffect(() => {
     setCountries(Country.getAllCountries());
   }, []);
-
+const router = useRouter()
   useEffect(() => {
     fetch("/api/csrf-token")
       .then(res => res.json())
@@ -66,14 +69,6 @@ function page() {
   };
 
   const submitdata = async () => {
-    if (user.otp !== otp) {
-      alert("Invalid OTP. Please try again.");
-      return;
-    }
-    if (user.password !== user.confirmPassword) {
-      alert("Passwords do not match. Please try again.");
-      return;
-    }
     const res = await fetch("/api/signup", {
       method: "POST",
       headers: {
@@ -82,7 +77,7 @@ function page() {
       },
       body: JSON.stringify(user)
     })
-
+   router.push('/login')
   }
   const generateOTP = () => {
     const otp = Math.floor(100000 + Math.random() * 900000).toString();

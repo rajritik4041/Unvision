@@ -2,9 +2,11 @@
 import React, { use } from 'react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 
 function page() {
   const { register, handleSubmit } = useForm()
+  const router = useRouter()
   const [verify, setVerify] = useState({
     email: "",
     password: ""
@@ -18,12 +20,16 @@ function page() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(verify)
     })
-    console.log(res)
+    const data = await res.json()
+    console.log(data)
+    if (data.success) {
+      router.push('/')
+    }
   }
   return (
     <div>
       <div>
-        <form  onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <label htmlFor="email">Email</label>
           <input type="email" name="email" id="email" value={verify.email} onChange={setdata} /> <br />
           <label htmlFor="password">Password</label>
