@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import Otp from "@/models/otp";
-import connectDB from "@/config/mongodb"
+// import connectDB from "@/config/mongodb"
+import connectDB from "@/lib/mongodb";
 
 export async function POST(req) {
     await connectDB();

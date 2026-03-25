@@ -73,7 +73,7 @@ function page() {
             
               <div onClick={() => signIn('github')} className='m-2 text-blue-400'>  login with github </div>
             
-              <div onClick={() => signIn('microsoft')}  className='m-2 text-blue-400'> login with microsoft </div>
+              <div onClick={() => signIn("azure-ad")}  className='m-2 text-blue-400'> login with microsoft </div>
             
              
               <div onClick={() => signIn('apple')}  className='m-2 text-blue-400'> login with apple </div>

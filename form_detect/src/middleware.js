@@ -1,6 +1,10 @@
-import { NextResponse } from 'next/server' ;
-export function middleware(request) {
+import { NextResponse } from 'next/server';
+import { getToken } from "next-auth/jwt";
+
+export async function middleware(request) {
     const path = request.nextUrl.pathname;
+
+    //  Public routes
     const isPublicPath =
         path === "/login" ||
         path === "/" ||
@@ -9,64 +13,50 @@ export function middleware(request) {
         path === "/reviews" ||
         path === "/contactus" ||
         path === "/opertunities";
-    const token = request.cookies.get("token")?.value || '';
 
-    // ✅ Agar user logged in hai aur public page pe ja raha hai
-    if (isPublicPath && token) {
-        return NextResponse.redirect(new URL("/profile", request.url));
+    //  Protected route
+    const isProfileRoute = path.startsWith("/profile");
+
+    //  Tokens
+    const customToken = request.cookies.get("token")?.value || '';
+
+    const nextAuthToken = await getToken({
+        req: request,
+        secret: process.env.NEXTAUTH_SECRET,
+    });
+
+    //  Boolean auth
+    const isLoggedIn = !!(customToken || nextAuthToken);
+
+    // 🔥 Fix /profile → /profile/home
+    if (path === "/profile") {
+        return NextResponse.redirect(new URL("/profile/home", request.url));
     }
 
-    // ✅ Agar user logged in nahi hai aur private page pe ja raha hai
-    if (!isPublicPath && !token) {
-        return NextResponse.redirect(new URL("/login", request.url));
+    //  Logged-in user → avoid public pages
+    if (isPublicPath && isLoggedIn && !path.startsWith("/profile")) {
+        return NextResponse.redirect(new URL("/profile/home", request.url));
     }
 
-    const response = NextResponse.next();
-    response.headers.set("Cache-Control", "no-store, must-revalidate");
+    //  Not logged-in → block protected routes
+    if (isProfileRoute && !isLoggedIn) {
+        const loginUrl = new URL("/login", request.url);
+        loginUrl.searchParams.set("callbackUrl", path);
+        return NextResponse.redirect(loginUrl);
+    }
 
-    return response;
+    return NextResponse.next();
 }
 
 export const config = {
     matcher: [
         "/",
-        "/profile",
         "/login",
         "/signup",
         "/aboutus",
         "/reviews",
         "/contactus",
         "/opertunities",
+        "/profile/:path*",
     ],
 };
-
-
-// src/middleware.js
-
-// import { NextResponse } from "next/server";
-// import { verifyToken } from "./lib/auth";
-
-// export function middleware(req) {
-
-//     const jwtToken = req.cookies.get("token")?.value;
-//     const nextAuthToken =
-//         req.cookies.get("next-auth.session-token") ||
-//         req.cookies.get("__Secure-next-auth.session-token");
-//     const user = verifyToken(jwtToken) || nextAuthToken;
-//     const path = req.nextUrl.pathname;
-
-//     if (user && path === "/") {
-//         return NextResponse.redirect(new URL("/dashboard", req.url));
-//     }
-
-//     if (!user && path.startsWith("/dashboard")) {
-//         return NextResponse.redirect(new URL("/login", req.url));
-//     }
-
-//     return NextResponse.next();
-// }
-
-// export const config = {
-//     matcher: ["/", "/dashboard/:path*"]
-// };
-

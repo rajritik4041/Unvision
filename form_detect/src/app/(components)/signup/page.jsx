@@ -245,8 +245,8 @@ function page() {
             <div>----------------------------------- or -------------------------------------</div>
             <div className='ml-25 my-5'>
               <div onClick={() => signIn('google')} className='m-2 text-blue-400'>login with google </div>
-              <div onClick={() => signIn('github')} className='m-2 text-blue-400'>  login with github </div>
-              <div onClick={() => signIn('microsoft')} className='m-2 text-blue-400'> login with microsoft </div>
+              <div className='m-2 text-blue-400 ' onClick={() => signIn("github", { callbackUrl: "/profile/home" })}>  GitHub Login</div>
+              <div onClick={() => signIn("azure-ad")} className='m-2 text-blue-400'> login with microsoft </div>
               <div onClick={() => signIn('apple')} className='m-2 text-blue-400'> login with apple </div>
             </div>
           </form>

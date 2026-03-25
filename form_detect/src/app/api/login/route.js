@@ -1,4 +1,5 @@
-import connectDB from "@/config/mongodb";
+// import connectDB from "@/config/mongodb";
+import connectDB from "@/lib/mongodb";
 import User from "@/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
