@@ -45,7 +45,7 @@ export default function ContactPage() {
         <title>Contact Us</title>
       </Head>
 
-      <div className="min-h-screen bg-gray-100 px-4 py-8">
+      <div className="min-h-screen bg-gray-100 px-4 py-8 border-4">
         <div className="max-w-7xl mx-auto">
 
           <h1 className="text-4xl font-bold text-center mb-10 text-green-700">
@@ -57,7 +57,7 @@ export default function ContactPage() {
             {/* FORM */}
             <form
               onSubmit={handleSubmit}
-              className="bg-white p-6 rounded-lg shadow-md"
+              className="bg-blue-100 p-6 rounded-lg shadow-md border-4"
             >
               {/* Name */}
               <div className="mb-4">
@@ -94,14 +94,21 @@ export default function ContactPage() {
                 <label className="block mb-1 font-semibold text-gray-900">
                   Subject
                 </label>
-                <input
-                  type="text"
+
+                <select
                   name="subject"
                   required
                   value={formData.subject}
                   onChange={handleChange}
                   className="w-full border border-gray-400 bg-white text-black px-4 py-2 rounded-lg focus:ring-2 focus:ring-green-500"
-                />
+                >
+                  <option value="">Select Subject</option>
+                  <option value="Any Query">Any Query</option>
+                  <option value="Model Related Work">Model Related Work</option>
+                  <option value="Important Work">Important Work</option>
+                  <option value="Issue">Issue</option>
+                  <option value="Contact">Contact</option>
+                </select>
               </div>
 
               {/* Message */}
@@ -120,13 +127,16 @@ export default function ContactPage() {
               </div>
 
               {/* Button */}
-              <button className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+              <button
+                type="submit"
+                className="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+              >
                 Send Message
               </button>
             </form>
 
             {/* CONTACT INFO */}
-            <div className="bg-blue-50 p-6 rounded-lg shadow-md">
+            <div className="bg-blue-100 p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold text-blue-800 mb-2">
                 Contact Developer
               </h2>

@@ -1,29 +1,24 @@
-"use client"
-import React from 'react'
-<<<<<<< HEAD
-import { useSession, signIn, signOut } from "next-auth/react"
-import Link from 'next/link'
-function page() {
-  return (
-    <div>
-      <div className='p-1' onClick={() => signIn("google")} >
-      Sign in with Google
-       </div>
-       </div>
-=======
-import Link  from "next/link"
+"use client";
 
-function page() {
+import React from "react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
+
+export default function Page() {
   return (
-    <div><div>
-        This is a abhdhjhjehjehjfjfjffkdfkkdfout Us page</div>
-        
-        <div>
-          <Link href="/about">about us</Link>
-        </div>
-        </div>
->>>>>>> 626b936 (about us & contact us Updated)
-  )
+    <div className="p-4 space-y-4">
+     
+      <div>
+        This is an About Us page
+      </div>
+
+      
+      <div>
+        <Link href="/about" className="text-blue-600 underline">
+          Go to About Us
+        </Link>
+      </div>
+
+    </div>
+  );
 }
-
-export default page
