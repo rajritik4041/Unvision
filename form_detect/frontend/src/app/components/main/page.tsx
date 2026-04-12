@@ -12,7 +12,9 @@ function Main() {
   const { register, handleSubmit } = useForm<FormDataType>();
   const [image, setImage] = useState<File | null>(null);
   const setData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) { setImage(e.target.files[0]); }
+    if (e.target.files && e.target.files.length > 0) {
+      setImage(e.target.files[0]);
+    }
   };
   const onSubmit = async (data: FormDataType) => {
     const formData = new FormData();
