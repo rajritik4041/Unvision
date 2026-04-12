@@ -1,44 +1,51 @@
-"use client"
+"use client";
 
-import React from 'react'
-import Link from 'next/link'
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import React, { useState } from "react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
 
-function main() {
-  const { handleSubmit } = useForm();
-  const [image, setimage] = useState({ file: null })
-  const setdata = (e) => {
-    setimage({ file: e.target.files[0] })
-  }
+type FormDataType = {
+  file: FileList;
+};
 
-  const onsubmit = async () => {
+function Main() {
+  const { register, handleSubmit } = useForm<FormDataType>();
+  const [image, setImage] = useState<File | null>(null);
+  const setData = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) { setImage(e.target.files[0]); }
+  };
+  const onSubmit = async (data: FormDataType) => {
     const formData = new FormData();
-    formData.append("file", image.file);
-    await fetch("/api/upload", {
-      method: "POST",
-      body: formData,
-    });
-  }
+    if (data.file && data.file.length > 0) { formData.append("file", data.file[0]); }
+    else if (image) { formData.append("file", image); }
+    else { alert("Please select file"); return; }
+    await fetch("/api/upload", { method: "POST", body: formData, });
+  };
+
   return (
     <div>
-      <div className='flex justify-center items-center m-1.5'>
+      <div className="flex justify-center items-center m-1.5">
         <div>
-          <li className='m-1.5'>
+          <li className="m-1.5">
             <Link href="/reviews">Reviews</Link>
           </li>
         </div>
-        <form onSubmit={handleSubmit(onsubmit)} >
+
+        <form onSubmit={handleSubmit(onSubmit)}>
           <label>ENTER FILE :-</label>
-          <input type="file"
+
+          <input
+            type="file"
             accept="image/*"
-            id="file" name='file' className='border-2 w-52 p-1 m-1.5' onChange={setdata} />
+            className="border-2 w-52 p-1 m-1.5"
+            {...register("file")}
+            onChange={setData}
+          />
           <input type="submit" value="Submit" />
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default main
+export default Main;
