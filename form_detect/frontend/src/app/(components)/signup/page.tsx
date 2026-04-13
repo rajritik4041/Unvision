@@ -28,7 +28,7 @@ export default function Signup() {
 
   const setpage = async () => { setfirstpage(true); }
   const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
-
+   const api2 = "http://localhost:3000" ; 
   const [user, setUser] = useState<UserType>({
     first_name: "", last_name: "", date_of_birth: "", age: "", username: "",
     email: "", password: "", confirmPassword: "", country: "", state: "",
@@ -59,7 +59,7 @@ export default function Signup() {
       alert("Signup success"); router.push("/login");
     }
   };
-
+ 
   console.log("API URL:", api);
   const generateOTP = async () => {
     const email = user.email; if (!email || email.trim() === "") { alert("Please enter email first"); return; }
@@ -67,8 +67,8 @@ export default function Signup() {
     if (!emailRegex.test(email)) { alert("Invalid email format"); return; }
     const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
     setOtp(newOtp);
-    console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-    const res = await fetch(`${api}/send-otp`, { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ email, otp: newOtp }), });
+    console.log("API URL:", api2);
+    const res = await fetch(`${api2}/api/send-otp`, { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ email, otp: newOtp }), });
     const data = await res.json();
     console.log(data);
     setfirstpage(false);

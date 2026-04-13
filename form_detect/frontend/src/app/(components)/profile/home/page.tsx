@@ -20,7 +20,7 @@ export default function Profile() {
         localStorage.setItem("token", urlToken);
         window.history.replaceState({}, document.title, "/profile/home");
       }
-      const api = process.env.NEXT_PUBLIC_API_BASE_URL
+      const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
       const token = localStorage.getItem("token");
 
       if (!token) {

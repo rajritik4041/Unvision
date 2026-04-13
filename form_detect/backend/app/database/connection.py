@@ -4,4 +4,4 @@ MONGO_URL = "mongodb+srv://rajritik4041_db_user:adNYqP0tlo6RCOr0@cluster0.wnqka8
 
 client = AsyncIOMotorClient(MONGO_URL)
 
-db = client["register"]   # Database name
+db = client["test"]   # Database name

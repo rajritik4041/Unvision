@@ -574,6 +574,35 @@ class OTPRequest(BaseModel):
 # -----------------------------
 # 📧 Send OTP Route
 # -----------------------------
+
+
+
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
+from datetime import datetime
+import os
+import traceback
+import resend
+
+from app.database.connection import db  # adjust if needed
+
+router = APIRouter()
+
+# -----------------------------
+# 📦 Model
+# -----------------------------
+class OTPRequest(BaseModel):
+    email: str
+    otp: str
+
+# -----------------------------
+# 🔐 RESEND API KEY
+# -----------------------------
+resend.api_key = os.getenv("RESEND_API_KEY")
+
+# -----------------------------
+# 📧 Send OTP (Resend)
+# -----------------------------
 @router.post("/send-otp")
 async def send_otp(data: OTPRequest):
     email = data.email
@@ -583,58 +612,121 @@ async def send_otp(data: OTPRequest):
 
     try:
         # -----------------------------
-        # 🔐 ENV VARIABLES
+        # 📧 Send Email via Resend
         # -----------------------------
-        sender_email = os.getenv("EMAIL")
-        sender_password = os.getenv("PASSWORD")
+        response = resend.Emails.send({
+            "from": "onboarding@resend.dev",  # default testing sender
+            "to": email,
+            "subject": "Your OTP Code",
+            "html": f"""
+                <h2>Your OTP Code</h2>
+                <p>Your OTP is:</p>
+                <h1>{otp}</h1>
+                <p>This OTP will expire in 5 minutes.</p>
+            """
+        })
 
-        if not sender_email or not sender_password:
-            raise Exception("Email or Password not set in environment variables")
-
-        # -----------------------------
-        # 📧 Email Content
-        # -----------------------------
-        msg = MIMEText(f"Your OTP code is {otp}")
-        msg["Subject"] = "Your OTP Code"
-        msg["From"] = sender_email
-        msg["To"] = email
-
-        # -----------------------------
-        # 🔌 SMTP Connection
-        # -----------------------------
-        print("🔌 Connecting to SMTP...")
-        server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
-        server.starttls()
-
-        print("🔐 Logging in...")
-        server.login(sender_email, sender_password)
-
-        print("📤 Sending email...")
-        server.send_message(msg)
-
-        server.quit()
-        print("✅ Email sent successfully")
+        print("✅ Email sent:", response)
 
         # -----------------------------
         # 💾 Save OTP (MongoDB)
         # -----------------------------
-        from app.database import db  # adjust path if needed
-
         await db.otp.insert_one({
             "email": email,
             "otp": otp,
             "created_at": datetime.utcnow()
         })
 
-        return {"success": True, "message": "OTP sent successfully"}
+        return {
+            "success": True,
+            "message": "OTP sent successfully"
+        }
 
     except Exception as e:
         print("🔥 ERROR:", str(e))
         traceback.print_exc()
+
         raise HTTPException(
             status_code=500,
-            detail=str(e)   # 👈 now real error will show
+            detail=str(e)
         )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @router.post("/send-otp")
+# async def send_otp(data: OTPRequest):
+#     email = data.email
+#     otp = data.otp
+
+#     print("📩 Request:", email, otp)
+
+#     try:
+#         # -----------------------------
+#         # 🔐 ENV VARIABLES
+#         # -----------------------------
+#         sender_email = os.getenv("EMAIL")
+#         sender_password = os.getenv("PASSWORD")
+
+#         if not sender_email or not sender_password:
+#             raise Exception("Email or Password not set in environment variables")
+
+#         # -----------------------------
+#         # 📧 Email Content
+#         # -----------------------------
+#         msg = MIMEText(f"Your OTP code is {otp}")
+#         msg["Subject"] = "Your OTP Code"
+#         msg["From"] = sender_email
+#         msg["To"] = email
+
+#         # -----------------------------
+#         # 🔌 SMTP Connection
+#         # -----------------------------
+#         print("🔌 Connecting to SMTP...")
+#         server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
+#         server.starttls()
+
+#         print("🔐 Logging in...")
+#         server.login(sender_email, sender_password)
+
+#         print("📤 Sending email...")
+#         server.send_message(msg)
+
+#         server.quit()
+#         print("✅ Email sent successfully")
+
+#         # -----------------------------
+#         # 💾 Save OTP (MongoDB)
+#         # -----------------------------
+#         from app.database import db  # adjust path if needed
+
+#         await db.otp.insert_one({
+#             "email": email,
+#             "otp": otp,
+#             "created_at": datetime.utcnow()
+#         })
+
+#         return {"success": True, "message": "OTP sent successfully"}
+
+#     except Exception as e:
+#         print("🔥 ERROR:", str(e))
+#         traceback.print_exc()
+#         raise HTTPException(
+#             status_code=500,
+#             detail=str(e)   # 👈 now real error will show
+#         )
 
 # -----------------------------
 # Login
