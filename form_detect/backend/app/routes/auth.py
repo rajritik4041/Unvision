@@ -505,21 +505,6 @@ async def signup(user: SignupModel):
 #  Send OTP
 # -----------------------------
 
-class OTPRequest(BaseModel):
-    email: str
-    otp: str
-
-    @field_validator("email")
-    def validate_email(cls, value):
-        if not value or value.strip() == "":
-            raise ValueError("Email is required")
-
-        # Strict email regex
-        email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-        if not re.match(email_regex, value):
-            raise ValueError("Invalid email format")
-
-        return value
 
 # @router.post("/send-otp")
 # async def send_otp(data: OTPRequest):
@@ -574,87 +559,6 @@ class OTPRequest(BaseModel):
 # -----------------------------
 # 📧 Send OTP Route
 # -----------------------------
-
-
-
-from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
-from datetime import datetime
-import os
-import traceback
-import resend
-
-from app.database.connection import db  # adjust if needed
-
-router = APIRouter()
-
-# -----------------------------
-# 📦 Model
-# -----------------------------
-class OTPRequest(BaseModel):
-    email: str
-    otp: str
-
-# -----------------------------
-# 🔐 RESEND API KEY
-# -----------------------------
-resend.api_key = os.getenv("RESEND_API_KEY")
-
-# -----------------------------
-# 📧 Send OTP (Resend)
-# -----------------------------
-@router.post("/send-otp")
-async def send_otp(data: OTPRequest):
-    email = data.email
-    otp = data.otp
-
-    print("📩 Request:", email, otp)
-
-    try:
-        # -----------------------------
-        # 📧 Send Email via Resend
-        # -----------------------------
-        response = resend.Emails.send({
-            "from": "onboarding@resend.dev",  # default testing sender
-            "to": email,
-            "subject": "Your OTP Code",
-            "html": f"""
-                <h2>Your OTP Code</h2>
-                <p>Your OTP is:</p>
-                <h1>{otp}</h1>
-                <p>This OTP will expire in 5 minutes.</p>
-            """
-        })
-
-        print("✅ Email sent:", response)
-
-        # -----------------------------
-        # 💾 Save OTP (MongoDB)
-        # -----------------------------
-        await db.otp.insert_one({
-            "email": email,
-            "otp": otp,
-            "created_at": datetime.utcnow()
-        })
-
-        return {
-            "success": True,
-            "message": "OTP sent successfully"
-        }
-
-    except Exception as e:
-        print("🔥 ERROR:", str(e))
-        traceback.print_exc()
-
-        raise HTTPException(
-            status_code=500,
-            detail=str(e)
-        )
-
-
-
-
-
 
 
 
@@ -979,7 +883,7 @@ def serialize_user(user):
 #         print("❌ MICROSOFT ERROR:", str(e))
 #         return {"error": str(e)}
 
-from fastapi import APIRouter, Depends, Request
+
 from .utils import verify_token
 from ..Service.oauth_service import oauth
 from app.controllers.auth_controller import handle_login
