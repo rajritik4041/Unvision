@@ -5,6 +5,8 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
+import dotenv from "dotenv";
+dotenv.config();
 
 type UserType = {
   first_name: string; last_name: string; date_of_birth: string; age: string; username: string; email: string;
@@ -43,7 +45,7 @@ export default function Signup() {
   const setdata = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => { const { name, value, options, selectedIndex } = e.target as HTMLSelectElement; setUser((prev) => ({ ...prev, [name]: e.target.tagName === "SELECT" ? options[selectedIndex].text : value, })); };
 
   const submitdata = async () => {
-    const res = await fetch("http://127.0.0.1:8000/signup", { method: "POST", headers: { "Content-Type": "application/json", "CSRF-Token": csrfToken, }, body: JSON.stringify(user), });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/signup`, { method: "POST", headers: { "Content-Type": "application/json", "CSRF-Token": csrfToken, }, body: JSON.stringify(user), });
     const data = await res.json();
     if (!res.ok) {
       const errorObj: ErrorType = {};
@@ -65,7 +67,7 @@ export default function Signup() {
     if (!emailRegex.test(email)) { alert("Invalid email format"); return; }
     const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
     setOtp(newOtp);
-    const res = await fetch("http://127.0.0.1:8000/send-otp", { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ email, otp: newOtp }), });
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/send-otp`, { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ email, otp: newOtp }), });
     const data = await res.json();
     console.log(data);
     setfirstpage(false);

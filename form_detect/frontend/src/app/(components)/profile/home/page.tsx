@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default function Profile() {
   const router = useRouter();
@@ -30,7 +33,7 @@ export default function Profile() {
 
       try {
         // 🔥 FIX HERE (REMOVE /auth)
-        const res = await fetch("http://127.0.0.1:8000/profile/home", {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/profile/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
