@@ -73,23 +73,39 @@ class SignupModel(BaseModel):
 
     @field_validator("username")
     def validate_username(cls, v):
-        if not re.match(r'^[a-z0-9_]{8,20}$', v):
-            raise ValueError("Invalid username")
-        return v
+     if v is None:
+        return v   # ✅ handle None
+
+     if not re.match(r'^[a-z0-9_]{8,20}$', v):
+        raise ValueError("Invalid username")
+     return v
 
     @field_validator("password")
     def validate_password(cls, v):
-        if len(v) < 8:
-            raise ValueError("Password too short")
-        if not re.search(r"[A-Z]", v):
-            raise ValueError("Must include uppercase")
-        if not re.search(r"[a-z]", v):
-            raise ValueError("Must include lowercase")
-        if not re.search(r"[0-9]", v):
-            raise ValueError("Must include number")
-        if not re.search(r"[!@#$%^&*]", v):
-            raise ValueError("Must include special char")
+    # ✅ Handle None (important for Optional field)
+      if v is None:
         return v
+
+    # ✅ Minimum length
+      if len(v) < 8:
+        raise ValueError("Password too short")
+
+    # ✅ At least 1 uppercase
+      if not re.search(r"[A-Z]", v):
+        raise ValueError("Must include uppercase letter")
+
+    # ✅ At least 1 lowercase
+      if not re.search(r"[a-z]", v):
+        raise ValueError("Must include lowercase letter")
+
+    # ✅ At least 1 number
+      if not re.search(r"[0-9]", v):
+        raise ValueError("Must include number")
+
+     # ✅ At least 1 special character
+      if not re.search(r"[!@#$%^&*]", v):
+        raise ValueError("Must include special character")
+      return v
 
     @field_validator("confirmPassword")
     def match_password(cls, v, values):
