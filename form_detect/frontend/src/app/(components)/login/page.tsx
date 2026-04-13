@@ -97,8 +97,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import dotenv from "dotenv";
-dotenv.config();
+
+
 
 type VerifyType = {
   email: string;
@@ -201,7 +201,7 @@ function Page() {
   //     setErrors({ general: "Server error, try again!" });
   //   }
   // };
-  const api = process.env.NEXT_PUBLIC_API_BASE_URL
+ const api = process.env.NEXT_PUBLIC_API_URL;
   const onSubmit = async () => {
   try {
     setErrors({});
