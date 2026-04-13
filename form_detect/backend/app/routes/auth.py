@@ -149,13 +149,13 @@ async def signup(user: SignupModel):
         )
 
     if datetime.utcnow() - otp_record["created_at"] > timedelta(minutes=5):
-        await db.otp.delete_one({"email": user.email})
-        raise HTTPException(
-            status_code=400,
-            detail={"otp": "OTP expired"}
-        )
+      await db.otps.delete_one({"email": user.email})  # FIXED
+      raise HTTPException(
+         status_code=400,
+         detail={"otp": "OTP expired"}
+    )
 
-    if otp_record["otp"] != user.otp:
+    if str(otp_record["otp"]) != str(user.otp):
         raise HTTPException(
             status_code=400,
             detail={"otp": "Invalid OTP"}
@@ -203,7 +203,7 @@ async def signup(user: SignupModel):
                 }
             )
 
-            await db.otp.delete_one({"email": user.email})
+            await db.otps.delete_one({"email": user.email})
 
             return {
                 "success": True,
@@ -220,7 +220,7 @@ async def signup(user: SignupModel):
     # 🔥 CASE 2: NEW USER → CREATE
     # -----------------------------
     new_user = {
-        "first_name": user.first_name.strip(),
+        "first_name": user.first_name.strip() if user.first_name else None,
         "last_name": user.last_name.strip() if user.last_name else None,
         "username": user.username,
         "email": user.email,
