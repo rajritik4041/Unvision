@@ -158,6 +158,7 @@ export default function Signup() {
               <div onClick={() => signIn('github')} className='m-2 text-blue-400'>  login with github </div>
               <div onClick={() => signIn('microsoft')} className='m-2 text-blue-400'> login with microsoft </div>
               <div onClick={() => signIn('apple')} className='m-2 text-blue-400'> login withjh apple </div>
+              <button onClick={() => window.location.href = "http://127.0.0.1:8000/auth/google"}> Login with Google </button><br />
               <button onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}> Login with Google </button><br />
               <button onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/github"}> Login with GitHub </button><br />
               <button onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/microsoft"}> Login with Microsoft </button>   <br />
