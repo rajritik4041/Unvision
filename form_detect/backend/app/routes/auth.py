@@ -237,7 +237,7 @@ async def signup(user: SignupModel):
 
     await db.users.insert_one(new_user)
 
-    await db.otp.delete_one({"email": user.email})
+    await db.otps.delete_one({"email": user.email})
 
     return {
         "success": True,
