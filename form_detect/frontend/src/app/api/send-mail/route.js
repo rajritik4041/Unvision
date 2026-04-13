@@ -27,6 +27,12 @@ export async function POST(req) {
     });
 
     // const collection = await Otp.create({ email, otp });
+    // const collection = await Otp.create({ email, otp }); 
+    const collection = await Otp.create({
+        email,
+        otp,
+        created_at: new Date()
+    });
 
     console.log("Email sent:", info.messageId);
     return new Response(JSON.stringify({ message: 'OTP sent successfully' }), {

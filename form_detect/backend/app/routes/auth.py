@@ -157,34 +157,21 @@ async def signup(user: SignupModel):
     # 🔐 OTP Check (PEHLE VERIFY KARO)
     # -----------------------------
     otp_record = await db.otps.find_one({"email": user.email})
-
+    print("OTP RECORD:", otp_record)
     if not otp_record:
-        raise HTTPException(
-            status_code=400,
-            detail={"otp": "OTP not found"}
-        )
+       raise HTTPException(status_code=400, detail={"otp": "OTP not found"})
+    created_time = otp_record.get("createdAt")
 
-    if datetime.utcnow() - otp_record["created_at"] > timedelta(minutes=5):
-      await db.otps.delete_one({"email": user.email})  # FIXED
-      raise HTTPException(
-         status_code=400,
-         detail={"otp": "OTP expired"}
-    )
+    if not created_time:
+       raise HTTPException(status_code=400, detail={"otp": "OTP invalid"})
 
+# ⏰ Expiry check
+    if datetime.utcnow() - created_time > timedelta(minutes=5):
+       raise HTTPException(status_code=400, detail={"otp": "OTP expired"})
+
+# 🔑 OTP match
     if str(otp_record["otp"]) != str(user.otp):
-        raise HTTPException(
-            status_code=400,
-            detail={"otp": "Invalid OTP"}
-        )
-
-    # -----------------------------
-    # 🔐 Password Check
-    # -----------------------------
-    if not user.password:
-        raise HTTPException(
-            status_code=400,
-            detail={"password": "Password required"}
-        )
+       raise HTTPException(status_code=400, detail={"otp": "Invalid OTP"})
 
     hashed_password = bcrypt.hashpw(
         user.password.encode(),
@@ -250,7 +237,8 @@ async def signup(user: SignupModel):
         "provider": "local",
         "created_at": datetime.utcnow()
     }
-
+    print("DATA RECEIVED:", user.dict())
+    print("DATA SAVED:", new_user)
     await db.users.insert_one(new_user)
 
     await db.otps.delete_one({"email": user.email})

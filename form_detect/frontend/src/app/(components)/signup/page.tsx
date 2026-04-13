@@ -28,6 +28,7 @@ export default function Signup() {
 
   const setpage = async () => { setfirstpage(true); }
   const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
+  // const api =  "http://127.0.0.1:8000";
    const api2 =  process.env.NEXT_PUBLIC_API_URL2 || "https://unvision.vercel.app" ; 
   const [user, setUser] = useState<UserType>({
     first_name: "", last_name: "", date_of_birth: "", age: "", username: "",
