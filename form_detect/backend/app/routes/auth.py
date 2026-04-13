@@ -6,7 +6,6 @@ from datetime import date, datetime, timedelta
 from app.database.connection import db
 import smtplib
 from email.mime.text import MIMEText
-from datetime import datetime
 import bcrypt
 import re
 from fastapi.responses import JSONResponse
@@ -32,20 +31,28 @@ class SignupModel(BaseModel):
     username: Optional[str] = None
     email: EmailStr
     gender: Optional[str] = None
+    # Auth
     password: Optional[str] = None
     confirmPassword: Optional[str] = None
+    # OAuth
     googleId: Optional[str] = None
     githubId: Optional[str] = None
     microsoftId: Optional[str] = None
-    isProfileComplete: Optional[bool] = False
+    # Profile
     profilePic: Optional[str] = None
     date_of_birth: Optional[date] = None
     age: Optional[int] = None
+    # Location
     country: Optional[str] = None
     state: Optional[str] = None
     city: Optional[str] = None
+    # Other
+    provider: Optional[str] = None
     token: Optional[str] = None
-    otp: str   # ✅ ADD THIS (VERY IMPORTANT)
+    otp: str   # ✅ required
+    isProfileComplete: bool = False
+    createdAt: datetime = datetime.utcnow()
+
 
     @field_validator("first_name")
     def validate_first_name(cls, v):
@@ -55,9 +62,11 @@ class SignupModel(BaseModel):
 
     @field_validator("last_name")
     def validate_last_name(cls, v):
-        if not (3 <= len(v) <= 15) or not v.isalpha():
-            raise ValueError("Invalid last name")
-        return v.strip()
+      if v is None:
+         return v
+      if not (3 <= len(v) <= 15) or not v.isalpha():
+         raise ValueError("Invalid last name")
+      return v.strip()
 
     @field_validator("username")
     def validate_username(cls, v):
@@ -104,6 +113,8 @@ class SignupModel(BaseModel):
         return v
     
 
+
+
 @router.post("/signup")
 async def signup(user: SignupModel):
 
@@ -122,13 +133,9 @@ async def signup(user: SignupModel):
     # 🔍 Check Email
     # -----------------------------
     existing_email = await db.users.find_one({"email": user.email})
-    if existing_email:
-        raise HTTPException(
-            status_code=400,
-            detail={"email": "Email already exists"}
-        )
+
     # -----------------------------
-    # 🔐 OTP Check
+    # 🔐 OTP Check (PEHLE VERIFY KARO)
     # -----------------------------
     otp_record = await db.otp.find_one({"email": user.email})
 
@@ -138,15 +145,13 @@ async def signup(user: SignupModel):
             detail={"otp": "OTP not found"}
         )
 
-    # OTP expiry (5 min)
     if datetime.utcnow() - otp_record["created_at"] > timedelta(minutes=5):
-        await db.otp.delete_one({"email": user.email})  # cleanup
+        await db.otp.delete_one({"email": user.email})
         raise HTTPException(
             status_code=400,
             detail={"otp": "OTP expired"}
         )
 
-    # OTP match
     if otp_record["otp"] != user.otp:
         raise HTTPException(
             status_code=400,
@@ -154,7 +159,7 @@ async def signup(user: SignupModel):
         )
 
     # -----------------------------
-    # 🔐 Password Hash
+    # 🔐 Password Check
     # -----------------------------
     if not user.password:
         raise HTTPException(
@@ -168,7 +173,48 @@ async def signup(user: SignupModel):
     ).decode("utf-8")
 
     # -----------------------------
-    # 💾 Save User
+    # 🔥 CASE 1: EMAIL EXISTS
+    # -----------------------------
+    if existing_email:
+        provider = existing_email.get("provider", "local")
+
+        # ✅ GOOGLE USER → UPDATE (SET PASSWORD)
+        if provider != "local":
+
+            await db.users.update_one(
+                {"email": user.email},
+                {
+                    "$set": {
+                        "password": hashed_password,
+                        "provider": "local",  # अब email+password login allowed
+                        "username": user.username,
+                        "first_name": user.first_name.strip(),
+                        "last_name": user.last_name.strip() if user.last_name else None,
+                        "gender": user.gender,
+                        "date_of_birth": str(user.date_of_birth) if user.date_of_birth else None,
+                        "age": user.age,
+                        "country": user.country,
+                        "state": user.state,
+                        "city": user.city,
+                    }
+                }
+            )
+
+            await db.otp.delete_one({"email": user.email})
+
+            return {
+                "success": True,
+                "message": "Password set successfully. You can now login with email & password."
+            }
+
+        # ❌ NORMAL USER
+        raise HTTPException(
+            status_code=400,
+            detail={"email": "Email already exists"}
+        )
+
+    # -----------------------------
+    # 🔥 CASE 2: NEW USER → CREATE
     # -----------------------------
     new_user = {
         "first_name": user.first_name.strip(),
@@ -182,14 +228,12 @@ async def signup(user: SignupModel):
         "state": user.state,
         "city": user.city,
         "password": hashed_password,
+        "provider": "local",
         "created_at": datetime.utcnow()
     }
 
     await db.users.insert_one(new_user)
 
-    # -----------------------------
-    # 🧹 Delete OTP after success
-    # -----------------------------
     await db.otp.delete_one({"email": user.email})
 
     return {
@@ -197,6 +241,208 @@ async def signup(user: SignupModel):
         "message": "Signup successful"
     }
 
+
+
+# @router.post("/signup")
+# async def signup(user: SignupModel):
+
+#     # -----------------------------
+#     # 🔍 Check Username
+#     # -----------------------------
+#     if user.username:
+#         existing_username = await db.users.find_one({"username": user.username})
+#         if existing_username:
+#             raise HTTPException(
+#                 status_code=400,
+#                 detail={"username": "Username already exists"}
+#             )
+
+#     # -----------------------------
+#     # 🔍 Check Email
+#     # -----------------------------
+#     existing_email = await db.users.find_one({"email": user.email})
+#     if existing_email:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"email": "Email already exists"}
+#         )
+#     # -----------------------------
+#     # 🔐 OTP Check
+#     # -----------------------------
+#     otp_record = await db.otp.find_one({"email": user.email})
+
+#     if not otp_record:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"otp": "OTP not found"}
+#         )
+
+#     # OTP expiry (5 min)
+#     if datetime.utcnow() - otp_record["created_at"] > timedelta(minutes=5):
+#         await db.otp.delete_one({"email": user.email})  # cleanup
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"otp": "OTP expired"}
+#         )
+
+#     # OTP match
+#     if otp_record["otp"] != user.otp:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"otp": "Invalid OTP"}
+#         )
+
+#     # -----------------------------
+#     # 🔐 Password Hash
+#     # -----------------------------
+#     if not user.password:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"password": "Password required"}
+#         )
+
+#     hashed_password = bcrypt.hashpw(
+#         user.password.encode(),
+#         bcrypt.gensalt()
+#     ).decode("utf-8")
+
+#     # -----------------------------
+#     # 💾 Save User
+#     # -----------------------------
+#     new_user = {
+#         "first_name": user.first_name.strip(),
+#         "last_name": user.last_name.strip() if user.last_name else None,
+#         "username": user.username,
+#         "email": user.email,
+#         "gender": user.gender,
+#         "date_of_birth": str(user.date_of_birth) if user.date_of_birth else None,
+#         "age": user.age,
+#         "country": user.country,
+#         "state": user.state,
+#         "city": user.city,
+#         "password": hashed_password,
+#         "created_at": datetime.utcnow()
+#     }
+
+#     await db.users.insert_one(new_user)
+
+#     # -----------------------------
+#     # 🧹 Delete OTP after success
+#     # -----------------------------
+#     await db.otp.delete_one({"email": user.email})
+
+#     return {
+#         "success": True,
+#         "message": "Signup successful"
+#     }
+
+# @router.post("/signup")
+# async def signup(user: SignupModel):
+
+#     # -----------------------------
+#     # 🔍 Check Username
+#     # -----------------------------
+#     if user.username:
+#         existing_username = await db.users.find_one({"username": user.username})
+#         if existing_username:
+#             raise HTTPException(
+#                 status_code=400,
+#                 detail={"username": "Username already exists"}
+#             )
+
+#     # -----------------------------
+#     # 🔍 Check Email + Provider Logic
+#     # -----------------------------
+#     existing_email = await db.users.find_one({"email": user.email})
+
+#     if existing_email:
+#         provider = existing_email.get("provider", "local")
+
+#         # 🔥 If user already registered via Google
+#         if provider != "local":
+#             raise HTTPException(
+#                 status_code=400,
+#                 detail={
+#                     "email": f"This email is registered with {provider}. Please login using {provider.capitalize()}."
+#                 }
+#             )
+
+#         # 🔥 If already normal user
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"email": "Email already exists"}
+#         )
+
+#     # -----------------------------
+#     # 🔐 OTP Check
+#     # -----------------------------
+#     otp_record = await db.otp.find_one({"email": user.email})
+
+#     if not otp_record:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"otp": "OTP not found"}
+#         )
+
+#     # OTP expiry (5 min)
+#     if datetime.utcnow() - otp_record["created_at"] > timedelta(minutes=5):
+#         await db.otp.delete_one({"email": user.email})
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"otp": "OTP expired"}
+#         )
+
+#     # OTP match
+#     if otp_record["otp"] != user.otp:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"otp": "Invalid OTP"}
+#         )
+
+#     # -----------------------------
+#     # 🔐 Password Hash
+#     # -----------------------------
+#     if not user.password:
+#         raise HTTPException(
+#             status_code=400,
+#             detail={"password": "Password required"}
+#         )
+
+#     hashed_password = bcrypt.hashpw(
+#         user.password.encode(),
+#         bcrypt.gensalt()
+#     ).decode("utf-8")
+
+#     # -----------------------------
+#     # 💾 Save User
+#     # -----------------------------
+#     new_user = {
+#         "first_name": user.first_name.strip(),
+#         "last_name": user.last_name.strip() if user.last_name else None,
+#         "username": user.username,
+#         "email": user.email,
+#         "gender": user.gender,
+#         "date_of_birth": str(user.date_of_birth) if user.date_of_birth else None,
+#         "age": user.age,
+#         "country": user.country,
+#         "state": user.state,
+#         "city": user.city,
+#         "password": hashed_password,
+#         "provider": "local",  # 🔥 IMPORTANT
+#         "created_at": datetime.utcnow()
+#     }
+
+#     await db.users.insert_one(new_user)
+
+#     # -----------------------------
+#     # 🧹 Delete OTP after success
+#     # -----------------------------
+#     await db.otp.delete_one({"email": user.email})
+
+#     return {
+#         "success": True,
+#         "message": "Signup successful"
+#     }
 
 # @router.post("/signup")
 # async def signup(user: SignupModel):
@@ -366,9 +612,304 @@ def serialize_user(user):
         "created_at": str(user.get("created_at")) if user.get("created_at") else None,
     }
 
+# @router.get("/profile/home")
+# async def profile(user=Depends(verify_token)):
+#     return {
+#         "success": True,
+#         "user": serialize_user(user)  # 🔥 important
+#     }
+
+
+
+
+
+# from fastapi import APIRouter, Request
+# from ..Service.oauth_service import oauth
+# from app.controllers.auth_controller import handle_login
+
+
+# # ================= GOOGLE =================
+# @router.get("/auth/google")
+# async def google_login(request: Request):
+#     redirect_uri = request.url_for("google_callback")
+#     return await oauth.google.authorize_redirect(request, redirect_uri)
+
+# @router.get("/auth/google/callback")
+# async def google_callback(request: Request):
+#     token = await oauth.google.authorize_access_token(request)
+#     user = token.get("userinfo")
+#     return await handle_login("google", user)
+
+# # ================= GITHUB =================
+# @router.get("/auth/github")
+# async def github_login(request: Request):
+#     redirect_uri = request.url_for("github_callback")
+#     return await oauth.github.authorize_redirect(request, redirect_uri)
+
+# @router.get("/auth/github/callback")
+# async def github_callback(request: Request):
+#     token = await oauth.github.authorize_access_token(request)
+#     user = await oauth.github.get("user", token=token)
+#     return await handle_login("github", user.json())
+
+# # ================= MICROSOFT =================
+# @router.get("/auth/microsoft")
+# async def microsoft_login(request: Request):
+#     redirect_uri = request.url_for("microsoft_callback")
+#     return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+
+# @router.get("/auth/microsoft/callback")
+# async def microsoft_callback(request: Request):
+#     token = await oauth.microsoft.authorize_access_token(request)
+#     user = token.get("userinfo")
+#     return await handle_login("microsoft", user)
+
+
+# from fastapi import APIRouter, Request
+# from ..Service.oauth_service import oauth
+# from app.controllers.auth_controller import handle_login
+
+
+# # ================= GOOGLE =================
+# @router.get("/auth/google")
+# async def google_login(request: Request):
+#     redirect_uri = request.url_for("google_callback")
+#     return await oauth.google.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/google/callback")
+# async def google_callback(request: Request):
+#     token = await oauth.google.authorize_access_token(request)
+
+#     # ✅ FIX: correct way to get user
+#     user = await oauth.google.parse_id_token(request, token)
+
+#     return await handle_login("google", user)
+
+
+# # ================= GITHUB =================
+# @router.get("/auth/github")
+# async def github_login(request: Request):
+#     redirect_uri = request.url_for("github_callback")
+#     return await oauth.github.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/github/callback")
+# async def github_callback(request: Request):
+#     token = await oauth.github.authorize_access_token(request)
+
+#     user_resp = await oauth.github.get("user", token=token)
+#     user = user_resp.json()
+
+#     return await handle_login("github", user)
+
+
+# # ================= MICROSOFT =================
+# @router.get("/auth/microsoft")
+# async def microsoft_login(request: Request):
+#     redirect_uri = request.url_for("microsoft_callback")
+#     return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/microsoft/callback")
+# async def microsoft_callback(request: Request):
+#     token = await oauth.microsoft.authorize_access_token(request)
+
+#     # ✅ FIX: same as google
+#     user = await oauth.microsoft.parse_id_token(request, token)
+
+#     return await handle_login("microsoft", user)
+
+
+
+
+
+
+
+
+
+# from fastapi import APIRouter, Request
+# from ..Service.oauth_service import oauth
+# from app.controllers.auth_controller import handle_login
+
+# router = APIRouter()
+
+# # ================= GOOGLE =================
+# @router.get("/auth/google")
+# async def google_login(request: Request):
+#     redirect_uri = request.url_for("google_callback")
+#     return await oauth.google.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/google/callback")
+# async def google_callback(request: Request):
+#     try:
+#         token = await oauth.google.authorize_access_token(request)
+#         print("GOOGLE TOKEN:", token)
+
+#         # ✅ BEST FIX (NO id_token parsing)
+#         user = token.get("userinfo")
+
+#         if not user:
+#             resp = await oauth.google.get(
+#                 "https://www.googleapis.com/oauth2/v2/userinfo",
+#                 token=token
+#             )
+#             user = resp.json()
+
+#         return await handle_login("google", user)
+
+#     except Exception as e:
+#         print("❌ GOOGLE ERROR:", str(e))
+#         return {"error": str(e)}
+
+
+# # ================= GITHUB =================
+# @router.get("/auth/github")
+# async def github_login(request: Request):
+#     redirect_uri = request.url_for("github_callback")
+#     return await oauth.github.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/github/callback")
+# async def github_callback(request: Request):
+#     try:
+#         token = await oauth.github.authorize_access_token(request)
+
+#         resp = await oauth.github.get("user", token=token)
+#         user = resp.json()
+
+#         return await handle_login("github", user)
+
+#     except Exception as e:
+#         print("❌ GITHUB ERROR:", str(e))
+#         return {"error": str(e)}
+
+
+# # ================= MICROSOFT =================
+# @router.get("/auth/microsoft")
+# async def microsoft_login(request: Request):
+#     redirect_uri = request.url_for("microsoft_callback")
+#     return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/microsoft/callback")
+# async def microsoft_callback(request: Request):
+#     try:
+#         token = await oauth.microsoft.authorize_access_token(request)
+#         print("MICROSOFT TOKEN:", token)
+
+#         user = token.get("userinfo")
+
+#         if not user:
+#             resp = await oauth.microsoft.get(
+#                 "https://graph.microsoft.com/v1.0/me",
+#                 token=token
+#             )
+#             user = resp.json()
+
+#         return await handle_login("microsoft", user)
+
+#     except Exception as e:
+#         print("❌ MICROSOFT ERROR:", str(e))
+#         return {"error": str(e)}
+
+from fastapi import APIRouter, Depends, Request
+from .utils import verify_token
+from ..Service.oauth_service import oauth
+from app.controllers.auth_controller import handle_login
+
+# ================= PROFILE =================
 @router.get("/profile/home")
 async def profile(user=Depends(verify_token)):
     return {
         "success": True,
-        "user": serialize_user(user)  # 🔥 important
+        "user": {
+            "email": user.get("email"),
+            "first_name": user.get("first_name"),
+            "last_name": user.get("last_name"),
+            "profilePic": user.get("profilePic"),
+            "providers": user.get("providers", []),
+            "created_at": str(user.get("created_at"))
+        }
     }
+
+
+# ================= GOOGLE =================
+@router.get("/auth/google")
+async def google_login(request: Request):
+    redirect_uri = request.url_for("google_callback")
+    return await oauth.google.authorize_redirect(request, redirect_uri)
+
+
+@router.get("/auth/google/callback")
+async def google_callback(request: Request):
+    token = await oauth.google.authorize_access_token(request)
+
+    user = token.get("userinfo")
+
+    if not user:
+        resp = await oauth.google.get(
+            "https://www.googleapis.com/oauth2/v2/userinfo",
+            token=token
+        )
+        user = resp.json()
+
+    return await handle_login("google", user)
+
+
+
+# ================= MICROSOFT =================
+@router.get("/auth/microsoft")
+async def microsoft_login(request: Request):
+    redirect_uri = request.url_for("microsoft_callback")
+    return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+
+
+@router.get("/auth/microsoft/callback")
+async def microsoft_callback(request: Request):
+    token = await oauth.microsoft.authorize_access_token(request)
+
+    # Microsoft user info
+    resp = await oauth.microsoft.get(
+        "https://graph.microsoft.com/v1.0/me",
+        token=token
+    )
+    user = resp.json()
+
+    return await handle_login("microsoft", user)
+
+# ================= GITHUB =================
+@router.get("/auth/github")
+async def github_login(request: Request):
+    redirect_uri = request.url_for("github_callback")
+    return await oauth.github.authorize_redirect(request, redirect_uri)
+
+
+@router.get("/auth/github/callback")
+async def github_callback(request: Request):
+    token = await oauth.github.authorize_access_token(request)
+
+    # Get user
+    resp = await oauth.github.get(
+        "https://api.github.com/user",
+        token=token
+    )
+    user = resp.json()
+
+    # Get email (GitHub separate API देता है)
+    email_resp = await oauth.github.get(
+        "https://api.github.com/user/emails",
+        token=token
+    )
+    emails = email_resp.json()
+
+    primary_email = None
+    for e in emails:
+        if e.get("primary"):
+            primary_email = e.get("email")
+            break
+
+    user["email"] = primary_email
+
+    return await handle_login("github", user)

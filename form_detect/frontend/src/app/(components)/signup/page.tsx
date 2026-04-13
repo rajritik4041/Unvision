@@ -139,7 +139,8 @@ export default function Signup() {
                     <option value="">Select District</option>
                     {cities.map((city) => (<option key={city.name} value={city.name}> {city.name} </option>))}
                   </select>
-                  {errors.city && (<p style={{ color: "red", fontSize: 12, }}>{errors.city}</p>)} </div>
+                  {errors.city && (<p style={{ color: "red", fontSize: 12, }}>{errors.city}</p>)}
+                  {errors.email && (<p style={{ color: "red", fontSize: 12, }}>{errors.email}</p>)} </div>
                 <div className="flex items-center justify-center"><div>
                   <button onClick={setpage} >Back</button> </div> <div>
                     <input type="submit" value="Submit" className='p-1  my-3 mr-2.5 border-black border-2 rounded-lg w-30 bg-blue-500 text-white  ' /></div>
@@ -153,6 +154,9 @@ export default function Signup() {
               <div onClick={() => signIn('github')} className='m-2 text-blue-400'>  login with github </div>
               <div onClick={() => signIn('microsoft')} className='m-2 text-blue-400'> login with microsoft </div>
               <div onClick={() => signIn('apple')} className='m-2 text-blue-400'> login withjh apple </div>
+              <button onClick={() => window.location.href = "http://localhost:8000/auth/google"}> Login with Google </button><br />
+              <button onClick={() => window.location.href = "http://localhost:8000/auth/github"}> Login with GitHub </button><br />
+              <button onClick={() => window.location.href = "http://localhost:8000/auth/microsoft"}> Login with Microsoft </button>   <br />
             </div> </form> </div> </div> </div>
     </div>
   )
