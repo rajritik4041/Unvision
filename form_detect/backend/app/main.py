@@ -5,21 +5,24 @@ from app.routes import user, auth
 
 app = FastAPI()
 
-# ✅ Session Middleware (VERY IMPORTANT for OAuth)
+# ✅ Session Middleware
 app.add_middleware(
     SessionMiddleware,
-    secret_key="raghupatiraghavrajaram"  # strong secret hona chahiye
+    secret_key="raghupatiraghavrajaram"
 )
 
-# ✅ CORS (frontend connect ke liye)
+# ✅ CORS (FINAL FIX)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",              # local
+        "https://unvision.vercel.app"     # production frontend
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ✅ routers include
+# ✅ routers
 app.include_router(user.router)
 app.include_router(auth.router)

@@ -201,7 +201,7 @@ function Page() {
   //     setErrors({ general: "Server error, try again!" });
   //   }
   // };
- const api = process.env.NEXT_PUBLIC_API_URL;
+ const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
   const onSubmit = async () => {
   try {
     setErrors({});
