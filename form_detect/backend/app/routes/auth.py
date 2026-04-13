@@ -140,7 +140,7 @@ async def signup(user: SignupModel):
     # -----------------------------
     # 🔐 OTP Check (PEHLE VERIFY KARO)
     # -----------------------------
-    otp_record = await db.otp.find_one({"email": user.email})
+    otp_record = await db.otps.find_one({"email": user.email})
 
     if not otp_record:
         raise HTTPException(
