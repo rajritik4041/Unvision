@@ -12,7 +12,10 @@ from fastapi.responses import JSONResponse
 import jwt  # PyJWT library
 from datetime import datetime   # ✅ correct
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
-
+import os
+import traceback
+from dotenv import load_dotenv
+load_dotenv()
 from ..config import ALGORITHM, SECRET_KEY
 from .utils import create_token, verify_token
 router = APIRouter()
@@ -518,50 +521,120 @@ class OTPRequest(BaseModel):
 
         return value
 
+# @router.post("/send-otp")
+# async def send_otp(data: OTPRequest):
+#     email = data.email
+#     otp = data.otp
+
+#     print("Received OTP request:", email, otp)
+
+#     try:
+#         # -----------------------------
+#         # 📧 Email Setup
+#         # -----------------------------
+#         sender_email = "rajritik.9236@gmail.com"
+#         sender_password = "dhhumufaemzaoyjo"
+
+#         msg = MIMEText(f"Your OTP code is {otp}")
+#         msg["Subject"] = "Your OTP Code"
+#         msg["From"] = sender_email
+#         msg["To"] = email
+
+#         # -----------------------------
+#         # 🔐 SMTP Connection
+#         # -----------------------------
+#         server = smtplib.SMTP("smtp.gmail.com", 587)
+#         server.starttls()
+#         server.login(sender_email, sender_password)
+#         server.send_message(msg)
+#         server.quit()
+
+#         # -----------------------------
+#         # 💾 Save OTP in DB
+#         # -----------------------------
+
+#         await db.otp.insert_one({
+#               "email": email,
+#                "otp": otp,
+#                "created_at": datetime.utcnow()
+#             })
+
+#         return {"message": "OTP sent successfully"}
+
+#     except Exception as e:
+#         print("Error:", str(e))
+#         raise HTTPException(status_code=500, detail="Failed to send OTP")
+    
+
+
+# -----------------------------
+# 📦 Request Model
+# -----------------------------
+
+# -----------------------------
+# 📧 Send OTP Route
+# -----------------------------
 @router.post("/send-otp")
 async def send_otp(data: OTPRequest):
     email = data.email
     otp = data.otp
 
-    print("Received OTP request:", email, otp)
+    print("📩 Request:", email, otp)
 
     try:
         # -----------------------------
-        # 📧 Email Setup
+        # 🔐 ENV VARIABLES
         # -----------------------------
-        sender_email = "rajritik.9236@gmail.com"
-        sender_password = "dhhumufaemzaoyjo"
+        sender_email = os.getenv("EMAIL")
+        sender_password = os.getenv("PASSWORD")
 
+        if not sender_email or not sender_password:
+            raise Exception("Email or Password not set in environment variables")
+
+        # -----------------------------
+        # 📧 Email Content
+        # -----------------------------
         msg = MIMEText(f"Your OTP code is {otp}")
         msg["Subject"] = "Your OTP Code"
         msg["From"] = sender_email
         msg["To"] = email
 
         # -----------------------------
-        # 🔐 SMTP Connection
+        # 🔌 SMTP Connection
         # -----------------------------
-        server = smtplib.SMTP("smtp.gmail.com", 587)
+        print("🔌 Connecting to SMTP...")
+        server = smtplib.SMTP("smtp.gmail.com", 587, timeout=10)
         server.starttls()
+
+        print("🔐 Logging in...")
         server.login(sender_email, sender_password)
+
+        print("📤 Sending email...")
         server.send_message(msg)
+
         server.quit()
+        print("✅ Email sent successfully")
 
         # -----------------------------
-        # 💾 Save OTP in DB
+        # 💾 Save OTP (MongoDB)
         # -----------------------------
+        from app.database import db  # adjust path if needed
 
         await db.otp.insert_one({
-              "email": email,
-               "otp": otp,
-               "created_at": datetime.utcnow()
-            })
+            "email": email,
+            "otp": otp,
+            "created_at": datetime.utcnow()
+        })
 
-        return {"message": "OTP sent successfully"}
+        return {"success": True, "message": "OTP sent successfully"}
 
     except Exception as e:
-        print("Error:", str(e))
-        raise HTTPException(status_code=500, detail="Failed to send OTP")
-    
+        print("🔥 ERROR:", str(e))
+        traceback.print_exc()
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)   # 👈 now real error will show
+        )
 
 # -----------------------------
 # Login
