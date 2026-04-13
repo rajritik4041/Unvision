@@ -201,7 +201,7 @@ function Page() {
   //     setErrors({ general: "Server error, try again!" });
   //   }
   // };
-
+  const api = process.env.NEXT_PUBLIC_API_BASE_URL
   const onSubmit = async () => {
   try {
     setErrors({});
@@ -213,7 +213,7 @@ function Page() {
     }
 
     // ✅ फिर API call
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/login`, {
+    const res = await fetch(`${api}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(verify),
