@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import dotenv from "dotenv";
-
-dotenv.config();
 
 export default function Profile() {
   const router = useRouter();
@@ -23,17 +20,17 @@ export default function Profile() {
         localStorage.setItem("token", urlToken);
         window.history.replaceState({}, document.title, "/profile/home");
       }
-
+      const api = process.env.NEXT_PUBLIC_API_BASE_URL
       const token = localStorage.getItem("token");
 
       if (!token) {
         router.push("/login");
         return;
       }
-
+      
       try {
         // 🔥 FIX HERE (REMOVE /auth)
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/profile/home`, {
+        const res = await fetch(`${api}/profile/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
