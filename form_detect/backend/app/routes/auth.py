@@ -958,14 +958,14 @@ async def google_callback(request: Request):
 
 #     return await handle_login("microsoft", user)
 
-
+from ..core.auth import oauth
 # -----------------------------
 # 🚀 Microsoft Login
 # -----------------------------
 @router.get("/auth/microsoft")
 async def microsoft_login(request: Request):
     try:
-        redirect_uri = request.url_for("microsoft_callback")
+        redirect_uri = "https://unvision-first.onrender.com/auth/microsoft/callback"
         return await oauth.microsoft.authorize_redirect(request, redirect_uri)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Redirect Error: {str(e)}")
@@ -1019,7 +1019,7 @@ async def microsoft_callback(request: Request):
 @router.get("/auth/github")
 async def github_login(request: Request):
     try:
-        redirect_uri = request.url_for("github_callback")
+        redirect_uri = "https://unvision-first.onrender.com/auth/github/callback"
         return await oauth.github.authorize_redirect(request, redirect_uri)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Redirect Error: {str(e)}")
