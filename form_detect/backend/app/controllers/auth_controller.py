@@ -1,3 +1,5 @@
+import os
+
 from fastapi.responses import RedirectResponse
 from ..routes.utils import create_token
 from datetime import datetime
@@ -115,6 +117,6 @@ async def handle_login(provider: str, user: dict):
     token = create_token({"email": email})
 
     return RedirectResponse(
-        url=f"https://unvision.vercel.app/profile/home?token={token}",
+        url=f"{os.getenv('FRONTEND_URL')}/profile/home?token={token}",
         status_code=302
     )

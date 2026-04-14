@@ -1,5 +1,6 @@
 from typing import Optional
 from fastapi import APIRouter, Depends, Request, HTTPException
+from authlib.integrations.starlette_client import OAuthError
 from jose import JWTError
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import date, datetime, timedelta
@@ -937,56 +938,145 @@ async def google_callback(request: Request):
 
 
 # ================= MICROSOFT =================
+# @router.get("/auth/microsoft")
+# async def microsoft_login(request: Request):
+#     redirect_uri = request.url_for("microsoft_callback")
+#     return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+
+
+# @router.get("/auth/microsoft/callback")
+# async def microsoft_callback(request: Request):
+#     token = await oauth.microsoft.authorize_access_token(request)
+
+#     # Microsoft user info
+#     resp = await oauth.microsoft.get(
+#         "https://graph.microsoft.com/v1.0/me",
+#         token=token
+#     )
+#     user = resp.json()
+
+#     return await handle_login("microsoft", user)
+
+
+# -----------------------------
+# 🚀 Microsoft Login
+# -----------------------------
 @router.get("/auth/microsoft")
 async def microsoft_login(request: Request):
-    redirect_uri = request.url_for("microsoft_callback")
-    return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+    try:
+        redirect_uri = request.url_for("microsoft_callback")
+        return await oauth.microsoft.authorize_redirect(request, redirect_uri)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Redirect Error: {str(e)}")
 
 
+# -----------------------------
+# 🔁 Microsoft Callback
+# -----------------------------
 @router.get("/auth/microsoft/callback")
 async def microsoft_callback(request: Request):
-    token = await oauth.microsoft.authorize_access_token(request)
+    try:
+        # 🔑 Step 1: Get token
+        token = await oauth.microsoft.authorize_access_token(request)
 
-    # Microsoft user info
-    resp = await oauth.microsoft.get(
-        "https://graph.microsoft.com/v1.0/me",
-        token=token
-    )
-    user = resp.json()
+        if not token:
+            raise HTTPException(status_code=400, detail="Token not received")
 
-    return await handle_login("microsoft", user)
+        # 👤 Step 2: Get user info
+        resp = await oauth.microsoft.get(
+            "https://graph.microsoft.com/v1.0/me",
+            token=token
+        )
+
+        if resp.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to fetch user")
+
+        user = resp.json()
+
+        # 📧 Step 3: Get email (important ⚠️)
+        email = user.get("mail") or user.get("userPrincipalName")
+
+        if not email:
+            raise HTTPException(status_code=400, detail="Email not available")
+
+        user["email"] = email
+
+        # 🔄 Step 4: Handle login/signup
+        return await handle_login("microsoft", user)
+
+    except OAuthError as e:
+        raise HTTPException(status_code=400, detail=f"OAuth Error: {str(e)}")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
+    
+
+    
 
 # ================= GITHUB =================
+# 
 @router.get("/auth/github")
 async def github_login(request: Request):
-    redirect_uri = request.url_for("github_callback")
-    return await oauth.github.authorize_redirect(request, redirect_uri)
+    try:
+        redirect_uri = request.url_for("github_callback")
+        return await oauth.github.authorize_redirect(request, redirect_uri)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Redirect Error: {str(e)}")
 
 
+# -----------------------------
+# 🔁 GitHub Callback
+# -----------------------------
 @router.get("/auth/github/callback")
 async def github_callback(request: Request):
-    token = await oauth.github.authorize_access_token(request)
+    try:
+        # 🔑 Step 1: Get access token
+        token = await oauth.github.authorize_access_token(request)
 
-    # Get user
-    resp = await oauth.github.get(
-        "https://api.github.com/user",
-        token=token
-    )
-    user = resp.json()
+        if not token:
+            raise HTTPException(status_code=400, detail="Token not received")
 
-    # Get email (GitHub separate API देता है)
-    email_resp = await oauth.github.get(
-        "https://api.github.com/user/emails",
-        token=token
-    )
-    emails = email_resp.json()
+        # 👤 Step 2: Get user info
+        resp = await oauth.github.get(
+            "https://api.github.com/user",
+            token=token
+        )
 
-    primary_email = None
-    for e in emails:
-        if e.get("primary"):
-            primary_email = e.get("email")
-            break
+        if resp.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to fetch user")
 
-    user["email"] = primary_email
+        user = resp.json()
 
-    return await handle_login("github", user)
+        # 📧 Step 3: Get email
+        email_resp = await oauth.github.get(
+            "https://api.github.com/user/emails",
+            token=token
+        )
+
+        primary_email = None
+
+        if email_resp.status_code == 200:
+            emails = email_resp.json()
+            for e in emails:
+                if e.get("primary") and e.get("verified"):
+                    primary_email = e.get("email")
+                    break
+
+        # ⚠️ fallback (agar primary nahi mila)
+        if not primary_email:
+            primary_email = user.get("email")
+
+        user["email"] = primary_email
+
+        # ❌ email hi nahi mila
+        if not user["email"]:
+            raise HTTPException(status_code=400, detail="Email not available")
+
+        # 🔄 Step 4: Handle login/signup
+        return await handle_login("github", user)
+
+    except OAuthError as e:
+        raise HTTPException(status_code=400, detail=f"OAuth Error: {str(e)}")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
