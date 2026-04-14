@@ -182,43 +182,47 @@ async def signup(user: SignupModel):
     # 🔥 CASE 1: EMAIL EXISTS
     # -----------------------------
     if existing_email:
-        provider = existing_email.get("provider", "local")
+        providers = existing_email.get("provider", [])
 
-        # ✅ GOOGLE USER → UPDATE (SET PASSWORD)
-        if provider != "local":
+    # convert to list if string
+        if isinstance(providers, str):
+            providers = [providers]
 
-            await db.users.update_one(
-                {"email": user.email},
-                {
-                    "$set": {
-                        "password": hashed_password,
-                        "provider": "local",  # अब email+password login allowed
-                        "username": user.username,
-                        "first_name": user.first_name.strip(),
-                        "last_name": user.last_name.strip() if user.last_name else None,
-                        "gender": user.gender,
-                        "date_of_birth": str(user.date_of_birth) if user.date_of_birth else None,
-                        "age": user.age,
-                        "country": user.country,
-                        "state": user.state,
-                        "city": user.city,
-                    }
-                }
-            )
+    # ✅ agar local already hai → error
+        if "local" in providers:
+            raise HTTPException(
+               status_code=400,
+               detail={"email": "Email already exists"}
+           )
 
-            await db.otps.delete_one({"email": user.email})
-
-            return {
-                "success": True,
-                "message": "Password set successfully. You can now login with email & password."
+    # ✅ social login user → allow password set
+        await db.users.update_one(
+           {"email": user.email},
+           {
+             "$set": {
+                 "password": hashed_password,
+                "username": user.username,
+                "first_name": user.first_name.strip(),
+                "last_name": user.last_name.strip() if user.last_name else None,
+                "gender": user.gender,
+                "date_of_birth": str(user.date_of_birth) if user.date_of_birth else None,
+                "age": user.age,
+                "country": user.country,
+                "state": user.state,
+                "city": user.city,
+            },
+            "$addToSet": {
+                "provider": "local"   # 👈 add local without removing others
             }
+          }
+      )
 
-        # ❌ NORMAL USER
-        raise HTTPException(
-            status_code=400,
-            detail={"email": "Email already exists"}
-        )
-
+        await db.otps.delete_one({"email": user.email})
+ 
+        return {
+        "success": True,
+        "message": "Password set successfully. You can now login with email & password."
+    }
     # -----------------------------
     # 🔥 CASE 2: NEW USER → CREATE
     # -----------------------------
