@@ -29,7 +29,7 @@ export default function Signup() {
   const setpage = async () => { setfirstpage(true); }
   const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
   // const api =  "http://127.0.0.1:8000";
-   const api2 =  process.env.NEXT_PUBLIC_API_URL2 || "https://unvision.vercel.app" ; 
+  const api2 = process.env.NEXT_PUBLIC_API_URL2 || "https://unvision.vercel.app";
   const [user, setUser] = useState<UserType>({
     first_name: "", last_name: "", date_of_birth: "", age: "", username: "",
     email: "", password: "", confirmPassword: "", country: "", state: "",
@@ -60,7 +60,7 @@ export default function Signup() {
       alert("Signup success"); router.push("/login");
     }
   };
- 
+
   console.log("API URL:", api);
   const generateOTP = async () => {
     const email = user.email; if (!email || email.trim() === "") { alert("Please enter email first"); return; }
@@ -154,16 +154,8 @@ export default function Signup() {
             <Link href="/login" className='m-3.5 text-blue-400'>login </Link>
           </p> </div> <div className="flex items-center justify-center"> <hr className="w-[50%]" /> <div className="mx-4">Or</div> <hr className="w-[50%]" /> </div>
             <div className='ml-25 my-5'>
-              <div onClick={() => signIn('google')} className='m-2 text-blue-400'>login with google </div>
-              <div onClick={() => signIn('github')} className='m-2 text-blue-400'>  login with github </div>
-              <div onClick={() => signIn('microsoft')} className='m-2 text-blue-400'> login with microsoft </div>
-              <div onClick={() => signIn('apple')} className='m-2 text-blue-400'> login withjh apple </div>
-              <button onClick={() => window.location.href = "http://127.0.0.1:8000/auth/google"}> Login with Google </button><br />
-              <button onClick={() => window.location.href = "http://127.0.0.1:8000/auth/github"}> Login with GitHub </button><br />
-              <button onClick={() => window.location.href = "http://localhost:8000/auth/microsoft"}> Login with Microsoft </button>   <br />
-              <button onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}> Login with Google </button><br />
-              <button onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/github"}> Login with GitHub </button><br />
-              <button onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/microsoft"}> Login with Microsoft </button>   <br />
+              <div className='m-2 text-blue-400' onClick={() => window.location.href = "http://127.0.0.1:8000/auth/google"}> Login with Google </div>
+              <div className='m-2 text-blue-400' onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}> Login with Google </div>
             </div> </form> </div> </div> </div>
     </div>
   )

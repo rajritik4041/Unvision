@@ -319,21 +319,8 @@ function Page() {
           </div>
 
           <div className="ml-25 my-5">
-            <div onClick={() => signIn("google")} className="m-2 text-blue-400">
-              login with google
-            </div>
-
-            <div onClick={() => signIn("github")} className="m-2 text-blue-400">
-              login with github
-            </div>
-
-            <div onClick={() => signIn("azure-ad")} className="m-2 text-blue-400">
-              login with microsoft
-            </div>
-
-            <div onClick={() => signIn("apple")} className="m-2 text-blue-400">
-              login with apple
-            </div>
+                   <div className='m-2 text-blue-400' onClick={() => window.location.href = "http://127.0.0.1:8000/auth/google"}> Login with Google </div>
+              <div className='m-2 text-blue-400' onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}> Login with Google </div>
           </div>
 
         </form>
