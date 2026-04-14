@@ -14,6 +14,7 @@ import jwt  # PyJWT library
 from datetime import datetime   # ✅ correct
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 import os
+from fastapi.responses import RedirectResponse
 import traceback
 from dotenv import load_dotenv
 load_dotenv()
@@ -51,7 +52,7 @@ class SignupModel(BaseModel):
     state: Optional[str] = None
     city: Optional[str] = None
     # Other
-    provider: Optional[str] = None
+    providers: Optional[str] = None
     token: Optional[str] = None
     otp: str   # ✅ required
     isProfileComplete: bool = False
@@ -1027,27 +1028,24 @@ async def github_login(request: Request):
 # -----------------------------
 # 🔁 GitHub Callback
 # -----------------------------
+ # 🔥 IMPORTANT: set your frontend URL here
+
+# -----------------------------
+# 🔁 GitHub Callback
+# -----------------------------
 @router.get("/auth/github/callback")
 async def github_callback(request: Request):
     try:
-        # 🔑 Step 1: Get access token
         token = await oauth.github.authorize_access_token(request)
 
-        if not token:
-            raise HTTPException(status_code=400, detail="Token not received")
-
-        # 👤 Step 2: Get user info
         resp = await oauth.github.get(
             "https://api.github.com/user",
             token=token
         )
 
-        if resp.status_code != 200:
-            raise HTTPException(status_code=400, detail="Failed to fetch user")
-
         user = resp.json()
 
-        # 📧 Step 3: Get email
+        # email fetch (same as before)
         email_resp = await oauth.github.get(
             "https://api.github.com/user/emails",
             token=token
@@ -1056,27 +1054,18 @@ async def github_callback(request: Request):
         primary_email = None
 
         if email_resp.status_code == 200:
-            emails = email_resp.json()
-            for e in emails:
+            for e in email_resp.json():
                 if e.get("primary") and e.get("verified"):
                     primary_email = e.get("email")
                     break
 
-        # ⚠️ fallback (agar primary nahi mila)
         if not primary_email:
             primary_email = user.get("email")
 
         user["email"] = primary_email
 
-        # ❌ email hi nahi mila
-        if not user["email"]:
-            raise HTTPException(status_code=400, detail="Email not available")
-
-        # 🔄 Step 4: Handle login/signup
+        # ✅ DIRECT RETURN (IMPORTANT)
         return await handle_login("github", user)
 
-    except OAuthError as e:
-        raise HTTPException(status_code=400, detail=f"OAuth Error: {str(e)}")
-
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Server Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
