@@ -11,8 +11,6 @@ export default function Profile() {
   const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
   useEffect(() => {
     const fetchProfile = async () => {
-
-      // ✅ TOKEN FROM URL
       const params = new URLSearchParams(window.location.search);
       const urlToken = params.get("token");
 
@@ -21,39 +19,18 @@ export default function Profile() {
         window.history.replaceState({}, document.title, "/profile/home");
       }
       const token = localStorage.getItem("token");
-
-      if (!token) {
-        router.push("/login");
-        return;
-      }
-      
-      try {
-        // 🔥 FIX HERE (REMOVE /auth)
-        const res = await fetch(`${api}/profile/home`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
+      if (!token) { router.push("/login"); return;   }
+      try { const res = await fetch(`${api}/profile/home`, {  headers: { Authorization: `Bearer ${token}`,   }, credentials: "include",  });
         if (res.status === 401) {
           localStorage.removeItem("token");
           router.push("/login");
           return;
         }
-
         const data = await res.json();
-
-        if (data.success) {
-          setUser(data.user);
-        }
-
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
+        if (data.success) {  setUser(data.user);  } } 
+        catch (err) { console.error(err); } 
+        finally { setLoading(false); }
     };
-
     fetchProfile();
   }, [router]);
 
@@ -64,30 +41,6 @@ export default function Profile() {
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold">Profile Page ✅</h1>
-
-      {loading ? (
-        <p>Loading...</p>
-      ) : user ? (
-        <div className="mt-4 space-y-2">
-
-          <p><b>Name:</b> {user.first_name || "N/A"} {user.last_name || ""}</p>
-          <p><b>Email:</b> {user.email}</p>
-
-          <p><b>Login Type:</b> {user.providers?.join(", ")}</p>
-
-          <p><b>Profile Pic:</b></p>
-          {user.profilePic && (
-            <img src={user.profilePic} width={80} />
-          )}
-
-          <p><b>Created:</b> {user.created_at}</p>
-
-        </div>
-      ) : (
-        <p>No user</p>
-      )}
-
       <button
         onClick={handleLogout}
         className="bg-red-500 text-white p-2 mt-4"
@@ -97,3 +50,35 @@ export default function Profile() {
     </div>
   );
 }
+
+
+
+
+
+
+
+
+//  <h1 className="text-xl font-bold">Profile Page ✅</h1>
+
+//       {loading ? (
+//         <p>Loading...</p>
+//       ) : user ? (
+        
+//         <div className="mt-4 space-y-2">
+
+//           <p><b>Name:</b> {user.first_name || "N/A"} {user.last_name || ""}</p>
+//           <p><b>Email:</b> {user.email}</p>
+
+//           <p><b>Login Type:</b> {user.providers?.join(", ")}</p>
+
+//           <p><b>Profile Pic:</b></p>
+//           {user.profilePic && (
+//             <img src={user.profilePic} width={80} />
+//           )}
+
+//           <p><b>Created:</b> {user.created_at}</p>
+
+//         </div>
+//       ) : (
+//         <p>No user</p>
+//       )}
