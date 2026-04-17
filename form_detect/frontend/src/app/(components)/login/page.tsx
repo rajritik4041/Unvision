@@ -11,6 +11,7 @@ function Page() {
   const { handleSubmit } = useForm();
   const router = useRouter();
   const [errors, setErrors] = useState<ErrorType>({});
+  const [show, setShow] = useState<boolean>(false);
   const [verify, setVerify] = useState<VerifyType>({
     email: "", password: "",
   });
@@ -59,41 +60,60 @@ function Page() {
 
 
   return (
-    <div className="flex justify-center  items-center overflow-y-scroll h-screen bg-linear-to-r from-blue-500 to-teal-400">
-      <div className=" flex justify-center rounded-2xl max-w-fit p-4 max-h-fit  font-serif text-white bg-radial from-blue-800 via-blue-900 to-blue-950">
-        <div>
-          <div className=" flex justify-center text-center">
-            <div className=' text-center w-60  border-0 rounded-lg bg-blue-500 p-1   font-serif'> PLEASE SIGN IN </div>
+    <div className="flex w-screen justify-center  items-center overflow-y-scroll h-screen bg-linear-to-r from-blue-500 to-teal-400">
+      <div className=" flex justify-center rounded-2xl w-full max-w-md  p-4  font-serif text-white bg-radial from-blue-800 via-blue-900 to-blue-950">
+        <div className="w-full ">
+          <div className=" w-full flex justify-center  text-center">
+            <div className=' text-center w-full border-0 rounded-lg bg-blue-500 p-1   font-serif'> PLEASE SIGN IN </div>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="font-bold mt-6 ">
-              <label htmlFor="email" className="mr-13">  Email : </label>
-              <input type="email" name="email" placeholder="Enter your email" value={verify.email} onChange={setdata} className="my-3 p-1 border-2 rounded-lg w-60" />
-              {/* {errors.email && (<p style={{ color: "red", fontSize: 12 }}> {errors.email}</p>)} */}
+          <form onSubmit={handleSubmit(onSubmit)} className="">
+            <div className="relative w-full mt-8">
+              <input type="email" name="email" value={verify.email} onChange={setdata} required
+                className="peer w-full px-4 pt-6 pb-2 pr-10 rounded-xl border border-gray-300  focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm" />
+              <label htmlFor="email"
+                className="absolute left-4 top-3 text-gray-500 text-sm 
+        transition-all duration-200 
+        peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500 
+        peer-valid:top-1 peer-valid:text-xs"
+              >
+                Email
+              </label>
             </div>
-            <div className="font-bold mt-2  ">
-              <label htmlFor="password" className="mr-6"> Password :</label>
-              <input type="password" name="password" placeholder="Enter password" value={verify.password} onChange={setdata} className=" w-60 p-1 border-2 rounded-lg" />
-              {/* {errors.password && (<p style={{ color: "red", fontSize: 12 }}>    {errors.password}  </p>)} */}
+            <div className="relative w-full mt-4 ">
+              <input type="password" name="password" value={verify.password} onChange={setdata} required
+                className="peer w-full px-4 pt-6 pb-2 pr-10 rounded-xl border border-gray-300         focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm" />
+              <label htmlFor="password"
+                className="absolute left-4 top-3 text-gray-500 text-sm 
+                transition-all duration-200 peer-focus:top-1 peer-focus:text-xs peer-focus:text-blue-500  peer-valid:top-1 peer-valid:text-xs"  >
+                Password
+              </label>
             </div>
             {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
 
-            <div className="flex  justify-around w-full my-4">
-              <Link href="/" className="flex justify-center items-center w-30 bg-white text-black rounded-sm p-1 ">
-                <p>Back</p>
-              </Link>
-              <div className="flex justify-center  items-center w-30 bg-blue-500  rounded-sm p-1">
-                <input type="submit" value="Login" />
-              </div>
 
+            <div className="mt-8">
+              <div>
+                <div>
+                  <input className="w-full flex justify-center  items-center  bg-blue-500  rounded-sm p-2" type="submit" value="Login" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <Link href="/" className=" w-full flex justify-center items-center  bg-red-500 text-black rounded-sm p-2 mb-2 ">
+                  <p>Back</p>
+                </Link>
+              </div>
             </div>
           </form>
+          <div className="text-center w-full">
+            <Link href="/forgot-password" className="ml-2 text-red-400 hover:underline">
+              Forget Password?
+            </Link>
+          </div>
           <div className="flex flex-col items-center text-center w-full gap-2 ">
             <p>
               Don't have an account?
               <Link href="/signup" className="ml-2 text-blue-400 hover:underline">
-                Signup
-              </Link>
+                Signup  </Link>
             </p>
             <div className="flex items-center w-full max-w-xs">
               <hr className="grow border-t border-gray-400" />
@@ -103,7 +123,7 @@ function Page() {
 
             <button
               onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}
-              className="w-full max-w-xs bg-white text-black py-2 rounded-md shadow hover:bg-gray-100 transition"
+              className="w-full  bg-white text-black py-2 rounded-md shadow hover:bg-gray-100 transition"
             >
               Continue with Google
             </button>
