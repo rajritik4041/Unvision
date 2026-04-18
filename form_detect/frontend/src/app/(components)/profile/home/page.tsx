@@ -2,10 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
+import ChatBot from "../../ChatBot/page";
 export default function Profile() {
   const router = useRouter();
-
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
@@ -41,6 +40,7 @@ export default function Profile() {
 
   return (
     <div className="p-4">
+      <ChatBot />
       <button
         onClick={handleLogout}
         className="bg-red-500 text-white p-2 mt-4"

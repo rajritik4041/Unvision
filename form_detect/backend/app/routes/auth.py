@@ -14,6 +14,7 @@ import jwt  # PyJWT library
 from datetime import datetime   # ✅ correct
 from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
 import os
+
 from fastapi.responses import RedirectResponse
 import traceback
 from dotenv import load_dotenv
@@ -33,6 +34,7 @@ class LoginModel(BaseModel):
 class SignupModel(BaseModel):
     first_name: str
     last_name: Optional[str] = None
+    phone_number: Optional[str] = None
     username: Optional[str] = None
     email: EmailStr
     gender: Optional[str] = None

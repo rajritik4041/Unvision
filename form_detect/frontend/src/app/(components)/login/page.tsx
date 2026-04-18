@@ -109,6 +109,11 @@ function Page() {
               Forget Password?
             </Link>
           </div>
+          <div className="text-center w-full">
+            <Link href="/reset-password" className="ml-2 text-red-400 hover:underline">
+              Reset Password?
+            </Link>
+          </div>
           <div className="flex flex-col items-center text-center w-full gap-2 ">
             <p>
               Don't have an account?
