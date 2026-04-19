@@ -1069,3 +1069,10 @@ async def github_callback(request: Request):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+
+@router.get("/")
+def home():
+    return {"message": "API working"}

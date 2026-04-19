@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import g from "@/app/(components)/profile/g/page"
+import Link from "next/link";
 
 export default function Profile() {
   const router = useRouter();
@@ -41,6 +43,11 @@ export default function Profile() {
 
   return (
     <div className="p-4">
+      <Link href="/profile/g">
+        <button className="bg-blue-500 text-white p-2 mt-4">
+          View Profile
+        </button>
+      </Link>
       <button
         onClick={handleLogout}
         className="bg-red-500 text-white p-2 mt-4"
