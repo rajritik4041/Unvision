@@ -4,6 +4,7 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import axios from "axios"
 
 
 
@@ -61,9 +62,9 @@ export default function Update() {
                     <p><b>Login Type:</b> {user.providers?.join(", ")}</p>
 
                     <p><b>Profile Pic:</b></p>
-                    {user.profilePic && (
+                    {/* {user.profilePic && (
                         <img src={user.profilePic} width={80} />
-                    )}
+                    )} */}
 
                     <p><b>age:</b> {user.age}</p>
                     <p><b>Created:</b> {user.created_at}</p>
@@ -77,6 +78,34 @@ export default function Update() {
             ) : (
                 <p>No user</p>
             )}
+            <div className="flex justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
+                <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">  <div>
+                    {user && (
+                        <div className="my-10">
+                            <div className=" w-full flex justify-center  ">
+                                <img
+                                    style={{
+                                        borderRadius: "70px"
+                                    }}
+                                    width={45}
+                                    src={user?.profilePic || "/default.png"}
+                                    className="  object-cover"
+                                    alt="profile"
+                                />
+                            </div>
+                            <p className="mt-2 ">{user.first_name || "N/A"} {user.last_name || ""}</p>
+                            <p> {user.email}</p>
+                        </div>
+
+
+                    )}
+                </div>
+                <div>
+                    <Link href="/"></Link>
+                </div>
+
+                </div>
+            </div>
 
         </div>
     )

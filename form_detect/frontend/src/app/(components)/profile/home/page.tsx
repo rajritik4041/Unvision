@@ -1,11 +1,12 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import ChatBot from "../../ChatBot/page";
 import Contact from "../ththththt/page"
 import Tomato from "../tomato/page";
 import Update from "../components/update/page"
+
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -22,7 +23,7 @@ export default function Profile() {
       }
       const token = localStorage.getItem("token");
       if (!token) { router.push("/login"); return;   }
-      try { const res = await fetch(`${api}/profile/home`, {  headers: { Authorization: `Bearer ${token}`,   }, credentials: "include",  });
+      try { const res = await fetch(`http://127.0.0.1:8000/profile/home`, {  headers: { Authorization: `Bearer ${token}`,   }, credentials: "include",  });
         if (res.status === 401) {
           localStorage.removeItem("token");
           router.push("/login");
@@ -53,14 +54,18 @@ const handleLogout = async () => {
 };
   return (
     <div className="p-4">
+
+      <div>
       {/* <ChatBot /> */}
-      {/* <Contact /> */}
-      {/* <Tomato /> */}
       <Update />
-
-
-
-
+      {/* <ChatBot /> */}
+      {/* <ChatBot /> */}
+      </div>
+      <Link href="/profile/g">
+        <div className="bg-blue-500 text-white p-2 mt-4">
+          View Profile
+        </div>
+      </Link>
       <button
         onClick={handleLogout}
         className="bg-red-500 text-white p-2 mt-4"
@@ -77,28 +82,3 @@ const handleLogout = async () => {
 
 
 
-
-//  <h1 className="text-xl font-bold">Profile Page ✅</h1>
-
-//       {loading ? (
-//         <p>Loading...</p>
-//       ) : user ? (
-        
-//         <div className="mt-4 space-y-2">
-
-//           <p><b>Name:</b> {user.first_name || "N/A"} {user.last_name || ""}</p>
-//           <p><b>Email:</b> {user.email}</p>
-
-//           <p><b>Login Type:</b> {user.providers?.join(", ")}</p>
-
-//           <p><b>Profile Pic:</b></p>
-//           {user.profilePic && (
-//             <img src={user.profilePic} width={80} />
-//           )}
-
-//           <p><b>Created:</b> {user.created_at}</p>
-
-//         </div>
-//       ) : (
-//         <p>No user</p>
-//       )}
