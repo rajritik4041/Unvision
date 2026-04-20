@@ -6,8 +6,11 @@ import { ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 
 type VerifyType = { password: string; };
-type ErrorType = { email?: string; general?: string; };
-
+type ErrorType = { 
+  email?: string; 
+  general?: string; 
+  password?: string; 
+};
 export default function ResetPasswordPage() {
     const params = useParams();
     const { handleSubmit } = useForm();
@@ -23,16 +26,50 @@ export default function ResetPasswordPage() {
         setVerify({ ...verify, [e.target.name]: e.target.value });
         setErrors((prev) => ({ ...prev, [e.target.name]: "", }));
     };
-
-    const Submited = async () =>{
-        console.log(verify.password)
-        const res = await fetch(`http://127.0.0.1:8000/reset-password/${id}` , {
-               method: "POST",
+    const automail = async (): Promise<void> => {
+        try {
+            const res = await fetch(`http://localhost:3000/api/send-reset-message`, {
+                method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id , password: verify.password }),
+                body: JSON.stringify({ id }),
                 credentials: "include",
-        })
-    }
+            });
+
+            if (!res.ok) {
+                console.log("Mail sending failed");
+            }
+        } catch (error) {
+            console.log("Automail error:", error);
+        }
+    };
+    const Submited = async (): Promise<void> => {
+        try {
+            console.log(verify.password);
+            const res = await fetch(`http://127.0.0.1:8000/reset-password/${id}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, password: verify.password }),
+                credentials: "include",
+            });
+            const data = await res.json();
+            console.log(data)
+            if (!res.ok) {
+                console.log("Password reset failed");
+                return;
+            }
+            if (data.success) {
+                console.log(data)
+                await automail();
+                console.log("Password reset + mail sent");
+            }
+            if (!data.success) {
+                setErrors({ password: data.message });
+                return;
+            }
+        } catch (error) {
+            console.log("Submit error:", error);
+        }
+    };
 
     return (
         <div style={{ padding: "20px" }}>
@@ -40,6 +77,11 @@ export default function ResetPasswordPage() {
             {/* <p>User ID: {id}</p> */}
             <form onSubmit={handleSubmit(Submited)} >
                 <input type="password" name="password" onChange={setdata} placeholder="Enter new password" />
+                {errors.password && (
+                    <p style={{ color: "red" }}>
+                        {errors.password}
+                    </p>
+                )}
                 <input type="submit" value="Reset Password" />
             </form>
         </div>

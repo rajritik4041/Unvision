@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import ChatBot from "../../ChatBot/page";
+import Contact from "../ththththt/page"
+import Tomato from "../tomato/page";
+import Update from "../components/update/page"
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -33,14 +36,31 @@ export default function Profile() {
     fetchProfile();
   }, [router]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    router.push("/login");
-  };
-
+const handleLogout = async () => {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/logout", {
+      method: "POST",
+      credentials: "include", 
+    });
+    const data = await res.json();
+    if (data.success) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+  } catch (err) {
+    console.error("Logout error:", err);
+  }
+};
   return (
     <div className="p-4">
-      <ChatBot />
+      {/* <ChatBot /> */}
+      {/* <Contact /> */}
+      {/* <Tomato /> */}
+      <Update />
+
+
+
+
       <button
         onClick={handleLogout}
         className="bg-red-500 text-white p-2 mt-4"

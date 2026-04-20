@@ -45,7 +45,11 @@ export default function Signup() {
   const router = useRouter();
 
   useEffect(() => { setCountries(Country.getAllCountries()); }, []);
-  useEffect(() => { fetch("/api/csrf-token").then((res) => res.json()).then((data: { csrfToken: string }) => { setCsrfToken(data.csrfToken); }); }, []);
+  useEffect(() => { fetch("/api/csrf-token").then((res) => res.json())
+    .then((data: { csrfToken: string }) => {
+       setCsrfToken(data.csrfToken);
+      //  console.log(data.csrfToken);
+       }); }, []);
   useEffect(() => { if (selectedCountry) { setStates(State.getStatesOfCountry(selectedCountry)); setCities([]); } }, [selectedCountry]);
   useEffect(() => { if (selectedCountry && selectedState) { setCities(City.getCitiesOfState(selectedCountry, selectedState)); } }, [selectedState, selectedCountry]);
 

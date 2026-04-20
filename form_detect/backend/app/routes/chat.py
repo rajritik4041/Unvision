@@ -19,14 +19,19 @@ async def chat(data: dict, user=Depends(verify_token)):
     if not chat_id:
         chat_id = str(uuid.uuid4())
 
-    await db.chat_collection.insert_one({
+    collection =   await db.chat_collection.insert_one({
         "chat_id": chat_id,
         "user_id": user_id,
         "message": message,
         "response": response,
         "created_at": datetime.utcnow()
     })
+    if not collection :
+        return{
+            "success" :  True ,
+            "message" :   "Do not  send  data  "
 
+        }
     return {
         "chat_id": chat_id,
         "message": message,
