@@ -46,7 +46,7 @@ async def profile(user=Depends(verify_token)):
         }
     }
 
-@router.get("/profile/components/Update")
+@router.get("/profile/settings/Update")
 async def profile(user=Depends(verify_token)):
     return {
         "success": True,

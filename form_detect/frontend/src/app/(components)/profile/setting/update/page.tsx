@@ -4,10 +4,14 @@ import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
+import Navbar from "../../components/navbar/page"
 import axios from "axios"
-
-
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faRotate } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons"
+import { faCircleUser } from "@fortawesome/free-solid-svg-icons"
 
 
 export default function Update() {
@@ -28,7 +32,7 @@ export default function Update() {
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`http://127.0.0.1:8000/profile/components/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
                     router.push("/login");
@@ -43,7 +47,21 @@ export default function Update() {
         fetchProfile();
     }, [router]);
 
-
+    const handleLogout = async () => {
+        try {
+            const res = await fetch("http://127.0.0.1:8000/logout", {
+                method: "POST",
+                credentials: "include",
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.removeItem("token");
+                window.location.href = "/login";
+            }
+        } catch (err) {
+            console.error("Logout error:", err);
+        }
+    };
     return (
         <div>
 
@@ -78,7 +96,7 @@ export default function Update() {
             ) : (
                 <p>No user</p>
             )}
-            <div className="flex justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
+            <div className="flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
                 <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">  <div>
                     {user && (
                         <div className="my-10">
@@ -95,15 +113,39 @@ export default function Update() {
                             </div>
                             <p className="mt-2 ">{user.first_name || "N/A"} {user.last_name || ""}</p>
                             <p> {user.email}</p>
+
                         </div>
-
-
                     )}
                 </div>
-                <div>
-                    <Link href="/"></Link>
-                </div>
 
+                </div>
+                <div className="mt-2 gap-0.5">
+                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+                        <Link href="/profile/components/about">
+                            <FontAwesomeIcon className="h-3 w-3" icon={faCircleUser} /> Profile
+                        </Link>
+                    </div>
+                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+
+                        <Link href="/profile/components/sync">
+                            <FontAwesomeIcon className="h-3 w-3" icon={faRotate} size="xs" />
+                            Sync is on
+                        </Link>
+                    </div >
+                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+                        <Link href="/profile/components/support">
+                            <FontAwesomeIcon className="h-3 w-3" icon={faCircleQuestion} /> help
+                        </Link>
+                    </div>
+                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+
+                        <div onClick={handleLogout}>  <FontAwesomeIcon className="h-3 w-3" icon={faArrowRightFromBracket} />Sign out</div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <Navbar />
                 </div>
             </div>
 

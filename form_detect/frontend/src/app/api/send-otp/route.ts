@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
         Verify Your Email
     </h2>
     <p style="margin-top:10px;">
-        Hi ${name},
+        Hello ,
     </p>
     <p>
         Welcome! Thanks for signing up on <b>Unvision</b>.
@@ -57,9 +57,9 @@ export async function POST(req: NextRequest) {
             ${otp}
         </span>
     </div>
-    <p>
-        This OTP is valid for 5 minutes. Do not share it with anyone.
-    </p>
+ 
+      <p style=" margin-top:6px ; margin-bottom:3px ; font-weight:bold "> This OTP is valid for 5 minutes. For security reasons, please do not share this OTP with anyone. We will never ask for your OTP.</p>
+       
     <p>
         If you did not create an account, you can safely ignore this email.
     </p>

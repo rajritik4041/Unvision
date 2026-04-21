@@ -1,9 +1,10 @@
 "use client"
 import React from 'react'
-
+import Navbar from "../components/navbar/page"
 function page() {
   return (
-    <div>page</div>
+    <div>
+      <Navbar  />Blog page</div>
   )
 }
 

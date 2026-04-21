@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         Hi ${name},
     </p>
 
-    <p>We received a request to verify your identity.</p>
+   <p>We received a request to verify your identity.</p>
     <p>Please enter the following One-Time Password OTP :</p>
 
     <h3 style="margin-top:10px;margin-bottom:10px;font-weight:bold;">
@@ -67,6 +67,8 @@ export async function POST(req: NextRequest) {
             ${otp}
         </span>
     </div>
+      <p style=" margin-top:6px ; margin-bottom:3px ; font-weight:bold ">For security reasons, please do not share this OTP with anyone. We will never ask for your OTP.</p>
+       
 
     <p style="margin-top:15px;">
         This OTP will expire shortly for security reasons.

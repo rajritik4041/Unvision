@@ -5,12 +5,16 @@ import Link from "next/link";
 import ChatBot from "../../ChatBot/page";
 import Contact from "../ththththt/page"
 import Tomato from "../tomato/page";
-import Update from "../components/update/page"
+import Navbar from "../components/navbar/page"
+import Update from "../setting/update/page"
+import Jake from "../home/j/page"
+// import Navbar from "../../../components/navbar/page"
 
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
   const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
   useEffect(() => {
     const fetchProfile = async () => {
@@ -22,44 +26,48 @@ export default function Profile() {
         window.history.replaceState({}, document.title, "/profile/home");
       }
       const token = localStorage.getItem("token");
-      if (!token) { router.push("/login"); return;   }
-      try { const res = await fetch(`http://127.0.0.1:8000/profile/home`, {  headers: { Authorization: `Bearer ${token}`,   }, credentials: "include",  });
+      if (!token) { router.push("/login"); return; }
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/profile/home`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
         if (res.status === 401) {
           localStorage.removeItem("token");
           router.push("/login");
           return;
         }
         const data = await res.json();
-        if (data.success) {  setUser(data.user);  } } 
-        catch (err) { console.error(err); } 
-        finally { setLoading(false); }
+        if (data.success) { setUser(data.user); }
+      }
+      catch (err) { console.error(err); }
+      finally { setLoading(false); }
     };
     fetchProfile();
   }, [router]);
 
-const handleLogout = async () => {
-  try {
-    const res = await fetch("http://127.0.0.1:8000/logout", {
-      method: "POST",
-      credentials: "include", 
-    });
-    const data = await res.json();
-    if (data.success) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+    } catch (err) {
+      console.error("Logout error:", err);
     }
-  } catch (err) {
-    console.error("Logout error:", err);
-  }
-};
+  };
   return (
     <div className="p-4">
 
       <div>
-      {/* <ChatBot /> */}
-      <Update />
-      {/* <ChatBot /> */}
-      {/* <ChatBot /> */}
+        {/* <ChatBot /> */}
+        <Navbar />
+        <Jake />
+        {/* <Update /> */}
+        {/* <ChatBot /> */}
+        {/* <ChatBot /> */}
       </div>
       <Link href="/profile/g">
         <div className="bg-blue-500 text-white p-2 mt-4">

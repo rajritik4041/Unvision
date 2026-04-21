@@ -5,11 +5,18 @@ from bson import ObjectId
 import re
 from datetime import date, datetime, timedelta
 from pydantic import BaseModel, EmailStr, field_validator
+
+class ResetNewPasswordModel(BaseModel):
+    email: EmailStr
+    newpassword: str
+    confirmpassword: str 
+    oldpassword: str 
+
 class ResetPasswordModel(BaseModel):
     email: EmailStr
     otp: int
     password: str
-    confirmPassword: str
+    confirmPassword: str 
 
     @field_validator("password")
     def validate_password(cls, v):
@@ -146,3 +153,20 @@ async def reset_password(data: ResetPasswordModel):
           "message" : ""
        }
     return {"message": "Password updated successfully"}
+
+
+# http://127.0.0.1:8000/profile/reset-pasword/oldpassword
+
+
+@router.post("/profile/reset-pasword/oldpassword")
+async def reset_password(data: ResetNewPasswordModel):
+   email = data.email 
+   oldpassword = data.oldpassword
+   newpassword = data.newpassword
+   confirmpassword = data.confirmpassword
+   print(email , oldpassword , newpassword , confirmpassword)
+   
+   return {
+        "success": True,
+        "message": "Password updated"
+    }
