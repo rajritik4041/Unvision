@@ -3,6 +3,7 @@ import bcrypt
 from app.database.connection import db
 from bson import ObjectId
 import re
+from fastapi.responses import JSONResponse
 from datetime import date, datetime, timedelta
 from pydantic import BaseModel, EmailStr, field_validator
 
@@ -11,7 +12,27 @@ class ResetNewPasswordModel(BaseModel):
     newpassword: str
     confirmpassword: str 
     oldpassword: str 
-
+    @field_validator("newpassword")
+    def validate_password(cls, v):
+      if v is None:
+        return v
+      if len(v) < 8:
+        raise ValueError("Password too short")
+      if not re.search(r"[A-Z]", v):
+        raise ValueError("Must include uppercase letter")
+      if not re.search(r"[a-z]", v):
+        raise ValueError("Must include lowercase letter")
+      if not re.search(r"[0-9]", v):
+        raise ValueError("Must include number")
+      if not re.search(r"[!@#$%^&*]", v):
+        raise ValueError("Must include special character")
+      return v
+    @field_validator("confirmpassword")
+    def match_password(cls, v, info):
+        if v != info.data.get("newpassword"):
+            raise ValueError("Passwords do not match")
+        return v
+    
 class ResetPasswordModel(BaseModel):
     email: EmailStr
     otp: int
@@ -152,21 +173,52 @@ async def reset_password(data: ResetPasswordModel):
           "success": False,
           "message" : ""
        }
-    return {"message": "Password updated successfully"}
+    return {
+       "success" : True ,
+       "message": "Password updated successfully"}
 
-
-# http://127.0.0.1:8000/profile/reset-pasword/oldpassword
 
 
 @router.post("/profile/reset-pasword/oldpassword")
 async def reset_password(data: ResetNewPasswordModel):
-   email = data.email 
-   oldpassword = data.oldpassword
-   newpassword = data.newpassword
-   confirmpassword = data.confirmpassword
-   print(email , oldpassword , newpassword , confirmpassword)
-   
-   return {
+  email = data.email 
+  oldpassword = data.oldpassword
+  newpassword = data.newpassword
+  confirmpassword = data.confirmpassword
+  print(email , oldpassword , newpassword , confirmpassword)
+  if not email :
+       return JSONResponse(
+            status_code=400,
+            content={"success": False, "message": "Once morepage refresh please "}
+        )
+  collection = await db.users.find_one({ "email" : email })
+  print(collection)
+  userpassword = collection["password"]
+  print("User password is :", userpassword)   
+
+  crackpassword = bcrypt.checkpw( oldpassword.encode("utf-8"), userpassword.encode("utf-8"))
+  if not crackpassword :
+       return JSONResponse(
+            status_code=400,
+            content={"success": False, "message": "Old  Password is not Match "}
+        )
+  
+  if not newpassword == confirmpassword :
+      return JSONResponse(
+            status_code=400,
+            content={"success": False, "message": "Do not match newpassword and confirm new password"}
+        )
+
+  hashed_password = bcrypt.hashpw( 
+        newpassword.encode(),
+        bcrypt.gensalt()
+        ).decode("utf-8")
+  updatepassword = await db.users.update_one(
+       {"email": email}, 
+      {"$set": {"password": hashed_password}} 
+       )
+
+  return {
         "success": True,
         "message": "Password updated"
     }

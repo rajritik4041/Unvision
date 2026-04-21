@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
     const Submited = async (): Promise<void> => {
         try {
             console.log(verify.password);
-            const res = await fetch(`http://127.0.0.1:8000/reset-password/${id}`, {
+            const res = await fetch(`https://unvision-first.onrender.com/reset-password/${id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, password: verify.password }),

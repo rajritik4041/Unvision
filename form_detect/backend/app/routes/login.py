@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request 
 from pydantic import BaseModel, EmailStr
 from app.database.connection import db
 import bcrypt
@@ -6,8 +6,9 @@ from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 load_dotenv()
 from .utils import create_token
-router = APIRouter()
+from app.core.limiter import limiter 
 
+router = APIRouter()
 
 
 class LoginModel(BaseModel):
@@ -17,7 +18,8 @@ class LoginModel(BaseModel):
 
 
 @router.post("/login")
-async def login(user: LoginModel):
+@limiter.limit("3/minute", error_message="OTP limit cross. Thoda wait karo")
+async def login(request: Request, user: LoginModel):
 
     db_user = await db.users.find_one({"email": user.email})
 

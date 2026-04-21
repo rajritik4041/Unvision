@@ -24,6 +24,7 @@ export default function ResetPassword() {
     const { handleSubmit } = useForm();
     const router = useRouter();
     const [loading, setLoading] = useState(true)
+    const [success, setSuccess] = useState(false);
     const [page1, setpage1] = useState<boolean>(false)
     const [page2, setpage2] = useState<boolean>(false)
     const [page3, setpage3] = useState<boolean>(false)
@@ -31,10 +32,19 @@ export default function ResetPassword() {
     const [page5, setpage5] = useState<boolean>(false)
     const [page6, setpage6] = useState<boolean>(false)
     const [errors, setErrors] = useState<ErrorType>({});
+    const [back, setback] = useState<boolean>(false);
     const [errors2, setErrors2] = useState<ErrorType>({});
     const [user, setUser] = useState<userType>({
         email: "",
     });
+    const Backspace = async () => {
+        setpage1(false)
+        setpage2(false)
+        setpage3(false)
+        setpage4(false)
+        setpage5(false)
+        setpage6(false)
+    }
     useEffect(() => {
         const fetchProfile = async () => {
             const params = new URLSearchParams(window.location.search);
@@ -47,7 +57,7 @@ export default function ResetPassword() {
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`https://unvision-first.onrender.com/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
                     router.push("/login");
@@ -97,8 +107,6 @@ export default function ResetPassword() {
                 body: JSON.stringify({ email, otp: newOtp }),
                 credentials: "include",
             });
-            setpage4(true)
-            setpage6(true)
             const result = await res.json();
             if (!result.success) {
                 const errorObj: ErrorType = {};
@@ -116,6 +124,8 @@ export default function ResetPassword() {
                 return;
             }
             if (result.success) {
+                setpage4(true)
+                setpage6(true)
                 setpage1(true)
             }
         } catch (error) {
@@ -135,8 +145,7 @@ export default function ResetPassword() {
                 body: JSON.stringify({ email }),
                 credentials: "include",
             });
-            setpage4(true)
-            setpage5(true)
+
             const result = await res.json();
             if (!result.success) {
                 const errorObj: ErrorType = {};
@@ -154,7 +163,8 @@ export default function ResetPassword() {
                 return;
             }
             if (result.success) {
-
+                setpage4(true)
+                setpage5(true)
                 setpage2(true)
             }
         } catch (error) {
@@ -167,7 +177,7 @@ export default function ResetPassword() {
         try {
             const email = user.email;
 
-            const res = await fetch("http://127.0.0.1:8000/reset-password", {
+            const res = await fetch("https://unvision-first.onrender.com/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -217,37 +227,48 @@ export default function ResetPassword() {
         console.log(password.confirmpassword, password.newpassword,
             password.oldpassword
         )
-
+        setLoading(true);
+        setSuccess(false);
         const email = user.email;
         console.log(user.email);
         password.email = email;
         setErrors2({});
-        const res = await fetch(`http://127.0.0.1:8000/profile/reset-pasword/oldpassword`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(password),
-            credentials: "include",
-        })
-        const result = await res.json();
-        if (!result.success) {
-            const errorObj: Error2Type = {};
-            if (result.errors2 && Array.isArray(result.errors2)) {
-                result.errors2.forEach((err: any) => {
-                    if (err.path) {
-                        errorObj[err.path as keyof Error2Type] = err.msg;
-                    }
-                });
+        try {
+            const res = await fetch(`https://unvision-first.onrender.com/profile/reset-pasword/oldpassword`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(password),
+                credentials: "include",
+            })
+            const result = await res.json();
+            if (!result.success) {
+                const errorObj: Error2Type = {};
+                if (result.errors2 && Array.isArray(result.errors2)) {
+                    result.errors2.forEach((err: any) => {
+                        if (err.path) {
+                            errorObj[err.path as keyof Error2Type] = err.msg;
+                        }
+                    });
+                }
+                if (!result.errors2 && result.message) {
+                    errorObj.general = result.message;
+                }
+                setErrors2(errorObj);
+                return;
             }
-            if (!result.errors2 && result.message) {
-                errorObj.general = result.message;
+            if (result.success) {
+                console.log("Successfully sent data");
+                setSuccess(true);
+                setTimeout(() => {
+                    Backspace()
+                }, 1000);
             }
-            setErrors(errorObj);
-            return;
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
         }
-        if (result.success) {
-            console.log("Success Fully Send Data")
-            setpage3(false)
-        }
+
     }
     // const 
     const SetClick2 = async () => {
@@ -255,11 +276,19 @@ export default function ResetPassword() {
         setpage5(true)
         setpage6(true)
     }
+
+    useEffect(() => {
+        if (!page1 && !page2 && !page3 && !page4 && !page5 && !page6) {
+            setback(true);
+        }
+        else
+            setback(false)
+        setSuccess(false)
+    }, [page1, page2, page3, page4, page5, page6]);
     return (
         <div >
             {
                 page4 ? <div>
-
                 </div> :
                     page3 ? <div>
                         <div>
@@ -271,8 +300,18 @@ export default function ResetPassword() {
                                 <input type="password" name="newpassword" onChange={setdata3} />
                                 <label htmlFor="confirmpassword"> Confirm New Password</label>
                                 <input type="password" name="confirmpassword" onChange={setdata3} />
-                                <input type="submit" value="Submit" />
+                                {errors2.general && (<p style={{ color: "red", fontSize: 12, }}>{errors2.general}</p>)}
+                                {/* <input type="submit" value="Submit" /> */}
+                                <button type="submit" disabled={loading}>
+                                    {loading ? "Loading..." : "Submit"}
+                                </button>
+                                {success && <p style={{ color: "green" }}>Password updated successfully ✅</p>}
                             </form>
+                        </div>
+                        <div>
+                            <div onClick={Backspace}>
+                                Back
+                            </div>
                         </div>
                     </div> : <div>
                         <button onClick={SetClick2}>
@@ -297,6 +336,11 @@ export default function ResetPassword() {
                             {errors.confirmPassword && (<p style={{ color: "red", fontSize: 12, }}>{errors.confirmPassword}</p>)}
                             <input type="submit" value="Submited" />
                         </form>
+                        <div>
+                            <div onClick={Backspace}>
+                                Back
+                            </div>
+                        </div>
                     </div> :
                         <div>
                             <div >
@@ -310,12 +354,27 @@ export default function ResetPassword() {
                 page2 ?
                     <div>
                         Please Check Your Mail
+
+                        <div onClick={Backspace}>
+                            Back
+                        </div>
+
                     </div> :
                     <div className="bg-yellow-400-400">
                         <div >
                             <button onClick={SubmitData2}>Reset Password Using Link</button> <br />
                         </div>
                     </div>
+            }
+
+            {
+                back ? <div>
+                    <div>
+                        <Link href="/profile/setting">Back</Link>
+                    </div>
+                </div> : <div>
+
+                </div>
             }
         </div>
     );

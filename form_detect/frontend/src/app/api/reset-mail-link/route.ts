@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     });
   }
   const id = collection._id;
-  const link = `http://localhost:3000/reset-password/${id}`
+  const link = `https://unvision.vercel.app/reset-password/${id}`
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,

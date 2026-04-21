@@ -24,6 +24,7 @@ export default function Signup() {
   const [selectedCity, setSelectedCity] = useState<string>("");
   const [csrfToken, setCsrfToken] = useState<string>("");
   const [errors, setErrors] = useState<ErrorType>({});
+  const [error, setError] = useState<string>("");
   const [firstpage, setfirstpage] = useState<boolean>(true);
   const getInputClass = `"peer w-full  pl-4  pt-6 pb-2  rounded-xl border border-gray-300 
     focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 text-sm bg-transparent"`;
@@ -111,6 +112,10 @@ export default function Signup() {
     console.log("API URL:", api2);
     const res = await fetch(`${api2}/api/send-otp`, { method: "POST", headers: { "Content-Type": "application/json", }, body: JSON.stringify({ email, otp: newOtp }), });
     const data = await res.json();
+      if (res.status === 429) {
+      setError(data.message);      
+      return;
+    }
     console.log(data);
   };
 
@@ -346,6 +351,7 @@ export default function Signup() {
                       </div>
                       {/* <input type="number" placeholder='OTP-verify' value={user.otp} name='otp' onChange={setdata} className='p-1  my-3  ml-20 rounded-sm border-2' /> */}
                       {errors.otp && (<p style={{ color: "red", fontSize: 12, }}>{errors.otp}</p>)}
+                      {error && (<p style={{ color: "red", fontSize: 12, }}>{error }</p>)}
                       <div >
                         {/* <label htmlFor="password" className='p-1  my-3  font-serif '>Password :</label> */}
                         {/* <input type="password" placeholder='Password' value={user.password} name='password' onChange={setdata} className='border-2 rounded-sm m-1' /> */}
@@ -422,7 +428,7 @@ export default function Signup() {
 
                 <div
                   // onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}
-                  onClick={() => window.location.href = "http://127.0.0.1:8000/auth/google"}
+                  onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}
                   className="w-full  bg-white text-black py-2 rounded-md shadow hover:bg-gray-100 transition"
                 >
                   Continue with Google
