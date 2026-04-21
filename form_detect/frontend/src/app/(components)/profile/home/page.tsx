@@ -74,6 +74,11 @@ export default function Profile() {
           View Profile
         </div>
       </Link>
+         <Link href="/profile/policy">
+        <button className="bg-blue-500 text-white p-2 mt-4">
+          View Profile
+        </button>
+      </Link>
       <button
         onClick={handleLogout}
         className="bg-red-500 text-white p-2 mt-4"
