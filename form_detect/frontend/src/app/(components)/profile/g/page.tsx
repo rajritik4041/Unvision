@@ -7,9 +7,9 @@ export default function Profile() {
   const router = useRouter();
   return (
     <div>
-      <div className=" h-screen bg-gradient-to-r from-sky-200 to-emerald-200 justify-center">
+      <div className=" h-screen bg-linear-to-r from-sky-200 to-emerald-200 justify-center">
         <h1 className="text-[40px] font-bold text-white mb-6 justify-items-center text-center pt-5 bg-cyan-800">Feature & Benefits</h1>
-        <div className="p-4 justify-items-center items-start grid grid-cols-1 h-fit   md:grid-cols-3 lg:grid-cols-4 gap-10 bg-gradient-to-r from-sky-200 to-emerald-200">
+        <div className="p-4 justify-items-center items-start grid grid-cols-1 h-fit   md:grid-cols-3 lg:grid-cols-4 gap-10 bg-linear-to-r from-sky-200 to-emerald-200">
 
 
 
