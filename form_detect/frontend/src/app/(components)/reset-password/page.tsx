@@ -176,59 +176,66 @@ export default function ResetPassword() {
         }
     }
     return (
-        <div >
-            {page1 ? <div className=" bg-amber-500 ">
-                <form onSubmit={handleSubmit(SubmitData1)} >
-                    <label htmlFor="email">Email : OTP rajritik.4041@gmail.com </label>
-                    <input type="email" name="email" className="bg-gray-500" onChange={setdata} />
-                    {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
-                    <input type="submit" value="Submit" />
-                </form>
-            </div> : page3 ? <div className="bg-red-500">
-                <div>
-                    <form onSubmit={handleSubmit(setsubmitedpassword)}>
-                        <p>{user.email}</p>
-                        {/* yaha tum apna piyus otp wala 
-                        bana dena  alag se me add kar dunga  */}
-                        {/* return ke uper vale chejo ko pada karo  */}
-                        <input type="number" name="otp" onChange={setdata2} />
-                        {errors.otp && (<p style={{ color: "red", fontSize: 12, }}>{errors.otp}</p>)}
-                        <input type="password" name="password" onChange={setdata2} />
-                        {errors.password && (<p style={{ color: "red", fontSize: 12, }}>{errors.password}</p>)}
-                        <input type="password" name="confirmPassword" onChange={setdata2} />
-                        {errors.confirmPassword && (<p style={{ color: "red", fontSize: 12, }}>{errors.confirmPassword}</p>)}
-                        <input type="submit" value="Submited" />
-                    </form>
-                </div>
-            </div> : <div className="bg-green-400">
-                <div >
-                    <button onClick={SetClick1}>Reset Password Using OTP </button> <br />
-                </div>
-            </div>
 
-            }
+        <div className="bg-green-100 text-black min-h-screen flex justify-center items-center ">
+            <div className="border-2 h-70  rounded-2xl shadow-xl p-8 w-150 bg-white ">
+                <div className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password</div>
+                <div className=" mt-8 " >
 
-
-
-
-
-            {page2 ?
-                <div>
-                    <div className="bg-pink-400">
-                        <form onSubmit={handleSubmit(SubmitData2)} >
-                            <label htmlFor="email">Email : Link rajritik.4041@gmail.com</label>
+                    {page1 ? <div className=" bg-green-400 w-1/2  text-white rounded-lg hover:bg-green-600 transition  ">
+                        <form onSubmit={handleSubmit(SubmitData1)} >
+                            <label htmlFor="email">Email : OTP rajritik.4041@gmail.com </label>
                             <input type="email" name="email" className="bg-gray-500" onChange={setdata} />
                             {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
                             <input type="submit" value="Submit" />
                         </form>
+                    </div> : page3 ? <div className="bg-red-500">
+                        <div>
+                            <form onSubmit={handleSubmit(setsubmitedpassword)}>
+                                <p>{user.email}</p>
+                                {/* yaha tum apna piyus otp wala 
+                        bana dena  alag se me add kar dunga  */}
+                                {/* return ke uper vale chejo ko pada karo  */}
+                                <input type="number" name="otp" onChange={setdata2} />
+                                {errors.otp && (<p style={{ color: "red", fontSize: 12, }}>{errors.otp}</p>)}
+                                <input type="password" name="password" onChange={setdata2} />
+                                {errors.password && (<p style={{ color: "red", fontSize: 12, }}>{errors.password}</p>)}
+                                <input type="password" name="confirmPassword" onChange={setdata2} />
+                                {errors.confirmPassword && (<p style={{ color: "red", fontSize: 12, }}>{errors.confirmPassword}</p>)}
+                                <input type="submit" value="Submited" />
+                            </form>
+                        </div>
+                    </div> : <div className=" bg-green-400 text-center h-10 w-60  rounded-md pt-2">
+                        <div className=" ">
+                            <button onClick={SetClick1}>Reset Password Using OTP </button> <br />
+                        </div>
                     </div>
-                </div> :
-                <div className="bg-yellow-400-400">
-                    <div >
 
-                        <button onClick={SetClick2}>Reset Password Using Link</button> <br />
-                    </div>
-                </div>}
+                    }
+
+
+
+
+
+                    {page2 ?
+                        <div>
+                            <div className="bg-pink-400 ">
+                                <form onSubmit={handleSubmit(SubmitData2)} >
+                                    <label htmlFor="email">Email : Link rajritik.4041@gmail.com</label>
+                                    <input type="email" name="email" className="bg-gray-500" onChange={setdata} />
+                                    {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
+                                    <input type="submit" value="Submit" />
+                                </form>
+                            </div>
+                        </div> :
+                        <div className="bg-yellow-400-400 text-center text-white pt-1  mt-6 bg-green-700 h-11 w-60 rounded-md border-2 ">
+                            <div  >
+
+                                <button onClick={SetClick2}>Reset Password Using Link</button> <br />
+                            </div>
+                        </div>}
+                </div>
+            </div>
         </div>
     );
 }
