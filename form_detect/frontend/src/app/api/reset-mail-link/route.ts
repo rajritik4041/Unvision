@@ -1,9 +1,10 @@
 import connectDB from "../../../config/mongodb";
 import sendLink from "../../../models/send-link";
 import { NextRequest, NextResponse } from "next/server";
-// import sendOtp from "../../../models/send-otp";
+// import sendlink from "../../../models/send-link";
 import Users from "../../../models/user";
 import nodemailer from 'nodemailer';
+import reset_link_limits from "@/models/reset-link-limit";
 
 type RequestBody = {
   email: string;
@@ -28,7 +29,61 @@ export async function POST(req: NextRequest) {
     });
   }
   const id = collection._id;
-  const link = `https://unvision.vercel.app/reset-password/${id}`
+  const link = `/reset-password/${id}`
+
+  const now = new Date();
+  const LIMIT = 3;
+  const WINDOW = 60 * 60 * 1000; // 👈 1 hour
+
+  let record = await reset_link_limits.findOne({ email });
+
+  if (!record) {
+    // 🆕 first request
+    await reset_link_limits.create({
+      email,
+      count: 1,
+      firstRequestTime: now,
+      lastRequestTime: now
+    });
+  } else {
+
+    // 🔒 block check
+    if (record.blockedUntil && record.blockedUntil > now) {
+      return new Response(JSON.stringify({
+        success: false,
+        message: "Blocked  thoda wait karo"
+      }), { status: 429 });
+    }
+
+    const diff = now.getTime() - record.firstRequestTime.getTime();
+
+    if (diff < WINDOW) {
+      if (record.count >= LIMIT) {
+
+        // 🔒 block for 1 minute
+        record.blockedUntil = new Date(now.getTime() + 60 * 60 * 1000);
+        await record.save();
+
+        return new Response(JSON.stringify({
+          success: false,
+          message: "Blocked 🚫 1 hour wait karo"
+        }), { status: 429 });
+      }
+
+      // ✅ increment
+      record.count += 1;
+      record.lastRequestTime = now;
+      await record.save();
+
+    } else {
+      // 🔄 reset window
+      record.count = 1;
+      record.firstRequestTime = now;
+      record.lastRequestTime = now;
+      record.blockedUntil = null;
+      await record.save();
+    }
+  }
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,

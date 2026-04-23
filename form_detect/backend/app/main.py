@@ -8,7 +8,6 @@ from slowapi.errors import RateLimitExceeded
 from fastapi.responses import JSONResponse
 from app.core.limiter import limiter  
 from app.routes import user, auth, chat, send, signup, login, logout, profile
-
 app = FastAPI()
 
 

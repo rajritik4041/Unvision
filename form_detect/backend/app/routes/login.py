@@ -36,7 +36,7 @@ async def login(request: Request, user: LoginModel):
         )
 
     token = create_token({"email": user.email})
-
+    
     return {
         "success": True,
         "message": "Login successful",

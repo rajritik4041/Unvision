@@ -21,7 +21,7 @@ function Page() {
     setErrors((prev) => ({ ...prev, [e.target.name]: "", }));
   };
 
-  const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
+ const api = "http://127.0.0.1:8000"
   const onSubmit = async () => {
     try {
       setErrors({});
@@ -33,7 +33,7 @@ function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(verify),
-        credentials: "include",
+         credentials: "include",
       });
       const result = await res.json();
       if (!result.success) {

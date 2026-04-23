@@ -5,10 +5,11 @@ import Link from "next/link";
 import ChatBot from "../../ChatBot/page";
 import Contact from "../ththththt/page"
 import Tomato from "../tomato/page";
-import Navbar from "../components/navbar/page"
+// import Navbar from "../components/navbar/page"
 import Update from "../setting/update/page"
 import Jake from "../home/j/page"
-// import Navbar from "../../../components/navbar/page"
+import Navbar from "../../../components/navbar/page"
+import { usePathname } from "next/navigation";
 
 export default function Profile() {
   const router = useRouter();
@@ -16,6 +17,18 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
 
   const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
+ const pathname = usePathname();
+
+  useEffect(() => {
+  const hasRefreshed = sessionStorage.getItem("hasRefreshed");
+
+  if (!hasRefreshed) {
+    sessionStorage.setItem("hasRefreshed", "true");
+    window.location.reload();
+  } else {
+    sessionStorage.removeItem("hasRefreshed");
+  }
+}, [pathname]);
   useEffect(() => {
     const fetchProfile = async () => {
       const params = new URLSearchParams(window.location.search);
@@ -74,7 +87,7 @@ export default function Profile() {
           View Profile
         </div>
       </Link>
-         <Link href="/profile/policy">
+      <Link href="/profile/policy">
         <button className="bg-blue-500 text-white p-2 mt-4">
           View Profile
         </button>

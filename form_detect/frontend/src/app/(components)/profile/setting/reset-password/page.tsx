@@ -34,6 +34,7 @@ export default function ResetPassword() {
     const [errors, setErrors] = useState<ErrorType>({});
     const [back, setback] = useState<boolean>(false);
     const [errors2, setErrors2] = useState<ErrorType>({});
+    const [errors3, setErrors3] = useState<ErrorType>({});
     const [user, setUser] = useState<userType>({
         email: "",
     });
@@ -57,7 +58,7 @@ export default function ResetPassword() {
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`https://unvision-first.onrender.com/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
                     router.push("/login");
@@ -108,6 +109,10 @@ export default function ResetPassword() {
                 credentials: "include",
             });
             const result = await res.json();
+            if (res.status === 429) {
+                setErrors({ general: result.message });
+                return;
+            }
             if (!result.success) {
                 const errorObj: ErrorType = {};
                 if (result.errors && Array.isArray(result.errors)) {
@@ -149,17 +154,17 @@ export default function ResetPassword() {
             const result = await res.json();
             if (!result.success) {
                 const errorObj: ErrorType = {};
-                if (result.errors && Array.isArray(result.errors)) {
-                    result.errors.forEach((err: any) => {
+                if (result.errors3 && Array.isArray(result.errors3)) {
+                    result.errors3.forEach((err: any) => {
                         if (err.path) {
                             errorObj[err.path as keyof ErrorType] = err.msg;
                         }
                     });
                 }
-                if (!result.errors && result.message) {
+                if (!result.errors3 && result.message) {
                     errorObj.general = result.message;
                 }
-                setErrors(errorObj);
+                setErrors3(errorObj);
                 return;
             }
             if (result.success) {
@@ -177,7 +182,7 @@ export default function ResetPassword() {
         try {
             const email = user.email;
 
-            const res = await fetch("https://unvision-first.onrender.com/reset-password", {
+            const res = await fetch("http://127.0.0.1:8000/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -234,13 +239,28 @@ export default function ResetPassword() {
         password.email = email;
         setErrors2({});
         try {
-            const res = await fetch(`https://unvision-first.onrender.com/profile/reset-pasword/oldpassword`, {
+            const res = await fetch(`http://127.0.0.1:8000/profile/reset-pasword/oldpassword`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(password),
                 credentials: "include",
             })
             const result = await res.json();
+
+            if (res.status === 422 && result.detail) {
+                const errorObj: Error2Type = {};
+
+                result.detail.forEach((err: any) => {
+                    const field = err.loc[1];
+
+                    if (field) {
+                        errorObj[field as keyof Error2Type] = err.msg;
+                    }
+                });
+
+                setErrors2(errorObj);
+                return;
+            }
             if (!result.success) {
                 const errorObj: Error2Type = {};
                 if (result.errors2 && Array.isArray(result.errors2)) {
@@ -295,12 +315,18 @@ export default function ResetPassword() {
                             <form onSubmit={handleSubmit(SubmitedPassword)} >
                                 <p>{user.email}</p>
                                 <label htmlFor="oldpassword"> Old Password</label>
-                                <input type="password " onChange={setdata3} name="oldpassword" />
+                                <input type="password" onChange={setdata3} name="oldpassword" />
+                                {errors2.oldpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.oldpassword}</p>)}
                                 <label htmlFor="newpassword"> New Password</label>
                                 <input type="password" name="newpassword" onChange={setdata3} />
+                                {errors2.newpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.newpassword}</p>)}
                                 <label htmlFor="confirmpassword"> Confirm New Password</label>
                                 <input type="password" name="confirmpassword" onChange={setdata3} />
+                                {errors2.confirmpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.confirmpassword}</p>)}
                                 {errors2.general && (<p style={{ color: "red", fontSize: 12, }}>{errors2.general}</p>)}
+                                {errors2.general && (
+                                    <p style={{ color: "red" }}>{errors2.general}</p>
+                                )}
                                 {/* <input type="submit" value="Submit" /> */}
                                 <button type="submit" disabled={loading}>
                                     {loading ? "Loading..." : "Submit"}
@@ -319,9 +345,6 @@ export default function ResetPassword() {
                         </button>
                     </div>
             }
-
-
-
 
             {
                 page5 ? <div></div> :
@@ -344,6 +367,9 @@ export default function ResetPassword() {
                     </div> :
                         <div>
                             <div >
+
+                                {errors.general && (<p style={{ color: "red", fontSize: 12, }}>{errors.general}</p>)}
+
                                 <button onClick={SubmitData1}>Reset Password Using OTP </button> <br />
                             </div>
                         </div>
@@ -362,6 +388,7 @@ export default function ResetPassword() {
                     </div> :
                     <div className="bg-yellow-400-400">
                         <div >
+                            {errors3.general && (<p style={{ color: "red", fontSize: 12, }}>{errors3.general}</p>)}
                             <button onClick={SubmitData2}>Reset Password Using Link</button> <br />
                         </div>
                     </div>

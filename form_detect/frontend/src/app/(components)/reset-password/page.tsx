@@ -52,6 +52,10 @@ export default function ResetPassword() {
                 credentials: "include",
             });
             const result = await res.json();
+            if (res.status === 429) {
+                setErrors({ general: result.message }); 
+                return;
+            }
             if (!result.success) {
                 const errorObj: ErrorType = {};
                 if (result.errors && Array.isArray(result.errors)) {
@@ -126,7 +130,7 @@ export default function ResetPassword() {
         try {
             const email = user.email;
 
-            const res = await fetch("https://unvision-first.onrender.com/reset-password", {
+            const res = await fetch("http://127.0.0.1:8000/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

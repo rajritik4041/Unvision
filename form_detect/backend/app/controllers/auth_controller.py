@@ -99,7 +99,7 @@ async def handle_login(provider: str, user: dict):
     token =  create_token({"email": email})
 
     return RedirectResponse(
-        url=f"https://unvision.vercel.app/profile/home?token={token}",
-        # url=f"http://localhost:3000/profile/home?token={token}",
+        # url=f"https://unvision.vercel.app/profile/home?token={token}",
+        url=f"http://localhost:3000/profile/home?token={token}",
         status_code=302
     )

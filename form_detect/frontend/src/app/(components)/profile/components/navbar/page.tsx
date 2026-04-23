@@ -61,7 +61,7 @@ function navbar() {
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`https://unvision-first.onrender.com/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
                     router.push("/login");
@@ -79,7 +79,7 @@ function navbar() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("https://unvision-first.onrender.com/logout", {
+            const res = await fetch("http://127.0.0.1:8000/logout", {
                 method: "POST",
                 credentials: "include",
             });
