@@ -6,10 +6,10 @@ import { ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 
 type VerifyType = { password: string; };
-type ErrorType = { 
-  email?: string; 
-  general?: string; 
-  password?: string; 
+type ErrorType = {
+    email?: string;
+    general?: string;
+    password?: string;
 };
 export default function ResetPasswordPage() {
     const params = useParams();
@@ -70,20 +70,36 @@ export default function ResetPasswordPage() {
             console.log("Submit error:", error);
         }
     };
+   const setinputclass = "peer  w-full  px-4 pt-6 pb-2 pr-10 rounded-xl border border-gray-300 focus:outline-none focus:ring-1 focus:ring-grey-500 focus:border-grey-500 text-sm";
+  const setlabelclass =
+    "absolute left-4 top-3 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-black-500 peer-valid:top-1 peer-valid:text-xs"; 
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h2>Reset Password</h2>
-            {/* <p>User ID: {id}</p> */}
-            <form onSubmit={handleSubmit(Submited)} >
-                <input type="password" name="password" onChange={setdata} placeholder="Enter new password" />
-                {errors.password && (
-                    <p style={{ color: "red" }}>
-                        {errors.password}
-                    </p>
-                )}
-                <input type="submit" value="Reset Password" />
-            </form>
+        <div className="bg-green-200 min-h-screen text-black flex justify-center items-center">
+            <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white">
+
+                <h2 className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password</h2>
+                {/* <p>User ID: {id}</p> */}
+                <form onSubmit={handleSubmit(Submited)} className="w-full text-black" >
+                    <div className="relative w-full mt-4 ">
+                        <input type="password" name="password" onChange={setdata} required className={setinputclass} />
+                        <label htmlFor="password" className={setlabelclass} > Enter New Password : </label>
+                    </div>
+                    <div className="relative w-full mt-4 ">
+                        <input type="password" name="ccpassword" onChange={setdata} required className={setinputclass} />
+                        <label htmlFor="ccpassword" className={setlabelclass} > Comform Password : </label>
+                    </div>
+                    
+                    {errors.password && (
+                        <p style={{ color: "red" }}>
+                            {errors.password}
+                        </p>
+                    )}
+                    <div className="text-center w-full mt-4">
+                        <input type="submit" value="Reset Password" className="bg-green-500 rounded-lg px-3 py-2" />
+                    </div>
+                </form>
+            </div>
         </div>
     );
 }

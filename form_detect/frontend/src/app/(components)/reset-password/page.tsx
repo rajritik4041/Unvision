@@ -175,27 +175,32 @@ export default function ResetPassword() {
             console.log("ERROR:", err);
         }
     }
+    const setinputclass = "peer  w-full  px-4 pt-6 pb-2 pr-10  rounded-xl border border-gray-300 focus:outline-none focus:ring-1 focus:ring-grey-500 focus:border-grey-500 text-sm";
+    const setlabelclass =
+        "absolute left-4 top-3 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-black-700 peer-valid:top-1 peer-valid:text-xs";
     return (
 
         <div className="bg-green-100 text-black min-h-screen flex justify-center items-center ">
-            <div className="border-2 h-70  rounded-2xl shadow-xl p-8 w-150 bg-white ">
+            <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white ">
                 <div className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password</div>
-                <div className=" mt-8 " >
+                <div className=" mt-9 " >
 
-                    {page1 ? <div className=" bg-green-400 w-1/2  text-white rounded-lg hover:bg-green-600 transition  ">
-                        <form onSubmit={handleSubmit(SubmitData1)} >
-                            <label htmlFor="email">Email : OTP rajritik.4041@gmail.com </label>
-                            <input type="email" name="email" className="bg-gray-500" onChange={setdata} />
+                    {page1 ? <div className=" text-black ">
+                        <form onSubmit={handleSubmit(SubmitData1)} className="w-full" >
+                            <div className="relative w-full mt-4 ">
+                                <input type="email" name="email" onChange={setdata} required className={setinputclass} />
+                                <label htmlFor="email" className={setlabelclass} >  Email : </label>
+                            </div>
                             {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
-                            <input type="submit" value="Submit" />
+                            <div className="text-center w-full ">
+                                <input type="submit" value="Submit" className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" />
+                            </div>
                         </form>
                     </div> : page3 ? <div className="bg-red-500">
                         <div>
-                            <form onSubmit={handleSubmit(setsubmitedpassword)}>
+                            <form onSubmit={handleSubmit(setsubmitedpassword)} >
                                 <p>{user.email}</p>
-                                {/* yaha tum apna piyus otp wala 
-                        bana dena  alag se me add kar dunga  */}
-                                {/* return ke uper vale chejo ko pada karo  */}
+
                                 <input type="number" name="otp" onChange={setdata2} />
                                 {errors.otp && (<p style={{ color: "red", fontSize: 12, }}>{errors.otp}</p>)}
                                 <input type="password" name="password" onChange={setdata2} />
@@ -219,12 +224,15 @@ export default function ResetPassword() {
 
                     {page2 ?
                         <div>
-                            <div className="bg-pink-400 ">
-                                <form onSubmit={handleSubmit(SubmitData2)} >
-                                    <label htmlFor="email">Email : Link rajritik.4041@gmail.com</label>
-                                    <input type="email" name="email" className="bg-gray-500" onChange={setdata} />
-                                    {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
-                                    <input type="submit" value="Submit" />
+                            <div className="w-full text-black ">
+                                <form onSubmit={handleSubmit(SubmitData2)} className="w-full">
+                                    <div className="relative w-full mt-4 ">
+                                        <input type="email" name="email" onChange={setdata} required className={setinputclass} />
+                                        <label htmlFor="email" className={setlabelclass} >Email : </label>
+                                    </div>
+                                        {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
+                                        <div className="text-center w-full ">
+                                            <input type="submit" value="Submit" className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" /></div>
                                 </form>
                             </div>
                         </div> :
