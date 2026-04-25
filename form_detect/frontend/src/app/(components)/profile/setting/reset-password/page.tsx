@@ -305,104 +305,156 @@ export default function ResetPassword() {
             setback(false)
         setSuccess(false)
     }, [page1, page2, page3, page4, page5, page6]);
+
+    const setinputclass = "peer  w-full  px-4 pt-6 pb-2 pr-10 rounded-xl border border-gray-300 focus:outline-none focus:ring-1 focus:ring-grey-500 focus:border-grey-500 text-sm";
+    const setlabelclass =
+        "absolute left-4 top-3 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-black-500 peer-valid:top-1 peer-valid:text-xs";
+
     return (
-        <div >
-            {
-                page4 ? <div>
-                </div> :
-                    page3 ? <div>
-                        <div>
-                            <form onSubmit={handleSubmit(SubmitedPassword)} >
-                                <p>{user.email}</p>
-                                <label htmlFor="oldpassword"> Old Password</label>
-                                <input type="password" onChange={setdata3} name="oldpassword" />
-                                {errors2.oldpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.oldpassword}</p>)}
-                                <label htmlFor="newpassword"> New Password</label>
-                                <input type="password" name="newpassword" onChange={setdata3} />
-                                {errors2.newpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.newpassword}</p>)}
-                                <label htmlFor="confirmpassword"> Confirm New Password</label>
-                                <input type="password" name="confirmpassword" onChange={setdata3} />
-                                {errors2.confirmpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.confirmpassword}</p>)}
-                                {errors2.general && (<p style={{ color: "red", fontSize: 12, }}>{errors2.general}</p>)}
-                                {errors2.general && (
-                                    <p style={{ color: "red" }}>{errors2.general}</p>
-                                )}
-                                {/* <input type="submit" value="Submit" /> */}
-                                <button type="submit" disabled={loading}>
-                                    {loading ? "Loading..." : "Submit"}
-                                </button>
-                                {success && <p style={{ color: "green" }}>Password updated successfully ✅</p>}
-                            </form>
-                        </div>
-                        <div>
-                            <div onClick={Backspace}>
-                                Back
+        <div className="h-screen bg-green-300  text-black flex justify-center items-center" >
+            <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white">
+
+                {
+                    page4 ? <div>
+                    </div> :
+                        page3 ? <div>
+                            <div>
+                                <h2 className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password Using Old Password</h2>
+                                <form onSubmit={handleSubmit(SubmitedPassword)} className="w-full text-black">
+
+                                    <div className="relative w-full mt-4 ">
+                                        <input type="password" onChange={setdata3} name="oldpassword" required className={setinputclass} />
+                                        <label htmlFor="oldpassword" className={setlabelclass} > Old Password</label>
+                                    </div>
+                                    {errors2.oldpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.oldpassword}</p>)}
+                                    <div className="relative w-full mt-4 ">
+
+                                        <input type="password" name="newpassword" onChange={setdata3} required className={setinputclass} />
+                                        <label htmlFor="newpassword" className={setlabelclass}> New Password</label>
+                                    </div>
+                                    {errors2.newpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.newpassword}</p>)}
+                                    <div className="relative w-full mt-4 ">
+
+                                        <input type="password" name="confirmpassword" onChange={setdata3} required className={setinputclass} />
+                                        <label htmlFor="confirmpassword" className={setlabelclass} > Confirm New Password</label>
+                                    </div>
+                                    {errors2.confirmpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.confirmpassword}</p>)}
+                                    {errors2.general && (<p style={{ color: "red", fontSize: 12, }}>{errors2.general}</p>)}
+                                    {errors2.general && (
+                                        <p style={{ color: "red" }}>{errors2.general}</p>
+                                    )}
+                                    {/* <input type="submit" value="Submit" /> */}
+                                    <div className=" flex justify-center gap-4 ">
+                                        <div className="text-center w-fit my-4">
+
+                                            <button type="submit" disabled={loading} className="bg-green-500 rounded-lg px-6 py-2">
+                                                {loading ? "Loading..." : "Submit"}
+                                            </button>
+                                        </div>
+                                        {success && <p style={{ color: "green" }}>Password updated successfully ✅</p>}
+                                        <div onClick={Backspace} className=" w-fit my-4">
+                                            <p className="bg-red-500 rounded-lg px-5 py-2 ">
+                                                Back
+                                            </p>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
+
+                        </div> : <div className="text-center w-full mt-4">
+                            <button onClick={SetClick2} className="bg-green-400 rounded-lg px-3 py-2 w-full">
+                                Reset Password Using Old Password
+                            </button>
+                        </div>
+                }
+
+                {
+                    page5 ? <div></div> :
+                        page1 ? <div>
+                            <h2 className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password Using OTP</h2>
+                            <form onSubmit={handleSubmit(setsubmitedpassword)} className="w-full text-black">
+                                <div className="relative w-full mt-4 ">
+
+                                    <input type="number" name="otp" onChange={setdata2} required className={setinputclass} />
+                                    <label htmlFor="otp" className={setlabelclass} > Enter OTP </label>
+                                </div>
+                                {errors.otp && (<p style={{ color: "red", fontSize: 12, }}>{errors.otp}</p>)}
+                                <div className="relative w-full mt-4 ">
+
+                                    <input type="password" name="password" onChange={setdata2} required className={setinputclass} />
+                                    <label htmlFor="confirmpassword" className={setlabelclass} > Enter New Password</label>
+                                </div>
+                                {errors.password && (<p style={{ color: "red", fontSize: 12, }}>{errors.password}</p>)}
+                                <div className="relative w-full mt-4 ">
+
+                                    <input type="password" name="confirmPassword" onChange={setdata2} required className={setinputclass} />
+                                    <label htmlFor="confirmpassword" className={setlabelclass} > Confirm New Password</label>
+                                </div>
+                                {errors.confirmPassword && (<p style={{ color: "red", fontSize: 12, }}>{errors.confirmPassword}</p>)}
+                                <div className=" flex justify-center gap-4 ">
+                                    <div className="text-center w-fit my-4">
+                                        <input type="submit" value="Submited" className="bg-green-500 rounded-lg px-6 py-2" /></div>
+                                    <div onClick={Backspace} className=" w-fit my-4">
+                                        <p className="bg-red-500 rounded-lg px-5 py-2 ">
+
+                                            Back
+                                        </p>
+                                    </div>
+                                </div>
+                            </form>
+                            <div>
+
+                            </div>
+                        </div> :
+                            <div>
+                                <div >
+
+                                    {errors.general && (<p style={{ color: "red", fontSize: 12, }}>{errors.general}</p>)}
+                                    <div className="text-center w-full mt-4">
+                                        <button onClick={SubmitData1} className="bg-green-400 rounded-lg px-3 py-2 w-full">Reset Password Using OTP </button> <br />
+                                    </div>
+                                </div>
+                            </div>
+                }
+
+
+                {page6 ? <div></div> :
+                    page2 ?
+                        <div >
+                            <p className="text-center mb-2 text-green-700 text-2xl  font-extrabold">
+
+                                Please Check Your Mail
+                            </p>
+                            <div className="flex justify-center items-center">
+                                <div onClick={Backspace} className=" w-fit mt-4">
+                                    <p className="bg-red-500 rounded-lg px-5 py-2 ">
+                                        Back
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div> :
+                        <div className="bg-yellow-400-400">
+                            <div >
+                                {errors3.general && (<p style={{ color: "red", fontSize: 12, }}>{errors3.general}</p>)}
+                                <div className="text-center w-full mt-4">
+
+                                    <button onClick={SubmitData2} className="bg-green-400 w-full rounded-lg px-3 py-2">Reset Password Using Link</button> <br />
+                                </div>
+                            </div>
+                        </div>
+                }
+
+                {
+                    back ? <div>
+                        <div className="text-center w-full mt-6">
+                            <Link href="/profile/setting" className="bg-red-500 rounded-lg px-3 py-2">Back</Link>
                         </div>
                     </div> : <div>
-                        <button onClick={SetClick2}>
-                            Reset Password Using Old Password
-                        </button>
+
                     </div>
-            }
-
-            {
-                page5 ? <div></div> :
-                    page1 ? <div>
-                        <form onSubmit={handleSubmit(setsubmitedpassword)}>
-                            <p>{user.email}</p>
-                            <input type="number" name="otp" onChange={setdata2} />
-                            {errors.otp && (<p style={{ color: "red", fontSize: 12, }}>{errors.otp}</p>)}
-                            <input type="password" name="password" onChange={setdata2} />
-                            {errors.password && (<p style={{ color: "red", fontSize: 12, }}>{errors.password}</p>)}
-                            <input type="password" name="confirmPassword" onChange={setdata2} />
-                            {errors.confirmPassword && (<p style={{ color: "red", fontSize: 12, }}>{errors.confirmPassword}</p>)}
-                            <input type="submit" value="Submited" />
-                        </form>
-                        <div>
-                            <div onClick={Backspace}>
-                                Back
-                            </div>
-                        </div>
-                    </div> :
-                        <div>
-                            <div >
-
-                                {errors.general && (<p style={{ color: "red", fontSize: 12, }}>{errors.general}</p>)}
-
-                                <button onClick={SubmitData1}>Reset Password Using OTP </button> <br />
-                            </div>
-                        </div>
-            }
-
-
-            {page6 ? <div></div> :
-                page2 ?
-                    <div>
-                        Please Check Your Mail
-
-                        <div onClick={Backspace}>
-                            Back
-                        </div>
-
-                    </div> :
-                    <div className="bg-yellow-400-400">
-                        <div >
-                            {errors3.general && (<p style={{ color: "red", fontSize: 12, }}>{errors3.general}</p>)}
-                            <button onClick={SubmitData2}>Reset Password Using Link</button> <br />
-                        </div>
-                    </div>
-            }
-
-            {
-                back ? <div>
-                    <div>
-                        <Link href="/profile/setting">Back</Link>
-                    </div>
-                </div> : <div>
-
-                </div>
-            }
+                }
+            </div>
         </div>
     );
 }

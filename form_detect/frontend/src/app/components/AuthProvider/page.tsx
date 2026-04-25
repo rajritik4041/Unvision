@@ -34,8 +34,7 @@ export default function AuthProvider({ children }: any) {
           return;
         }
 
-        const res = await fetch(
-          "http://127.0.0.1:8000/profile/settings/Update",
+        const res = await fetch("http://127.0.0.1:8000/profile/settings/Update",
           {
             headers: {
               Authorization: `Bearer ${token}`,
