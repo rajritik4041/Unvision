@@ -17,12 +17,6 @@ export default function AuthProvider({ children }: any) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(window.location.href);
-  }, []);
-  useEffect(() => {
-    console.log("Cookies:", document.cookie);
-  }, []);
-  useEffect(() => {
     const rawToken = localStorage.getItem("token") ?? "";
     const token = rawToken.trim();
     const hasToken = token !== "" && token !== "undefined" && token !== "null";
@@ -47,7 +41,8 @@ export default function AuthProvider({ children }: any) {
         if (urlToken) {
           localStorage.setItem("token", urlToken);
           setAuthTokenCookie(urlToken);
-          window.history.replaceState({}, document.title, "/profile/home");
+          const cleanPath = `${window.location.pathname}${window.location.hash || ""}`;
+          window.history.replaceState({}, document.title, cleanPath);
         }
 
         const token = localStorage.getItem("token");

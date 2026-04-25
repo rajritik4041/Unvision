@@ -52,18 +52,22 @@ export default function Update() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://localhost:8000/logout", {
+            await fetch("http://localhost:8000/logout", {
                 method: "POST",
                 credentials: "include",
             });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.removeItem("token");
-                clearAuthTokenCookie();
-                window.location.href = "/login";
-            }
+            // Frontend domain cookie ko bhi clear karo, taaki middleware turant logout state le.
+            await fetch("/api/logout", { method: "POST" });
+            localStorage.removeItem("token");
+            clearAuthTokenCookie();
+            router.replace("/login");
+            router.refresh();
         } catch (err) {
             console.error("Logout error:", err);
+            localStorage.removeItem("token");
+            clearAuthTokenCookie();
+            router.replace("/login");
+            router.refresh();
         }
     };
     return (

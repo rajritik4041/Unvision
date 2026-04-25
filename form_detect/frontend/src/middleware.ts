@@ -17,18 +17,38 @@ const PROFILE_ROOT = "/profile";
 const PROFILE_HOME = "/profile/home";
 
 export async function middleware(request: NextRequest) {
+  const tokenFromQuery = (request.nextUrl.searchParams.get("token") ?? "").trim();
+  if (tokenFromQuery && tokenFromQuery !== "undefined" && tokenFromQuery !== "null") {
+    const cleanUrl = request.nextUrl.clone();
+    cleanUrl.searchParams.delete("token");
+    const response = NextResponse.redirect(cleanUrl);
+    response.cookies.set("token", tokenFromQuery, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+    return response;
+  }
+  console.log("🔥 MIDDLEWARE RUNNING");
+  console.log("All Cookies:", request.cookies.getAll());
+  console.log("Token Direct:", request.cookies.get("token"));
+  console.log("Token Value:", request.cookies.get("token")?.value);
+
   const path = request.nextUrl.pathname;
   const isPublicPath = PUBLIC_PATHS.has(path);
   const isProfileRoute =
     path === PROFILE_ROOT || path.startsWith(`${PROFILE_ROOT}/`);
 
   const customToken = (request.cookies.get("token")?.value ?? "").trim();
-console.log("🔥 MIDDLEWARE RUNNING");
+  console.log("🔥 MIDDLEWARE RUNNING");
 
-console.log("All Cookies:", request.cookies.getAll());
-console.log("Token Direct:", request.cookies.get("token"));
-console.log("Token Value:", request.cookies.get("token")?.value);
- const nextAuthToken = await getToken({
+  console.log("All Cookies:", request.cookies.getAll());
+  console.log("Token Direct:", request.cookies.get("token"));
+  console.log("Token Value:", request.cookies.get("token")?.value);
+
+  const nextAuthToken = await getToken({
     req: request,
     secret: process.env.NEXTAUTH_SECRET,
   });

@@ -129,7 +129,7 @@ function Page() {
             </div>
 
             <button
-              onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}
+              onClick={() => window.location.href = "http://localhost:8000/auth/google"}
               className="w-full  bg-white text-black py-2 rounded-md shadow hover:bg-gray-100 transition"
             >
               Continue with Google

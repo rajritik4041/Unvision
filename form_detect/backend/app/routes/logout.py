@@ -1,22 +1,26 @@
-from fastapi import APIRouter, Response
-from datetime import datetime, timedelta
+from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
 router = APIRouter()
 
 @router.post("/logout")
-def logout(response: Response):
-
-    response.set_cookie(
+def logout():
+    response = JSONResponse(
+        content={
+            "success": True,
+            "message": "Logged out"
+        }
+    )
+    response.delete_cookie(
         key="token",
-        value="",
-        httponly=True,
-        expires=0,  # same as new Date(0)
         path="/",
         samesite="lax",
-        secure=False  # True in production
+        secure=False
     )
-
-    return {
-        "success": True,
-        "message": "Logged out"
-    }
+    response.delete_cookie(
+        key="session",
+        path="/",
+        samesite="lax",
+        secure=False
+    )
+    return response

@@ -82,18 +82,20 @@ function navbar() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://localhost:8000/logout", {
+            await fetch("http://localhost:8000/logout", {
                 method: "POST",
                 credentials: "include",
             });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.removeItem("token");
-                clearAuthTokenCookie();
-                window.location.href = "/login";
-            }
+            // Also clear frontend-domain auth cookies used by middleware/next-auth.
+            await fetch("/api/logout", { method: "POST" });
+            localStorage.removeItem("token");
+            clearAuthTokenCookie();
+            window.location.href = "/login";
         } catch (err) {
             console.error("Logout error:", err);
+            localStorage.removeItem("token");
+            clearAuthTokenCookie();
+            window.location.href = "/login";
         }
     };
 
