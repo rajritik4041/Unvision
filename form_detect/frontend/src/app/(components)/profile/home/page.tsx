@@ -10,6 +10,7 @@ import Update from "../setting/update/page"
 import Jake from "../home/j/page"
 import Navbar from "../../../components/navbar/page"
 import { usePathname } from "next/navigation";
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 
 export default function Profile() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function Profile() {
 
       if (urlToken) {
         localStorage.setItem("token", urlToken);
+        setAuthTokenCookie(urlToken);
         window.history.replaceState({}, document.title, "/profile/home");
       }
       const token = localStorage.getItem("token");
@@ -47,6 +49,7 @@ export default function Profile() {
         const res = await fetch(`${api}/profile/home`, { headers, credentials: "include" });
         if (res.status === 401) {
           localStorage.removeItem("token");
+          clearAuthTokenCookie();
           router.push("/login");
           return;
         }
@@ -68,6 +71,7 @@ export default function Profile() {
       const data = await res.json();
       if (data.success) {
         localStorage.removeItem("token");
+        clearAuthTokenCookie();
         window.location.href = "/login";
       }
     } catch (err) {

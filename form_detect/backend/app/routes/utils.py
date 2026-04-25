@@ -68,7 +68,7 @@ async def verify_token(
     credentials: HTTPAuthorizationCredentials = Depends(security)
 ):
     token = request.cookies.get("token") or (credentials.credentials if credentials else None)
-
+    print("UTILS Token" , token)
     if not token:
         raise HTTPException(status_code=401, detail="Token missing")
 

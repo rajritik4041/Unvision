@@ -23,6 +23,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faBusinessTime } from "@fortawesome/free-solid-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 {/* <FontAwesomeIcon icon={faKey} /> */ }
 
 type NavItem = {
@@ -56,6 +57,7 @@ function navbar() {
 
             if (urlToken) {
                 localStorage.setItem("token", urlToken);
+                setAuthTokenCookie(urlToken);
                 window.history.replaceState({}, document.title, "/profile/home");
             }
             const token = localStorage.getItem("token");
@@ -64,6 +66,7 @@ function navbar() {
                 const res = await fetch(`http://localhost:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
+                    clearAuthTokenCookie();
                     router.push("/login");
                     return;
                 }
@@ -86,6 +89,7 @@ function navbar() {
             const data = await res.json();
             if (data.success) {
                 localStorage.removeItem("token");
+                clearAuthTokenCookie();
                 window.location.href = "/login";
             }
         } catch (err) {

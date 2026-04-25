@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import Navbar from "../../components/navbar/page"
 import axios from "axios"
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
@@ -27,6 +28,7 @@ export default function Update() {
 
             if (urlToken) {
                 localStorage.setItem("token", urlToken);
+                setAuthTokenCookie(urlToken);
                 window.history.replaceState({}, document.title, "/profile/home");
             }
             const token = localStorage.getItem("token");
@@ -35,6 +37,7 @@ export default function Update() {
                 const res = await fetch(`http://localhost:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
+                    clearAuthTokenCookie();
                     router.push("/login");
                     return;
                 }
@@ -56,6 +59,7 @@ export default function Update() {
             const data = await res.json();
             if (data.success) {
                 localStorage.removeItem("token");
+                clearAuthTokenCookie();
                 window.location.href = "/login";
             }
         } catch (err) {

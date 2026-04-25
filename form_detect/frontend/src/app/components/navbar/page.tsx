@@ -25,6 +25,7 @@ import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
 
 import { useAuth } from "@/app/components/AuthProvider/page";
+import { clearAuthTokenCookie } from "@/lib/auth-cookie";
 {/* <FontAwesomeIcon icon={faKey} /> */ }
 
 type NavItem = {
@@ -56,6 +57,7 @@ function Navbar() {
             const data = await res.json();
             if (data.success) {
                 localStorage.removeItem("token");
+                clearAuthTokenCookie();
                 window.location.href = "/login";
             }
         } catch (err) {

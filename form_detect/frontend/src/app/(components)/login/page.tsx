@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { setAuthTokenCookie } from "@/lib/auth-cookie";
 
 type VerifyType = { email: string; password: string; };
 type ErrorType = { email?: string; password?: string; general?: string; };
@@ -52,6 +53,7 @@ function Page() {
         return;
       }
       localStorage.setItem("token", result.token);
+      setAuthTokenCookie(result.token);
       router.push("/profile/home");
     } catch (error) {
       setErrors({ general: "Server error, try again!" });

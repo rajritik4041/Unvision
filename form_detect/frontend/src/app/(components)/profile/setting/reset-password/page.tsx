@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 type userType = { email: string; };
 type Error2Type = {
     confirmpassword?: string; general?: string;
@@ -53,6 +54,7 @@ export default function ResetPassword() {
 
             if (urlToken) {
                 localStorage.setItem("token", urlToken);
+                setAuthTokenCookie(urlToken);
                 window.history.replaceState({}, document.title, "/profile/home");
             }
             const token = localStorage.getItem("token");
@@ -61,6 +63,7 @@ export default function ResetPassword() {
                 const res = await fetch(`http://localhost:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
+                    clearAuthTokenCookie();
                     router.push("/login");
                     return;
                 }

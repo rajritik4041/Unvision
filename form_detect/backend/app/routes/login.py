@@ -70,7 +70,7 @@ async def login(user: LoginModel, response: Response):
         return JSONResponse(status_code=400, content={"message": "Wrong password"})
 
     token = create_token({"email": user.email})
-
+    print("Login Token" , token)
     response.set_cookie(
         key="token",
         value=token,
