@@ -13,9 +13,7 @@ export default function AuthProvider({ children }: any) {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
-  useEffect(() => {
-    console.log(window.location.href);
-  }, []);
+
   
   useEffect(() => {
     const fetchProfile = async () => {
