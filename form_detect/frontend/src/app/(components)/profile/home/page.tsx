@@ -16,7 +16,7 @@ export default function Profile() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
+  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
  const pathname = usePathname();
 
   useEffect(() => {
@@ -39,9 +39,12 @@ export default function Profile() {
         window.history.replaceState({}, document.title, "/profile/home");
       }
       const token = localStorage.getItem("token");
-      if (!token) { router.push("/login"); return; }
       try {
-        const res = await fetch(`https://unvision-first.onrender.com/profile/home`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+        const headers: HeadersInit = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+        const res = await fetch(`${api}/profile/home`, { headers, credentials: "include" });
         if (res.status === 401) {
           localStorage.removeItem("token");
           router.push("/login");
@@ -54,11 +57,11 @@ export default function Profile() {
       finally { setLoading(false); }
     };
     fetchProfile();
-  }, [router]);
+  }, [api, router]);
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("https://unvision-first.onrender.com/logout", {
+      const res = await fetch(`${api}/logout`, {
         method: "POST",
         credentials: "include",
       });

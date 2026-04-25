@@ -23,18 +23,33 @@ def serialize_user(user):
 
 
 
+# @router.get("/profile/home")
+# async def profile(user=Depends(verify_token)):
+#     return {
+#         "success": True,
+#         "user": {
+#             "email": user.get("email"),
+#             "first_name": user.get("first_name"),
+#             "last_name": user.get("last_name"),
+#             "profilePic": user.get("profilePic"),
+#             "providers": user.get("providers", []),
+#             "created_at": str(user.get("created_at"))
+#         }
+#     }
+
+
 @router.get("/profile/home")
-async def profile(user=Depends(verify_token)):
+async def home(user=Depends(verify_token)):
     return {
         "success": True,
-        "user": {
-            "email": user.get("email"),
-            "first_name": user.get("first_name"),
-            "last_name": user.get("last_name"),
-            "profilePic": user.get("profilePic"),
-            "providers": user.get("providers", []),
-            "created_at": str(user.get("created_at"))
-        }
+        "user": serialize_user(user)
+    }
+
+@router.get("/profile/settings/Update")
+async def home(user=Depends(verify_token)):
+    return {
+        "success": True,
+        "user": serialize_user(user)
     }
 
 @router.get("/profile/home/contactus")
@@ -46,22 +61,22 @@ async def profile(user=Depends(verify_token)):
         }
     }
 
-@router.get("/profile/settings/Update")
-async def profile(user=Depends(verify_token)):
-    return {
-        "success": True,
-        "user": {
-            "email": user.get("email"),
-            "first_name": user.get("first_name"),
-            "last_name": user.get("last_name"),
-            "profilePic":  user.get("profilePic"),
-            "providers": user.get("providers", []),
-            "created_at": str(user.get("createdAt")),
-            "age":user.get("age"),
-            "date_of_birth": user.get("date_of_birth"),
-            "gender": user.get("gender"),
-            "country": user.get("country"),
-            "state": user.get("state"),
-            "city": user.get("city")
-        }
-    }
+# @router.get("/profile/settings/Update")
+# async def profile(user=Depends(verify_token)):
+#     return {
+#         "success": True,
+#         "user": {
+#             "email": user.get("email"),
+#             "first_name": user.get("first_name"),
+#             "last_name": user.get("last_name"),
+#             "profilePic":  user.get("profilePic"),
+#             "providers": user.get("providers", []),
+#             "created_at": str(user.get("createdAt")),
+#             "age":user.get("age"),
+#             "date_of_birth": user.get("date_of_birth"),
+#             "gender": user.get("gender"),
+#             "country": user.get("country"),
+#             "state": user.get("state"),
+#             "city": user.get("city")
+#         }
+#     }

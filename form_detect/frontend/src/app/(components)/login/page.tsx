@@ -21,7 +21,7 @@ function Page() {
     setErrors((prev) => ({ ...prev, [e.target.name]: "", }));
   };
 
- const api = "http://127.0.0.1:8000"
+ const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
   const onSubmit = async () => {
     try {
       setErrors({});

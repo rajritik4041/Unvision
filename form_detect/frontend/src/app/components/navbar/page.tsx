@@ -41,6 +41,7 @@ type Nav2Item = {
 function Navbar() {
     const router = useRouter();
     const { user, loading } = useAuth();
+    const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [page, setpage] = useState<boolean>(false)
     const [refreshKey, setRefreshKey] = useState(0);
@@ -48,7 +49,7 @@ function Navbar() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/logout", {
+            const res = await fetch(`${api}/logout`, {
                 method: "POST",
                 credentials: "include",
             });

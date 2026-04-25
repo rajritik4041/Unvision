@@ -130,7 +130,7 @@ export default function ResetPassword() {
         try {
             const email = user.email;
 
-            const res = await fetch("http://127.0.0.1:8000/reset-password", {
+            const res = await fetch("http://localhost:8000/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

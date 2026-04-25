@@ -58,7 +58,7 @@ export default function ResetPassword() {
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`http://localhost:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
                     router.push("/login");
@@ -182,7 +182,7 @@ export default function ResetPassword() {
         try {
             const email = user.email;
 
-            const res = await fetch("http://127.0.0.1:8000/reset-password", {
+            const res = await fetch("http://localhost:8000/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -239,7 +239,7 @@ export default function ResetPassword() {
         password.email = email;
         setErrors2({});
         try {
-            const res = await fetch(`http://127.0.0.1:8000/profile/reset-pasword/oldpassword`, {
+            const res = await fetch(`http://localhost:8000/profile/reset-pasword/oldpassword`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(password),

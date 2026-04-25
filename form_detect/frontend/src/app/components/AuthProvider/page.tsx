@@ -9,11 +9,14 @@ export const useAuth = () => useContext(AuthContext);
 
 export default function AuthProvider({ children }: any) {
   const router = useRouter();
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
 
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   
-
+  useEffect(() => {
+    console.log(window.location.href);
+  }, []);
   
   useEffect(() => {
     const fetchProfile = async () => {
@@ -28,21 +31,14 @@ export default function AuthProvider({ children }: any) {
 
         const token = localStorage.getItem("token");
 
-        if (!token) {
-          setUser(null);
-          setLoading(false);
-          return;
+        const headers: HeadersInit = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
         }
-
-        const res = await fetch(
-          "http://127.0.0.1:8000/profile/settings/Update",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${apiBase}/profile/settings/Update`, {
+          headers,
+          credentials: "include",
+        });
 
         if (res.status === 401) {
           localStorage.removeItem("token");
@@ -67,7 +63,7 @@ export default function AuthProvider({ children }: any) {
     };
 
     fetchProfile();
-  }, []);
+  }, [apiBase]);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

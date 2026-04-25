@@ -473,7 +473,7 @@ export default function ChatBot() {
   // 📜 Load chats
   const fetchChats = async () => {
     try {
-      const res = await axios.get("http://127.0.0.1:8000/chats", {
+      const res = await axios.get("http://localhost:8000/chats", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -504,7 +504,7 @@ export default function ChatBot() {
 
     try {
       const res = await axios.post(
-        "http://127.0.0.1:8000/chat",
+        "http://localhost:8000/chat",
         { message, chat_id: chatId },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -532,7 +532,7 @@ export default function ChatBot() {
       setChatId(id);
 
       const res = await axios.get(
-        `http://127.0.0.1:8000/chat/${id}`,
+        `http://localhost:8000/chat/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -552,7 +552,7 @@ export default function ChatBot() {
   // ❌ Delete Chat (instant UI update)
   const deleteChat = async (id: string) => {
     try {
-      await axios.delete(`http://127.0.0.1:8000/chat/${id}`, {
+      await axios.delete(`http://localhost:8000/chat/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
