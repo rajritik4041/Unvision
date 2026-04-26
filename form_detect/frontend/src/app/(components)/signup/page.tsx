@@ -54,7 +54,7 @@ export default function Signup() {
   useEffect(() => { if (selectedCountry) { setStates(State.getStatesOfCountry(selectedCountry)); setCities([]); } }, [selectedCountry]);
   useEffect(() => { if (selectedCountry && selectedState) { setCities(City.getCitiesOfState(selectedCountry, selectedState)); } }, [selectedState, selectedCountry]);
 
-  const validateFirstPage = () => {
+  const validateFirstPae = () => {
     const newErrors: ErrorType = {};
     if (!user.first_name) newErrors.first_name = "First name is required";
     if (!user.last_name) newErrors.last_name = "Last name is required";
@@ -87,7 +87,9 @@ export default function Signup() {
     setfirstpage(false);
   };
   const submitdata = async () => {
-    const res = await fetch(`${api}/signup`, { method: "POST", headers: { "Content-Type": "application/json", "CSRF-Token": csrfToken, }, body: JSON.stringify(user), });
+    const res = await fetch(`${api}/signup`, 
+      { method: "POST", headers: { "Content-Type": "application/json", "CSRF-Token": csrfToken, },
+       body: JSON.stringify(user), });
     const data = await res.json();
     if (!res.ok) {
       const errorObj: ErrorType = {};

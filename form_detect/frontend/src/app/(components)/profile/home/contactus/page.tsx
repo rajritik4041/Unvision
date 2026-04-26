@@ -68,7 +68,7 @@ export default function Contact() {
                 body: JSON.stringify(user)
         })
     }
-    // useEffect
+
 
     return (
         <div>

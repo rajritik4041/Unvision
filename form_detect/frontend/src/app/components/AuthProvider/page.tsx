@@ -56,7 +56,7 @@ export default function AuthProvider({ children }: any) {
 
         const headers: HeadersInit = {};
         headers.Authorization = `Bearer ${token}`;
-        const res = await fetch(`${apiBase}/profile/settings/Update`, {
+        const res = await fetch(`${apiBase}/profile/home`, {
           headers,
           credentials: "include",
         });
