@@ -9,7 +9,7 @@ import Navbar from "../components/navbar/page"
 import Update from "../setting/update/page"
 import Jake from "../home/j/page"
 // import Navbar from "../../../components/navbar/page"
-
+import Support from "../components/Supports/page"
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -65,6 +65,7 @@ export default function Profile() {
         {/* <ChatBot /> */}
         <Navbar />
         <Jake />
+        <Support />
         {/* <Update /> */}
         {/* <ChatBot /> */}
         {/* <ChatBot /> */}

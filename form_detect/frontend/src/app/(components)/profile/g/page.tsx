@@ -7,13 +7,13 @@ export default function Profile() {
   const router = useRouter();
   return (
     <div>
-      <div className=" h-screen bg-gradient-to-r from-sky-200 to-emerald-200 justify-center">
+      <div className=" h-screen bg-linear-to-r from-blue-500 to-emerald-500 justify-center">
         <h1 className="text-[40px] font-bold text-white mb-6 justify-items-center text-center pt-5 bg-cyan-800">Feature & Benefits</h1>
-        <div className="p-4 justify-items-center items-start grid grid-cols-1 h-fit   md:grid-cols-3 lg:grid-cols-4 gap-10 bg-gradient-to-r from-sky-200 to-emerald-200">
+        <div className="p-4 justify-items-center items-start grid grid-cols-1 h-fit   md:grid-cols-3 lg:grid-cols-4 gap-10 bg-linear-to-r from-sky-400 to-green-400">
 
 
 
-          <div className=" w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 text-justify bg-lime-400 ">
+          <div className=" w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 text-justify bg-sky-400 ">
             <img src="https://cdn.iconsax.io/icons/free/rounded/business/bold/personalcard_user-profile-contact-information-id-card-temp.webp" alt="" />
             <div className="place-items-center gap-2 p-5 m-2 sm:text-lg md:text-[18px]  font-semibold font-serif text-white     justify-items-center items-center text-center">
               <h2>" Dectect Early.Act Smart.Live Better "</h2>
@@ -22,7 +22,7 @@ export default function Profile() {
 
 
 
-          <div className="w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-lime-400 "><img src="https://cdn.iconsax.io/icons/free/rounded/location/bold/global-search_find-query-explore-search-results-information-temp.webp" alt="" />
+          <div className="w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-sky-400 "><img src="https://cdn.iconsax.io/icons/free/rounded/location/bold/global-search_find-query-explore-search-results-information-temp.webp" alt="" />
 
 
             <div className=" place-items-center  gap-2 p-6 m-2  font-semibold font-serif  justify-items-center items-center  text-justify">
@@ -36,7 +36,7 @@ export default function Profile() {
 
 
 
-          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-lime-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/travel/linear/search_magnifying-glass-find-query-locate-discover-information-temp.webp" alt="" />
+          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-sky-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/travel/linear/search_magnifying-glass-find-query-locate-discover-information-temp.webp" alt="" />
 
             <div className=" place-items-center  gap-2 p-5 m-2  font-semibold font-serif justify-items-center items-center text-justify"><p className="sm:text-lg md:text-[18px">Search for health information and resources.</p>
             </div>
@@ -44,7 +44,7 @@ export default function Profile() {
 
           </div>
 
-          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-lime-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/essential/linear/question-mark-circle_help-information-query-support-assistance-faq-temp.webp" alt="" />
+          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-sky-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/essential/linear/question-mark-circle_help-information-query-support-assistance-faq-temp.webp" alt="" />
 
             <div className=" place-items-center  gap-2 p-5 m-2 font-semibold font-serif justify-items-center items-center text-justify"><p className="  sm:text-lg md:text-[18px] ">Get help and support for your health-related questions.</p>
             </div>
