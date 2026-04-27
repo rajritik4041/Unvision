@@ -54,12 +54,14 @@ export default function AuthProvider({ children }: any) {
           return;
         }
 
-        const headers: HeadersInit = {};
-        headers.Authorization = `Bearer ${token}`;
-        const res = await fetch(`${apiBase}/profile/home`, {
-          headers,
-          credentials: "include",
-        });
+        const res = await fetch("http://127.0.0.1:8000/profile/settings/Update",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            credentials: "include",
+          }
+        );
 
         if (res.status === 401) {
           localStorage.removeItem("token");
