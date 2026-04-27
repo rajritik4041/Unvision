@@ -71,7 +71,7 @@ export default function Contact() {
 
 
     return (
-        <div>
+        <div className="h-screen bg-green-300  text-black flex justify-center items-center">
             <div>
                 <form onSubmit={handleSubmit(SubmitedData)} >
                     <p>{verify.email}</p>

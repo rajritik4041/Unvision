@@ -37,9 +37,9 @@ export default function Contact() {
 
 
   return (
-    <div>
-      <div>
-        <form onSubmit={handleSubmit(SubmitedData)} >
+    <div >
+      <div >
+        <form onSubmit={handleSubmit(SubmitedData)}className="h-screen bg-green-300  text-black flex justify-center items-center" >
           <label htmlFor="name">Name </label>
           <input type="text" name="name" onChange={handleChange} />
           <label htmlFor="subject">Subject </label>
