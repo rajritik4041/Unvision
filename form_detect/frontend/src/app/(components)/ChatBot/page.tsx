@@ -575,7 +575,7 @@ export default function ChatBot() {
         <button   onClick={newChat}
           className="bg-green-500 text-white p-2 w-full rounded mb-3"
         >
-          + New Chat
+          + New Chathh
         </button>
 
         {chatList.map((c) => (
