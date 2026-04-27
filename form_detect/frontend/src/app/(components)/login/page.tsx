@@ -3,6 +3,7 @@ import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { setAuthTokenCookie } from "@/lib/auth-cookie";
 
 type VerifyType = { email: string; password: string; };
 type ErrorType = { email?: string; password?: string; general?: string; };
@@ -21,7 +22,7 @@ function Page() {
     setErrors((prev) => ({ ...prev, [e.target.name]: "", }));
   };
 
-  const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
+ const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
   const onSubmit = async () => {
     try {
       setErrors({});
@@ -33,7 +34,7 @@ function Page() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(verify),
-        credentials: "include",
+         credentials: "include",
       });
       const result = await res.json();
       if (!result.success) {
@@ -52,6 +53,7 @@ function Page() {
         return;
       }
       localStorage.setItem("token", result.token);
+      setAuthTokenCookie(result.token);
       router.push("/profile/home");
     } catch (error) {
       setErrors({ general: "Server error, try again!" });
@@ -127,7 +129,7 @@ function Page() {
             </div>
 
             <button
-              onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}
+              onClick={() => window.location.href = "http://localhost:8000/auth/google"}
               className="w-full  bg-white text-black py-2 rounded-md shadow hover:bg-gray-100 transition"
             >
               Continue with Google

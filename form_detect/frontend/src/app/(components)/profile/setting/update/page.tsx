@@ -1,154 +1,244 @@
-"use client"
-import React from "react"
-import { useEffect } from "react"
-import { useForm } from "react-hook-form"
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
-import Navbar from "../../components/navbar/page"
-import axios from "axios"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRotate } from "@fortawesome/free-solid-svg-icons";
-import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
-import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons"
-import { faCircleUser } from "@fortawesome/free-solid-svg-icons"
+"use client";
 
+import React, { useEffect, useState } from "react";
+import Navbar from "../../components/navbar/page";
+import { useAuth } from "@/app/components/AuthProvider/page";
+import { Country, State, City } from "country-state-city";
+
+type UserType = {
+    first_name?: string;
+    last_name?: string;
+    date_of_birth?: string;
+    profilePic?: string;
+    age?: number;
+    username?: string;
+    email?: string;
+    country?: string;
+    state?: string;
+    city?: string;
+    gender?: string;
+    Bio?: string;
+};
 
 export default function Update() {
+    const { user, loading } = useAuth() as {
+        user: UserType | null;
+        loading: boolean;
+    };
 
-    const router = useRouter();
-    const [user, setUser] = useState<any>(null);
-    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState<UserType | null>(null);
+    const [profileFile, setProfileFile] = useState<File | null>(null);
+
+    const [countries, setCountries] = useState<any[]>([]);
+    const [states, setStates] = useState<any[]>([]);
+    const [cities, setCities] = useState<any[]>([]);
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            const params = new URLSearchParams(window.location.search);
-            const urlToken = params.get("token");
+        setCountries(Country.getAllCountries());
+    }, []);
 
-            if (urlToken) {
-                localStorage.setItem("token", urlToken);
-                window.history.replaceState({}, document.title, "/profile/home");
-            }
-            const token = localStorage.getItem("token");
-            if (!token) { router.push("/login"); return; }
-            try {
-                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
-                if (res.status === 401) {
-                    localStorage.removeItem("token");
-                    router.push("/login");
-                    return;
-                }
-                const data = await res.json();
-                if (data.success) { setUser(data.user); }
-            }
-            catch (err) { console.error(err); }
-            finally { setLoading(false); }
-        };
-        fetchProfile();
-    }, [router]);
+    useEffect(() => {
+        if (user) {
+            const countryObj = Country.getAllCountries().find(
+                (c) => c.name === user.country
+            );
+            const stateObj = countryObj
+                ? State.getStatesOfCountry(countryObj.isoCode).find(
+                      (s) => s.name === user.state
+                  )
+                : null;
 
-    const handleLogout = async () => {
-        try {
-            const res = await fetch("http://127.0.0.1:8000/logout", {
-                method: "POST",
-                credentials: "include",
+            setData({
+                ...user,
+                country: countryObj?.isoCode || "",
+                state: stateObj?.isoCode || "",
+                city: user.city || "",
             });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-            }
-        } catch (err) {
-            console.error("Logout error:", err);
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (data?.country) {
+            setStates(State.getStatesOfCountry(data.country));
+            setCities([]);
+        }
+    }, [data?.country]);
+
+    useEffect(() => {
+        if (data?.country && data?.state) {
+            setCities(City.getCitiesOfState(data.country, data.state));
+        }
+    }, [data?.state, data?.country]);
+
+    const UpdateSetData = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target;
+        setData((prev) => {
+            if (!prev) return prev;
+            return { ...prev, [name]: value };
+        });
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setProfileFile(e.target.files[0]);
         }
     };
+
+    const SubmitUpdateData = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+
+        if (data) {
+            Object.entries(data).forEach(([key, value]) => {
+                if (value !== undefined && value !== null) {
+                    formData.append(key, String(value));
+                }
+            });
+        }
+
+        if (profileFile) {
+            formData.append("file", profileFile);
+        }
+
+        await fetch("http://localhost:8000/profile/set", {
+            method: "POST",
+            body: formData,
+              credentials: "include", 
+        });
+    };
+
     return (
         <div>
+            <Navbar />
 
+            <div className="p-4">
+                {loading ? (
+                    <p>Loading...</p>
+                ) : data ? (
+                    <form onSubmit={SubmitUpdateData} className="space-y-3">
 
-            <h1 className="text-xl font-bold">Profile Page ✅</h1>
+                        <input type="file" accept="image/*" onChange={handleImageChange} />
 
-            {loading ? (
-                <p>Loading...</p>
-            ) : user ? (
+                        <input
+                            type="text"
+                            name="first_name"
+                            value={data.first_name || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        />
 
-                <div className="mt-4 space-y-2">
+                        <input
+                            type="text"
+                            name="last_name"
+                            value={data.last_name || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        />
 
-                    <p><b>Name:</b> {user.first_name || "N/A"} {user.last_name || ""}</p>
-                    <p><b>Email:</b> {user.email}</p>
+                        <input
+                            type="text"
+                            name="username"
+                            value={data.username || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        />
 
-                    <p><b>Login Type:</b> {user.providers?.join(", ")}</p>
+                        <input
+                            type="text"
+                            name="email"
+                            value={data.email || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        />
 
-                    <p><b>Profile Pic:</b></p>
-                    {/* {user.profilePic && (
-                        <img src={user.profilePic} width={80} />
-                    )} */}
+                        <input
+                            type="text"
+                            name="Bio"
+                            value={data.Bio || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                            placeholder="Enter Bio"
+                        />
 
-                    <p><b>age:</b> {user.age}</p>
-                    <p><b>Created:</b> {user.created_at}</p>
-                    <p><b>Gender:</b> {user.gender}</p>
-                    <p><b>D. O. B. :</b> {user.date_of_birth}</p>
-                    <p><b>Country:</b> {user.country}</p>
-                    <p><b>State:</b> {user.state}</p>
-                    <p><b>City:</b> {user.city}</p>
+                        <input
+                            type="text"
+                            name="date_of_birth"
+                            value={data.date_of_birth || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        />
 
-                </div>
-            ) : (
-                <p>No user</p>
-            )}
-            <div className="flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
-                <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">  <div>
-                    {user && (
-                        <div className="my-10">
-                            <div className=" w-full flex justify-center  ">
-                                <img
-                                    style={{
-                                        borderRadius: "70px"
-                                    }}
-                                    width={45}
-                                    src={user?.profilePic || "/default.png"}
-                                    className="  object-cover"
-                                    alt="profile"
-                                />
-                            </div>
-                            <p className="mt-2 ">{user.first_name || "N/A"} {user.last_name || ""}</p>
-                            <p> {user.email}</p>
+                        <input
+                            type="number"
+                            name="age"
+                            value={data.age || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        />
 
-                        </div>
-                    )}
-                </div>
+                        <select
+                            name="country"
+                            value={data.country || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        >
+                            <option value="">Select Country</option>
+                            {countries.map((c) => (
+                                <option key={c.isoCode} value={c.isoCode}>
+                                    {c.name}
+                                </option>
+                            ))}
+                        </select>
 
-                </div>
-                <div className="mt-2 gap-0.5">
-                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
-                        <Link href="/profile/components/about">
-                            <FontAwesomeIcon className="h-3 w-3" icon={faCircleUser} /> Profile
-                        </Link>
-                    </div>
-                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+                        <select
+                            name="state"
+                            value={data.state || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        >
+                            <option value="">Select State</option>
+                            {states.map((s, index) => (
+                                <option key={index} value={s.isoCode}>
+                                    {s.name}
+                                </option>
+                            ))}
+                        </select>
 
-                        <Link href="/profile/components/sync">
-                            <FontAwesomeIcon className="h-3 w-3" icon={faRotate} size="xs" />
-                            Sync is on
-                        </Link>
-                    </div >
-                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
-                        <Link href="/profile/components/support">
-                            <FontAwesomeIcon className="h-3 w-3" icon={faCircleQuestion} /> help
-                        </Link>
-                    </div>
-                    <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+                        <select
+                            name="city"
+                            value={data.city || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        >
+                            <option value="">Select City</option>
+                            {cities.map((c, index) => (
+                                <option key={index} value={c.name}>
+                                    {c.name}
+                                </option>
+                            ))}
+                        </select>
 
-                        <div onClick={handleLogout}>  <FontAwesomeIcon className="h-3 w-3" icon={faArrowRightFromBracket} />Sign out</div>
-                    </div>
-                </div>
+                        <select
+                            name="gender"
+                            value={data.gender || ""}
+                            onChange={UpdateSetData}
+                            className="border p-2 w-full text-black"
+                        >
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+
+                        <input type="submit" value="Submit" />
+                    </form>
+                ) : (
+                    <p>No user</p>
+                )}
             </div>
-            <div>
-                <div>
-                    <Navbar />
-                </div>
-            </div>
-
         </div>
-    )
+    );
 }

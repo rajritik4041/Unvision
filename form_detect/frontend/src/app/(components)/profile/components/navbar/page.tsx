@@ -23,6 +23,7 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faBusinessTime } from "@fortawesome/free-solid-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 {/* <FontAwesomeIcon icon={faKey} /> */ }
 
 type NavItem = {
@@ -56,14 +57,16 @@ function navbar() {
 
             if (urlToken) {
                 localStorage.setItem("token", urlToken);
+                setAuthTokenCookie(urlToken);
                 window.history.replaceState({}, document.title, "/profile/home");
             }
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`http://127.0.0.1:8000/profile/settings/Update`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`http://localhost:8000/profile/home`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
+                    clearAuthTokenCookie();
                     router.push("/login");
                     return;
                 }
@@ -79,17 +82,20 @@ function navbar() {
 
     const handleLogout = async () => {
         try {
-            const res = await fetch("http://127.0.0.1:8000/logout", {
+            await fetch("http://localhost:8000/logout", {
                 method: "POST",
                 credentials: "include",
             });
-            const data = await res.json();
-            if (data.success) {
-                localStorage.removeItem("token");
-                window.location.href = "/login";
-            }
+            // Also clear frontend-domain auth cookies used by middleware/next-auth.
+            await fetch("/api/logout", { method: "POST" });
+            localStorage.removeItem("token");
+            clearAuthTokenCookie();
+            window.location.href = "/login";
         } catch (err) {
             console.error("Logout error:", err);
+            localStorage.removeItem("token");
+            clearAuthTokenCookie();
+            window.location.href = "/login";
         }
     };
 

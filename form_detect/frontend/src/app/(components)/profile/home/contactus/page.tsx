@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 type UserType = {
     name: string;
     subject: string;
@@ -30,13 +31,15 @@ export default function Contact() {
 
       if (urlToken) {
         localStorage.setItem("token", urlToken);
+        setAuthTokenCookie(urlToken);
         window.history.replaceState({}, document.title, "/profile/home");
       }
       const token = localStorage.getItem("token");
       if (!token) { router.push("/login"); return;   }
-      try { const res = await fetch(`http://127.0.0.1:8000/profile/home/contactus`, {  headers: { Authorization: `Bearer ${token}`,   }, credentials: "include",  });
+      try { const res = await fetch(`http://localhost:8000/profile/home/contactus`, {  headers: { Authorization: `Bearer ${token}`,   }, credentials: "include",  });
         if (res.status === 401) {
           localStorage.removeItem("token");
+          clearAuthTokenCookie();
           router.push("/profile/home/contactus");
           return;
         }
@@ -65,10 +68,10 @@ export default function Contact() {
                 body: JSON.stringify(user)
         })
     }
-    // useEffect
+
 
     return (
-        <div>
+        <div className="h-screen bg-green-300  text-black flex justify-center items-center">
             <div>
                 <form onSubmit={handleSubmit(SubmitedData)} >
                     <p>{verify.email}</p>

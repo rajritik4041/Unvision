@@ -5,17 +5,36 @@ import Link from "next/link";
 import ChatBot from "../../ChatBot/page";
 import Contact from "../ththththt/page"
 import Tomato from "../tomato/page";
-import Navbar from "../components/navbar/page"
+// import Navbar from "../components/navbar/page"
 import Update from "../setting/update/page"
 import Jake from "../home/j/page"
+<<<<<<< HEAD
 // import Navbar from "../../../components/navbar/page"
 import Support from "../components/Supports/page"
+=======
+import Navbar from "../../../components/navbar/page"
+import { usePathname } from "next/navigation";
+import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
+
+>>>>>>> e4cb5bb5f587d0e3849a40f958f4fc080694cc1c
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
-  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://unvision-first.onrender.com";
+  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+ const pathname = usePathname();
+
+  useEffect(() => {
+  const hasRefreshed = sessionStorage.getItem("hasRefreshed");
+
+  if (!hasRefreshed) {
+    sessionStorage.setItem("hasRefreshed", "true");
+    window.location.reload();
+  } else {
+    sessionStorage.removeItem("hasRefreshed");
+  }
+}, [pathname]);
   useEffect(() => {
     const fetchProfile = async () => {
       const params = new URLSearchParams(window.location.search);
@@ -23,14 +42,19 @@ export default function Profile() {
 
       if (urlToken) {
         localStorage.setItem("token", urlToken);
+        setAuthTokenCookie(urlToken);
         window.history.replaceState({}, document.title, "/profile/home");
       }
       const token = localStorage.getItem("token");
-      if (!token) { router.push("/login"); return; }
       try {
-        const res = await fetch(`http://127.0.0.1:8000/profile/home`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+        const headers: HeadersInit = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+        }
+        const res = await fetch(`${api}/profile/home`, { headers, credentials: "include" });
         if (res.status === 401) {
           localStorage.removeItem("token");
+          clearAuthTokenCookie();
           router.push("/login");
           return;
         }
@@ -41,25 +65,28 @@ export default function Profile() {
       finally { setLoading(false); }
     };
     fetchProfile();
-  }, [router]);
+  }, [api, router]);
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:8000/logout", {
+      await fetch(`${api}/logout`, {
         method: "POST",
         credentials: "include",
       });
-      const data = await res.json();
-      if (data.success) {
-        localStorage.removeItem("token");
-        window.location.href = "/login";
-      }
+      // Also clear frontend-domain auth cookies used by middleware/next-auth.
+      await fetch("/api/logout", { method: "POST" });
+      localStorage.removeItem("token");
+      clearAuthTokenCookie();
+      window.location.href = "/login";
     } catch (err) {
       console.error("Logout error:", err);
+      localStorage.removeItem("token");
+      clearAuthTokenCookie();
+      window.location.href = "/login";
     }
   };
   return (
-    <div className="p-4">
+    <div className="">
 
       <div>
         {/* <ChatBot /> */}
@@ -75,7 +102,7 @@ export default function Profile() {
           View Profile
         </div>
       </Link>
-         <Link href="/profile/policy">
+      <Link href="/profile/policy">
         <button className="bg-blue-500 text-white p-2 mt-4">
           View Profile
         </button>
