@@ -7,6 +7,8 @@ const PUBLIC_PATHS = new Set([
   "/signup",
   "/aboutus",
   "/about",
+  "/abouts",
+  "/blog",
   "/reviews",
   "/contactus",
   "/opertunities",
@@ -17,6 +19,16 @@ const PROFILE_ROOT = "/profile";
 const PROFILE_HOME = "/profile/home";
 
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  // Legacy paths ko working public routes par redirect karo.
+  if (path === "/abouts") {
+    return NextResponse.redirect(new URL("/about", request.url));
+  }
+  if (path === "/blog") {
+    return NextResponse.redirect(new URL("/reviews", request.url));
+  }
+
   const tokenFromQuery = (request.nextUrl.searchParams.get("token") ?? "").trim();
   if (tokenFromQuery && tokenFromQuery !== "undefined" && tokenFromQuery !== "null") {
     const response = NextResponse.next();
@@ -34,7 +46,6 @@ export async function middleware(request: NextRequest) {
   console.log("Token Direct:", request.cookies.get("token"));
   console.log("Token Value:", request.cookies.get("token")?.value);
 
-  const path = request.nextUrl.pathname;
   const isPublicPath = PUBLIC_PATHS.has(path);
   const isProfileRoute =
     path === PROFILE_ROOT || path.startsWith(`${PROFILE_ROOT}/`);
@@ -84,6 +95,8 @@ export const config = {
     "/signup",
     "/aboutus",
     "/about",
+    "/abouts",
+    "/blog",
     "/reviews",
     "/contactus",
     "/opertunities",
