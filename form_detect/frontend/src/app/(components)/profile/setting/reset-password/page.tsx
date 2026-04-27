@@ -347,7 +347,7 @@ export default function ResetPassword() {
                                     {errors2.oldpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.oldpassword}</p>)}
                                     <div className="relative w-full mt-4 ">
 
-                                        <input type="password" name="newpassword" onChange={setdata3} required className={setinputclass} />
+                                        <input type=" password" name="newpassword" onChange={setdata3} required className={setinputclass} />
                                         <label htmlFor="newpassword" className={setlabelclass}> New Password</label>
                                     </div>
                                     {errors2.newpassword && (<p style={{ color: "red", fontSize: 12, }}>{errors2.newpassword}</p>)}
