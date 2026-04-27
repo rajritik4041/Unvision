@@ -22,7 +22,8 @@ function Page() {
     setErrors((prev) => ({ ...prev, [e.target.name]: "", }));
   };
 
- const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const googleAuthUrl = `${api}/auth/google`;
   const onSubmit = async () => {
     try {
       setErrors({});
@@ -129,7 +130,7 @@ function Page() {
             </div>
 
             <button
-              onClick={() => window.location.href = "http://localhost:8000/auth/google"}
+              onClick={() => (window.location.href = googleAuthUrl)}
               className="w-full  bg-white text-black py-2 rounded-md shadow hover:bg-gray-100 transition"
             >
               Continue with Google

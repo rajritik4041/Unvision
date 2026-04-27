@@ -19,9 +19,7 @@ const PROFILE_HOME = "/profile/home";
 export async function middleware(request: NextRequest) {
   const tokenFromQuery = (request.nextUrl.searchParams.get("token") ?? "").trim();
   if (tokenFromQuery && tokenFromQuery !== "undefined" && tokenFromQuery !== "null") {
-    const cleanUrl = request.nextUrl.clone();
-    cleanUrl.searchParams.delete("token");
-    const response = NextResponse.redirect(cleanUrl);
+    const response = NextResponse.next();
     response.cookies.set("token", tokenFromQuery, {
       httpOnly: false,
       secure: process.env.NODE_ENV === "production",
