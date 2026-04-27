@@ -19,6 +19,8 @@ export default function ResetPassword() {
     const [page1, setpage1] = useState<boolean>(false)
     const [page2, setpage2] = useState<boolean>(false)
     const [page3, setpage3] = useState<boolean>(false)
+    const [page4, setpage4] = useState<boolean>(false)
+    const [page5, setpage5] = useState<boolean>(false)
     const [errors, setErrors] = useState<ErrorType>({});
     const [errors2, setErrors2] = useState<ErrorType>({});
     const [user, setUser] = useState<userType>({
@@ -53,7 +55,7 @@ export default function ResetPassword() {
             });
             const result = await res.json();
             if (res.status === 429) {
-                setErrors({ general: result.message }); 
+                setErrors({ general: result.message });
                 return;
             }
             if (!result.success) {
@@ -84,10 +86,12 @@ export default function ResetPassword() {
     const SetClick1 = async () => {
         setpage2(false)
         setpage1(true)
+        setpage5(true)
     }
     const SetClick2 = async () => {
         setpage1(false)
         setpage2(true)
+        setpage4(true)
     }
 
     const SubmitData2 = async () => {
@@ -210,11 +214,16 @@ export default function ResetPassword() {
                                 <input type="submit" value="Submited" />
                             </form>
                         </div>
-                    </div> : <div className=" bg-green-400 text-center h-10 w-60  rounded-md pt-2">
-                        <div className=" ">
-                            <button onClick={SetClick1}>Reset Password Using OTP </button> <br />
-                        </div>
-                    </div>
+                    </div> :
+                        page4 ?
+                            <div>
+
+                            </div> : <div>
+                                <div className=" bg-green-400 text-center h-10 w-60  rounded-md pt-2">
+                                    <div className=" ">
+                                        <button onClick={SetClick1}>Reset Password Using OTP </button> <br />
+                                    </div>
+                                </div> </div>
 
                     }
 
@@ -230,18 +239,32 @@ export default function ResetPassword() {
                                         <input type="email" name="email" onChange={setdata} required className={setinputclass} />
                                         <label htmlFor="email" className={setlabelclass} >Email : </label>
                                     </div>
-                                        {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
-                                        <div className="text-center w-full ">
-                                            <input type="submit" value="Submit" className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" /></div>
+                                    {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
+                                    <div className="text-center w-full ">
+                                        <input type="submit" value="Submit" className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" /></div>
                                 </form>
+                                <div className="mt-2 w-full text-center  ">
+
+                                    <p className=" text-black-700 w-full text-center mt-4 rounded-lg " >
+                                        <Link className="w-96  bg-red-600  rounded-lg py-1 px-3 text-center " href="/">
+                                            Back</Link>
+                                    </p>
+
+                                </div>
                             </div>
                         </div> :
-                        <div className="bg-yellow-400-400 text-center text-white pt-1  mt-6 bg-green-700 h-11 w-60 rounded-md border-2 ">
-                            <div  >
+                        page5 ?
 
-                                <button onClick={SetClick2}>Reset Password Using Link</button> <br />
+                            <div></div>
+                            :
+                            <div>
+                                <div className="bg-yellow-400-400 text-center text-white pt-1  mt-6 bg-green-700 h-11 w-60 rounded-md border-2 ">
+                                    <div  >
+                                        <button onClick={SetClick2}>Reset Password Using Link</button> <br />
+                                    </div>
+                                </div>
                             </div>
-                        </div>}
+                    }
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ from slowapi.util import get_remote_address
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi.errors import RateLimitExceeded
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from app.core.limiter import limiter  
 from app.routes import user, auth, chat, send, signup, login, logout, profile
 app = FastAPI()
@@ -14,6 +15,7 @@ app = FastAPI()
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 @app.exception_handler(RateLimitExceeded)
 async def handle_rate_limit(request: Request, exc: RateLimitExceeded):
