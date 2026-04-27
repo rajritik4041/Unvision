@@ -8,15 +8,11 @@ import Tomato from "../tomato/page";
 // import Navbar from "../components/navbar/page"
 import Update from "../setting/update/page"
 import Jake from "../home/j/page"
-<<<<<<< HEAD
-// import Navbar from "../../../components/navbar/page"
-import Support from "../components/Supports/page"
-=======
 import Navbar from "../../../components/navbar/page"
 import { usePathname } from "next/navigation";
+import Support from "../components/Supports/page";
 import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 
->>>>>>> e4cb5bb5f587d0e3849a40f958f4fc080694cc1c
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);

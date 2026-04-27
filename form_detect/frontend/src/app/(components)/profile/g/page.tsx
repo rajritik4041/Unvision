@@ -3,8 +3,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react"
+
 export default function Profile() {
-  const router = useRouter();
+    const router = useRouter();
   return (
     <div>
       <div className=" h-screen bg-linear-to-r from-sky-200 to-emerald-200 justify-center">
