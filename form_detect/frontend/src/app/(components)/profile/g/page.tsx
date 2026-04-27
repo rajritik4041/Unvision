@@ -13,7 +13,7 @@ export default function Profile() {
 
 
 
-          <div className=" w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 text-justify bg-lime-400 ">
+          <div className=" w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 text-justify bg-sky-400 ">
             <img src="https://cdn.iconsax.io/icons/free/rounded/business/bold/personalcard_user-profile-contact-information-id-card-temp.webp" alt="" />
             <div className="place-items-center gap-2 p-5 m-2 sm:text-lg md:text-[18px]  font-semibold font-serif text-white     justify-items-center items-center text-center">
               <h2>" Dectect Early.Act Smart.Live Better "</h2>
@@ -22,7 +22,7 @@ export default function Profile() {
 
 
 
-          <div className="w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-lime-400 "><img src="https://cdn.iconsax.io/icons/free/rounded/location/bold/global-search_find-query-explore-search-results-information-temp.webp" alt="" />
+          <div className="w-full h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-sky-400 "><img src="https://cdn.iconsax.io/icons/free/rounded/location/bold/global-search_find-query-explore-search-results-information-temp.webp" alt="" />
 
 
             <div className=" place-items-center  gap-2 p-6 m-2  font-semibold font-serif  justify-items-center items-center  text-justify">
@@ -36,7 +36,7 @@ export default function Profile() {
 
 
 
-          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-lime-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/travel/linear/search_magnifying-glass-find-query-locate-discover-information-temp.webp" alt="" />
+          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-sky-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/travel/linear/search_magnifying-glass-find-query-locate-discover-information-temp.webp" alt="" />
 
             <div className=" place-items-center  gap-2 p-5 m-2  font-semibold font-serif justify-items-center items-center text-justify"><p className="sm:text-lg md:text-[18px">Search for health information and resources.</p>
             </div>
@@ -44,7 +44,7 @@ export default function Profile() {
 
           </div>
 
-          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-lime-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/essential/linear/question-mark-circle_help-information-query-support-assistance-faq-temp.webp" alt="" />
+          <div className="w-fit h-full pt-8 justify-items-center hover:scale-110 transition text-white hover:bg-blue-500 bg-sky-400 "><img className="hover:scale-110 transition" src="https://cdn.iconsax.io/icons/pro/rounded/essential/linear/question-mark-circle_help-information-query-support-assistance-faq-temp.webp" alt="" />
 
             <div className=" place-items-center  gap-2 p-5 m-2 font-semibold font-serif justify-items-center items-center text-justify"><p className="  sm:text-lg md:text-[18px] ">Get help and support for your health-related questions.</p>
             </div>

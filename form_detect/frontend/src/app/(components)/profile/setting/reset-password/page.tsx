@@ -326,7 +326,7 @@ export default function ResetPassword() {
             <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white">
                 {
                     Heading ? <div>
-                        <h2 className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password </h2>
+                        <h2 className=" text-center mb-6 text-green-700 text-2xl  font-bold">🌿 Reset Password </h2>
 
                     </div> : <div>
 
