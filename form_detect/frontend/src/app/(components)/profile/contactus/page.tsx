@@ -79,7 +79,7 @@ export default function Contact() {
                     <p>{verify.email}</p>
                     <label htmlFor="name">Name </label>
                     <input type="text" name="name" onChange={handleChange} />
-                    <label htmlFor="subject">Subject </label>
+                    <label htmlFor="subject">Subject hh</label>
                     <input type="text" name="subject" onChange={handleChange} />
                      <label htmlFor="message">Message </label>
                     <input type="text" name="message" onChange={handleChange} />
