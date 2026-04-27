@@ -32,8 +32,13 @@ export default function ResetPassword() {
     const [page4, setpage4] = useState<boolean>(false)
     const [page5, setpage5] = useState<boolean>(false)
     const [page6, setpage6] = useState<boolean>(false)
+    const [loading1, setloading1] = useState<boolean>(false)
+    const [loading2, setloading2] = useState<boolean>(false)
+    const [loading3, setloading3] = useState<boolean>(false)
+    const [loading4, setloading4] = useState<boolean>(false)
     const [errors, setErrors] = useState<ErrorType>({});
     const [back, setback] = useState<boolean>(false);
+    const [Heading, setHeading] = useState<boolean>(false);
     const [errors2, setErrors2] = useState<ErrorType>({});
     const [errors3, setErrors3] = useState<ErrorType>({});
     const [user, setUser] = useState<userType>({
@@ -303,9 +308,12 @@ export default function ResetPassword() {
     useEffect(() => {
         if (!page1 && !page2 && !page3 && !page4 && !page5 && !page6) {
             setback(true);
+            setHeading(true);
         }
-        else
+        else {
+            setHeading(false);
             setback(false)
+        }
         setSuccess(false)
     }, [page1, page2, page3, page4, page5, page6]);
 
@@ -316,7 +324,14 @@ export default function ResetPassword() {
     return (
         <div className="h-screen bg-green-300  text-black flex justify-center items-center" >
             <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white">
+                {
+                    Heading ? <div>
+                        <h2 className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password </h2>
 
+                    </div> : <div>
+
+                    </div>
+                }
                 {
                     page4 ? <div>
                     </div> :
