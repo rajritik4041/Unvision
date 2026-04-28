@@ -108,7 +108,7 @@ function Navbar() {
         </div>
     </div>;
     return (
-        <div>
+        <div className="shadow-md">
             {user ? (
                 <div>
 
@@ -157,7 +157,7 @@ function Navbar() {
                                     <div className='bg-green-500' >
                                         {isOpen && (
                                             <div>
-                                                <div className="absolute top-20 right-0 flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
+                                                <div className="absolute top-20 z-1 right-0 flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
                                                     <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">
                                                         <div>
                                                             {user && (
@@ -244,7 +244,7 @@ function Navbar() {
                                     <div className='bg-green-500' >
                                         {isOpen && (
                                             <div>
-                                                <div className="absolute top-20 right-0 flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
+                                                <div className="absolute top-20 right-0 z-1 flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
                                                     <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">  <div>
                                                         {user && (
                                                             <div className="my-10">
@@ -354,7 +354,7 @@ function Navbar() {
                                 <button onClick={() => setIsOpen(!isOpen)} className='h-10 p-1 m-1.5  w-28 text-[15px] font-bold bg-black text-white rounded-[11px] '>Menu</button>
                                 <div className='bg-green-500' >
                                     {isOpen && (
-                                        <div className='absolute top-20 right-0 bg-green-300  '>
+                                        <div className='absolute top-20 z-1 right-0 bg-green-300  '>
                                             <ul className='decoration-0  flex flex-col items-center  ' >
                                                 {PublicNavbar.map((item) => (<li key={item.id} className=' shadow my-1 w-full  px-6  hover:transition hover:bg-green-500  '> <Link
                                                     href={item.link}>{item.name}</Link> </li>))}
