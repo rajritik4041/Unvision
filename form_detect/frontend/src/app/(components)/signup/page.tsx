@@ -38,8 +38,8 @@ export default function Signup() {
     "absolute left-4 top-3 text-black text-sm transition-all duration-200 pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-green-500 peer-valid:top-1 peer-valid:text-xs peer-valid:text-green-400 ";
 
   const setpage = async () => { setfirstpage(true); }
-  const api = process.env.NEXT_PUBLIC_API_URL || "https://unvision-first.onrender.com";
-  const api2 = process.env.NEXT_PUBLIC_API_URL2 || "https://unvision.vercel.app";
+  const api = process.env.NEXT_PUBLIC_API_URL || "https://api.apnawebtech.online";
+  const api2 = process.env.NEXT_PUBLIC_API_URL2 || "https://www.apnawebtech.online";
   const [user, setUser] = useState<UserType>({
     first_name: "", last_name: "", date_of_birth: "", age: "", username: "",
     email: "", password: "", confirmPassword: "", country: "", state: "",
@@ -381,7 +381,7 @@ export default function Signup() {
 
                 <div
                   // onClick={() => window.location.href = "https://unvision-first.onrender.com/auth/google"}
-                  onClick={() => window.location.href = "http://localhost:8000/auth/google"}
+                  onClick={() => window.location.href = "https://api.apnawebtech.online/auth/google"}
                   className="w-full  bg-white text-black py-2 rounded-md shadow hover:bg-gray-500 transition"
                 >
                   Continue with Google

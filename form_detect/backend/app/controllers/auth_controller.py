@@ -96,7 +96,7 @@ async def handle_login(provider: str, user: dict):
 
 
     token = create_token({"email": email})
-    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
+    frontend_url = os.getenv("FRONTEND_URL", "https://www.apnawebtech.online").rstrip("/")
     response = RedirectResponse(
         url=f"{frontend_url}/profile/home?token={token}",
         status_code=302

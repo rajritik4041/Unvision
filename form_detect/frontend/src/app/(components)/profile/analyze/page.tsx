@@ -28,7 +28,7 @@ export default function ImageUpload() {
       const token = localStorage.getItem("token");
 
       const res = await axios.post(
-        "http://127.0.0.1:8000/predict",
+        "https://api.apnawebtech.online/predict",
         formData,
         {
           headers: {

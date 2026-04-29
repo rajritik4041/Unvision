@@ -127,7 +127,7 @@ export default function Update() {
             formData.append("file", profileFile);
         }
 
-        await fetch("http://localhost:8000/profile/set", {
+        await fetch("https://api.apnawebtech.online/profile/set", {
             method: "POST",
             body: formData,
             credentials: "include",
@@ -146,7 +146,7 @@ export default function Update() {
                             <img
                                 src={
                                     user?.profilePic
-                                        ? `http://localhost:8000/${user.profilePic}`
+                                        ? `https://api.apnawebtech.online/${user.profilePic}`
                                         : "/default.png"
                                 }
                                 className=" object-cover rounded-full w-40 h-40 "

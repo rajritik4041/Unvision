@@ -16,7 +16,7 @@ export default function ChatBot() {
 
   const fetchChats = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/chats", {
+      const res = await axios.get("https://api.apnawebtech.online/chats", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -46,7 +46,7 @@ export default function ChatBot() {
     setloading(true)
     try {
       const res = await axios.post(
-        "http://localhost:8000/chat",
+        "https://api.apnawebtech.online/chat",
         { message, chat_id: chatId },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -75,7 +75,7 @@ export default function ChatBot() {
       setChatId(id);
 
       const res = await axios.get(
-        `http://localhost:8000/chat/${id}`,
+        `https://api.apnawebtech.online/chat/${id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -95,7 +95,7 @@ export default function ChatBot() {
 
   const deleteChat = async (id: string) => {
     try {
-      await axios.delete(`http://localhost:8000/chat/${id}`, {
+      await axios.delete(`https://api.apnawebtech.online/chat/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

@@ -40,7 +40,7 @@ export default function Contact() {
             const token = localStorage.getItem("token");
             if (!token) { router.push("/login"); return; }
             try {
-                const res = await fetch(`http://localhost:8000/profile/home/contactus`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
+                const res = await fetch(`https://api.apnawebtech.online/profile/home/contactus`, { headers: { Authorization: `Bearer ${token}`, }, credentials: "include", });
                 if (res.status === 401) {
                     localStorage.removeItem("token");
                     clearAuthTokenCookie();

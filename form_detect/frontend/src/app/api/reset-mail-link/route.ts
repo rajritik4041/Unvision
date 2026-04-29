@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     });
   }
   const id = collection._id;
-  const link = `/reset-password/${id}`
+  const link = `https://www.apnawebtech.online/reset-password/${id}`
 
   const now = new Date();
   const LIMIT = 3;

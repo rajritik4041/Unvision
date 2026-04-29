@@ -28,7 +28,7 @@ export default function ResetPasswordPage() {
     };
     const automail = async (): Promise<void> => {
         try {
-            const res = await fetch(`http://localhost:3000/api/send-reset-message`, {
+            const res = await fetch(`https://www.apnawebtech.online/api/send-reset-message`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id }),
@@ -45,7 +45,7 @@ export default function ResetPasswordPage() {
     const Submited = async (): Promise<void> => {
         try {
             console.log(verify.password);
-            const res = await fetch(`http://localhost:8000/reset-password/${id}`, {
+            const res = await fetch(`https://api.apnawebtech.online/reset-password/${id}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id, password: verify.password }),

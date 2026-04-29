@@ -53,7 +53,7 @@ export default function ResetPassword() {
             console.log(user.email);
             const newOtp = Math.floor(100000 + Math.random() * 900000).toString();
             setOtp(newOtp);
-            const res = await fetch("http://localhost:3000/api/reset-mail-otp", {
+            const res = await fetch("https://www.apnawebtech.online/api/reset-mail-otp", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, otp: newOtp }),
@@ -106,7 +106,7 @@ export default function ResetPassword() {
             setErrors({});
             const email = user.email; if (!email || email.trim() === "") { alert("Please enter email first"); return; }
             console.log(user.email);
-            const res = await fetch("http://localhost:3000/api/reset-mail-link", {
+            const res = await fetch("https://www.apnawebtech.online/api/reset-mail-link", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email }),
@@ -141,7 +141,7 @@ export default function ResetPassword() {
         try {
             const email = user.email;
 
-            const res = await fetch("http://localhost:8000/reset-password", {
+            const res = await fetch("https://api.apnawebtech.online/reset-password", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

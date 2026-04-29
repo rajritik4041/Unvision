@@ -11,7 +11,7 @@ export const useAuth = () => useContext(AuthContext);
 export default function AuthProvider({ children }: any) {
   const router = useRouter();
   const pathname = usePathname();
-  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.apnawebtech.online";
 
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -54,7 +54,7 @@ export default function AuthProvider({ children }: any) {
           return;
         }
 
-        const res = await fetch("http://127.0.0.1:8000/profile/settings/Update",
+        const res = await fetch("https://api.apnawebtech.online/profile/settings/Update",
           {
             headers: {
               Authorization: `Bearer ${token}`,

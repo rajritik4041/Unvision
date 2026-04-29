@@ -28,7 +28,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
 
 
-  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.apnawebtech.online";
   const pathname = usePathname();
 
   useEffect(() => {
@@ -300,7 +300,7 @@ const testimonials: testimonials[] = [
 //       const token = localStorage.getItem("token");
 
 //       const res = await axios.post(
-//         "http://127.0.0.1:8000/predict",
+//         "https://api.apnawebtech.online/predict",
 //         formData,
 //         {
 //           headers: {

@@ -44,7 +44,7 @@ type Nav2Item = {
 function Navbar() {
     const router = useRouter();
     const { user, loading } = useAuth();
-    const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+    const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.apnawebtech.online";
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [page, setpage] = useState<boolean>(false)
     const [refreshKey, setRefreshKey] = useState(0);
@@ -147,7 +147,7 @@ function Navbar() {
                                             <img
                                                 src={
                                                     user?.profilePic
-                                                        ? `http://localhost:8000/${user.profilePic}`
+                                                        ? `https://api.apnawebtech.online/${user.profilePic}`
                                                         : "/default.png"
                                                 }
                                                 className="w-16 h-12 object-cover  rounded-[70px]"
@@ -168,7 +168,7 @@ function Navbar() {
                                                                         <img
                                                                             src={
                                                                                 user?.profilePic
-                                                                                    ? `http://localhost:8000/${user.profilePic}`
+                                                                                    ? `https://api.apnawebtech.online/${user.profilePic}`
                                                                                     : "/default.png"
                                                                             }
                                                                             className="w-16 h-16 object-cover rounded-[70px]"
@@ -226,7 +226,7 @@ function Navbar() {
                                             <img
                                                 src={
                                                     user?.profilePic
-                                                        ? `http://localhost:8000/${user.profilePic}`
+                                                        ? `https://api.apnawebtech.online/${user.profilePic}`
                                                         : "/default.png"
                                                 }
                                                 className="w-16 h-12 object-cover rounded-[70px]"
@@ -246,7 +246,7 @@ function Navbar() {
                                                                     <img
                                                                         src={
                                                                             user?.profilePic
-                                                                                ? `http://localhost:8000/${user.profilePic}`
+                                                                                ? `https://api.apnawebtech.online/${user.profilePic}`
                                                                                 : "/default.png"
                                                                         }
                                                                         className="w-16 h-16 object-cover rounded-[70px]"

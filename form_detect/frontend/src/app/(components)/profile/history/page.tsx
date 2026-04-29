@@ -11,7 +11,7 @@ export default function History() {
   }, []);
 
   const fetchHistory = async () => {
-    const res = await axios.get("http://localhost:8000/history", {
+    const res = await axios.get("https://api.apnawebtech.online/history", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`
       },
@@ -30,7 +30,7 @@ export default function History() {
           <div key={index} className=" w-full h-full ">
             <div className="bg-green-200 rounded-3xl py-6 gap-0 px-4 grid grid-cols-2">
               <div>
-                <img className="w-40 h-40 rounded-2xl bg-green-200" src={`http://localhost:8000/${item.image_url}`} />
+                <img className="w-40 h-40 rounded-2xl bg-green-200" src={`https://api.apnawebtech.online/${item.image_url}`} />
               </div>
               <div className="flex justify-center flex-1 pl-4 flex-col text-md ">
                 <div className="grid grid-rows-2">

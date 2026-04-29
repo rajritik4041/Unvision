@@ -24,7 +24,7 @@ function Page() {
     setErrors((prev) => ({ ...prev, [e.target.name]: "", }));
   };
 
-  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8000";
+  const api = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.apnawebtech.online";
   const googleAuthUrl = `${api}/auth/google`;
   const onSubmit = async () => {
     try {

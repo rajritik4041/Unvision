@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "https://api.apnawebtech.online";
 
 export const getUsers = async () => {
   const res = await fetch(`${BASE_URL}/users`);
@@ -8,7 +8,7 @@ export const getUsers = async () => {
 //   const formData = new FormData();
 //   formData.append("file", file);
 
-//   const res = await fetch("http://127.0.0.1:8000/predict", {
+//   const res = await fetch("https://api.apnawebtech.online/predict", {
 //     method: "POST",
 //     body: formData,
 //   });
