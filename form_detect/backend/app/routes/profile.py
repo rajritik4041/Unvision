@@ -217,9 +217,14 @@ collection= db["History"]
 from transformers import pipeline
 from PIL import Image
 
-# 🔥 model load (ek baar hi load hoga)
-classifier = pipeline("image-classification")
-
+def get_model():
+    global classifier
+    if classifier is None:
+        classifier = pipeline(
+            "image-classification",
+            model="google/vit-base-patch16-224"
+        )
+    return classifier
 @router.post("/predict")
 async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
     
@@ -230,15 +235,13 @@ async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # 🧠 IMAGE LOAD
     image = Image.open(file_path)
 
-    # 🔥 PREDICT
-    result = classifier(image)
+    model = get_model()   # ✅ use this
+    result = model(image)
 
     label = result[0]["label"]
     confidence = float(result[0]["score"])
-
 
     await collection.insert_one({
         "user_id": str(user["_id"]),
@@ -252,7 +255,6 @@ async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
         "label": label,
         "confidence": confidence
     }
-
 @router.get("/history")
 async def get_history(user=Depends(verify_token)):
     
