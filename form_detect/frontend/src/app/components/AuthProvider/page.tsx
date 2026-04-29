@@ -34,6 +34,7 @@ export default function AuthProvider({ children }: any) {
 
   useEffect(() => {
     const fetchProfile = async () => {
+      setLoading(true);
       try {
         const params = new URLSearchParams(window.location.search);
         const urlToken = params.get("token");
@@ -54,14 +55,13 @@ export default function AuthProvider({ children }: any) {
           return;
         }
 
-        const res = await fetch("https://api.apnawebtech.online/profile/settings/Update",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${apiBase}/profile/home`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+          cache: "no-store",
+        });
 
         if (res.status === 401) {
           localStorage.removeItem("token");
@@ -73,7 +73,7 @@ export default function AuthProvider({ children }: any) {
 
         const data = await res.json();
 
-        if (data.success) {
+        if (data?.success && data?.user) {
           setUser(data.user);
         } else {
           setUser(null);
@@ -86,7 +86,7 @@ export default function AuthProvider({ children }: any) {
     };
 
     fetchProfile();
-  }, [apiBase]);
+  }, [apiBase, pathname]);
 
   return (
     <AuthContext.Provider value={{ user, loading }}>
