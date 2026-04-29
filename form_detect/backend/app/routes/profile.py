@@ -161,7 +161,7 @@ class UpdateModel(BaseModel):
 @router.post("/profile/set")
 async def set( user=Depends(verify_token),
     first_name: str = Form(None),   last_name: str = Form(None),   username: str = Form(None),
-    email: str = Form(None),    Bio: str = Form(None), date_of_birth: str = Form(None),
+    Bio: str = Form(None), date_of_birth: str = Form(None),
     age: int = Form(None),  country: str = Form(None),   state: str = Form(None),
     city: str = Form(None),   gender: str = Form(None),  file: UploadFile = File(None)
 ):
@@ -173,8 +173,6 @@ async def set( user=Depends(verify_token),
         update_data["last_name"] = last_name
     if username is not None:
         update_data["username"] = username
-    if email is not None:
-        update_data["email"] = email
     if Bio is not None:
         update_data["Bio"] = Bio
     if date_of_birth is not None:
@@ -241,7 +239,7 @@ async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
     label = result[0]["label"]
     confidence = float(result[0]["score"])
 
-    # ✅ SAVE TO DB
+
     await collection.insert_one({
         "user_id": str(user["_id"]),
         "image_url": file_path,
