@@ -22,8 +22,9 @@ import { faRocket, faBriefcase, faBullseye } from "@fortawesome/free-solid-svg-i
 import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faBusinessTime } from "@fortawesome/free-solid-svg-icons";
 import { faKey } from "@fortawesome/free-solid-svg-icons";
+import { faUserLock } from "@fortawesome/free-solid-svg-icons";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { usePathname } from "next/navigation";
-
 import { useAuth } from "@/app/components/AuthProvider/page";
 import { clearAuthTokenCookie } from "@/lib/auth-cookie";
 {/* <FontAwesomeIcon icon={faKey} /> */ }
@@ -38,6 +39,7 @@ type Nav2Item = {
     id: number;
     name: string;
     link: string;
+    image: IconDefinition;
 };
 function Navbar() {
     const router = useRouter();
@@ -89,10 +91,10 @@ function Navbar() {
         { id: 6, name: "Reset Password", link: "/profile/setting/reset-password", image: faKey }
     ]
 
-    const btnname: Nav2Item[] = [{ id: 1, name: "Sign Up", link: "/signup" }, { id: 2, name: "Login", link: "/login" }];
+    const btnname: Nav2Item[] = [{ id: 1, name: "Sign Up", link: "/signup", image: faUserPlus }, { id: 2, name: "Login", link: "/login", image: faUserLock }];
     if (loading) return <div>
         <div>
-            <div className='bg-green-400  relative  p-2 h-20 w-auto text-white' >
+            <div className='bg-white  relative  p-2 h-20 w-auto text-white' >
                 <div className='flex   justify-between items-center text-sm h-full '>
                     <div> <h2 className=' p-1 '>
                         <Link href="/">
@@ -101,19 +103,19 @@ function Navbar() {
                     </h2>
                     </div>
                     <div>
-                     <FontAwesomeIcon icon={faCircleUser} />
+                        <FontAwesomeIcon icon={faCircleUser} />
                     </div>
                 </div>
             </div>
         </div>
     </div>;
     return (
-        <div className="shadow-md">
+        <div className="shadow-md z-1 ">
             {user ? (
                 <div>
 
                     <div>
-                        <div className='bg-green-400  relative  p-2 h-20 w-auto text-white' >
+                        <div className='bg-white  relative  p-2 h-20 w-auto text-black' >
                             <div className='flex   justify-between items-center text-sm h-full '>
                                 <div>
                                     <h2 className=' p-1 '>
@@ -123,8 +125,8 @@ function Navbar() {
                                     </h2>
                                 </div>
                                 <div className='display-none '>
-                                    <ul className='decoration-0 lg:flex hidden w-full   items-center  m-1' >
-                                        {Navbar.map((item) => (<li key={item.id} className=' px-2 '>
+                                    <ul className='decoration-0 lg:flex hidden w-full text-xl  items-center  m-1' >
+                                        {Navbar.map((item) => (<li key={item.id} className='  hover:text-blue-500 hover:underline px-2 '>
                                             <Link href={item.link}>{item.name}
                                             </Link>
                                         </li>))}
@@ -148,20 +150,20 @@ function Navbar() {
                                                         ? `http://localhost:8000/${user.profilePic}`
                                                         : "/default.png"
                                                 }
-                                                className="w-16 object-cover rounded-[70px]"
+                                                className="w-16 h-12 object-cover  rounded-[70px]"
                                                 alt="profile"
                                             />
                                         )}
                                     </button>
 
-                                    <div className='bg-green-500' >
+                                    <div className='bg-white text-black' >
                                         {isOpen && (
                                             <div>
-                                                <div className="absolute top-20 z-1 right-0 flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
-                                                    <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">
+                                                <div className="absolute top-20 z-1 right-0 flex flex-col justify-center w-fit p-4 bg-white">
+                                                    <div className="w-full  rounded-2xl bg-gray-300 p-2 text-center">
                                                         <div>
                                                             {user && (
-                                                                <div className="my-10">
+                                                                <div className="my-10 text-black mx-10 ">
                                                                     <div className=" w-full flex justify-center  ">
                                                                         <img
                                                                             src={
@@ -181,42 +183,34 @@ function Navbar() {
                                                         </div>
 
                                                     </div>
-                                                    <div className="mt-2 gap-0.5">
-                                                        <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
-                                                            <Link href="/profile/components/about">
-                                                                <FontAwesomeIcon className="h-3 w-3" icon={faCircleUser} /> Profile
-                                                            </Link>
-                                                        </div>
-                                                        <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+                                                    <div className="mt-2 gap-1">
 
-                                                            <Link href="/profile/components/sync">
-                                                                <FontAwesomeIcon className="h-3 w-3" icon={faRotate} size="xs" />
-                                                                Sync is on
-                                                            </Link>
-                                                        </div >
-                                                        <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
-                                                            <Link href="/profile/components/support">
-                                                                <FontAwesomeIcon className="h-3 w-3" icon={faCircleQuestion} /> help
-                                                            </Link>
-                                                        </div>
-                                                        <div className=' bg-amber-400 '>
+                                                        <div className='  '>
                                                             {
                                                                 ExtraLink.map((items) => (
-                                                                    <div key={items.id}>
-                                                                        <Link href={items.link} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
+                                                                    <div key={items.id} className='shadow mt-1 group   '>
+                                                                        <Link href={items.link} className="flex items-center gap-2 p-2 hover:bg-gray-200 hover:text-blue-400 rounded">
                                                                             <FontAwesomeIcon
-                                                                                className="h-4 w-4 text-gray-600" icon={items.image} />
+                                                                                className="h-4 w-4 text-gray-600 group-hover:text-blue-400 " icon={items.image} />
                                                                             <span>{items.name}</span>
 
                                                                         </Link>
                                                                     </div>
                                                                 ))
                                                             }
+
+
+                                                            <Link href="/profile/components/Supports">
+                                                                <div className=" hover:bg-gray-200 hover:text-blue-400 shadow pl-2 py-2  my-1 cursor-pointer ">
+                                                                    <FontAwesomeIcon className="h-3 w-3" icon={faCircleQuestion} /> help
+                                                                </div>
+                                                            </Link>
                                                             <div>
-                                                                <div onClick={handleLogout}>  <FontAwesomeIcon className="h-3 w-3" icon={faArrowRightFromBracket} />Sign out</div>
+                                                                <div className='shadow py-2 pl-2 hover:bg-gray-200 hover:text-blue-400 cursor-pointer mt-2  ' onClick={handleLogout}>  <FontAwesomeIcon className="h-3 w-3" icon={faArrowRightFromBracket} />Sign out</div>
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         )}
@@ -241,13 +235,13 @@ function Navbar() {
                                         )}
 
                                     </button>
-                                    <div className='bg-green-500' >
+                                    <div className='bg-white' >
                                         {isOpen && (
                                             <div>
-                                                <div className="absolute top-20 right-0 z-1 flex flex-col justify-center w-[380\px] p-4 rounded-2xl bg-green-400">
-                                                    <div className="w-[350\px]  rounded-2xl bg-red-500 p-2 text-center">  <div>
+                                                <div className="absolute top-20 right-0 z-1 flex flex-col justify-center w-fit p-4 bg-white">
+                                                    <div className="w-full  rounded-2xl bg-gray-200 p-2 text-center">  <div>
                                                         {user && (
-                                                            <div className="my-10">
+                                                            <div className="my-10 mx-10">
                                                                 <div className=" w-full flex justify-center  ">
                                                                     <img
                                                                         src={
@@ -268,34 +262,18 @@ function Navbar() {
 
                                                     </div>
 
-                                                    <div className="mt-2 gap-0.5">
-                                                        <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
-                                                            <Link href="/profile/components/about">
-                                                                <FontAwesomeIcon className="h-3 w-3" icon={faCircleUser} /> Profile
-                                                            </Link>
-                                                        </div>
-                                                        <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
+                                                    <div className="mt-2 gap-2">
 
-                                                            <Link href="/profile/components/sync">
-                                                                <FontAwesomeIcon className="h-3 w-3" icon={faRotate} size="xs" />
-                                                                Sync is on
-                                                            </Link>
-                                                        </div >
-                                                        <div className=" hover:bg-lime-500 pl-2 py-0.5 rounded-2xl cursor-pointer ">
-                                                            <Link href="/profile/components/support">
-                                                                <FontAwesomeIcon className="h-3 w-3" icon={faCircleQuestion} /> help
-                                                            </Link>
-                                                        </div>
 
                                                         <div>
 
-                                                            <div className=' bg-amber-400 pl-2 '>
+                                                            <div className=' '>
                                                                 {
                                                                     Navbar.map((items) => (
-                                                                        <div key={items.id}>
-                                                                            <Link href={items.link} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
+                                                                        <div key={items.id} className='shadow hover:text-blue-400 text-black group'>
+                                                                            <Link href={items.link} className="flex items-center gap-2 p-2 hover:bg-gray-200 rounded">
                                                                                 <FontAwesomeIcon
-                                                                                    className="h-4 w-4 text-gray-600" icon={items.image} />
+                                                                                    className="h-4 w-4 text-black group-hover:text-blue-400 " icon={items.image} />
                                                                                 <span>{items.name}</span>
 
                                                                             </Link>
@@ -303,18 +281,24 @@ function Navbar() {
                                                                     ))
                                                                 }      {
                                                                     ExtraLink.map((items) => (
-                                                                        <div key={items.id}>
-                                                                            <Link href={items.link} className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded">
+                                                                        <div key={items.id} className='group hover:text-blue-400 shadow mt-1'>
+                                                                            <Link href={items.link} className="flex items-center gap-2 text-black p-2 hover:text-blue-400 hover:bg-gray-100 rounded">
                                                                                 <FontAwesomeIcon
-                                                                                    className="h-4 w-4 text-gray-600" icon={items.image} />
+                                                                                    className="h-4 w-4 text-black group-hover:text-blue-400 " icon={items.image} />
                                                                                 <span>{items.name}</span>
 
                                                                             </Link>
                                                                         </div>
                                                                     ))
                                                                 }
+
+                                                                <Link href="/profile/components/Supports">
+                                                                    <div className=" hover:bg-gray-200 text-black shadow pl-2 py-2 mt-1 hover:text-blue-400  cursor-pointer ">
+                                                                        <FontAwesomeIcon className="h-3 w-3" icon={faCircleQuestion} /> help
+                                                                    </div>
+                                                                </Link>
                                                                 <div>
-                                                                    <div onClick={handleLogout}>  <FontAwesomeIcon className="h-3 w-3" icon={faArrowRightFromBracket} />Sign out</div>
+                                                                    <div className='hover:text-blue-400 shadow mt-1 py-2 pl-2 text-black' onClick={handleLogout}>  <FontAwesomeIcon className="h-3 w-3" icon={faArrowRightFromBracket} />Sign out</div>
                                                                 </div>
                                                             </div>
 
@@ -336,7 +320,7 @@ function Navbar() {
                 </div>
             ) : (
                 <div>
-                    <div className='bg-green-400  relative  p-2 h-20 w-auto text-white' >
+                    <div className='bg-white text-black relative  p-2 h-20 w-auto ' >
                         <div className='flex   justify-between items-center text-sm h-full '>
                             <div> <h2 className=' p-1 '>
                                 <Link href="/">
@@ -345,22 +329,33 @@ function Navbar() {
                             </h2></div>
                             <div className='display-none '>
                                 <ul className='decoration-0 lg:flex hidden w-full   items-center  m-1' >
-                                    {PublicNavbar.map((item) => (<li key={item.id} className=' px-2 '> <Link href={item.link}>{item.name}</Link> </li>))}
+                                    {PublicNavbar.map((item) => (<li key={item.id} className=' hover:text-blue-400 hover:underline text-xl px-2 '> <Link href={item.link}>{item.name}</Link> </li>))}
                                 </ul>
                             </div> <div className="lg:flex hidden ">
-                                {btnname.map((item) => (<button className='h-10 p-1 m-1.5  w-28 text-[15px] font-bold bg-white rounded-[11px] ' key={item.id}> <Link className='text-black h-10 w-37.5' href={item.link}>{item.name}</Link> </button>))}
+                                {btnname.map((item) => (<button className='h-10 p-1 m-1.5  w-28 text-md text-white font-bold  bg-green-500 rounded-[11px] ' key={item.id}> <Link className=' h-10 w-37.5' href={item.link}>{item.name}</Link> </button>))}
                             </div>
                             <div className=" lg:hidden flex   ">
-                                <button onClick={() => setIsOpen(!isOpen)} className='h-10 p-1 m-1.5  w-28 text-[15px] font-bold bg-black text-white rounded-[11px] '>Menu</button>
-                                <div className='bg-green-500' >
+                                <button onClick={() => setIsOpen(!isOpen)} className='h-10 p-1 m-1.5 mr-4 w-28 text-[15px] font-bold bg-green-500 text-white rounded-[11px] '>Menu</button>
+                                <div className='bg-gray-200' >
                                     {isOpen && (
-                                        <div className='absolute top-20 z-1 right-0 bg-green-300  '>
-                                            <ul className='decoration-0  flex flex-col items-center  ' >
-                                                {PublicNavbar.map((item) => (<li key={item.id} className=' shadow my-1 w-full  px-6  hover:transition hover:bg-green-500  '> <Link
-                                                    href={item.link}>{item.name}</Link> </li>))}
+                                        <div className='absolute top-20 z-1 right-0 bg-white shadow p-2  '>
+                                            <ul className='decoration-0   flex flex-col items-center  ' >
+                                                {PublicNavbar.map((item) => (<li key={item.id} className=' group hover:text-blue-400 shadow my-1 w-full  pl-3 py-1 pr-8  hover:transition hover:bg-gray-200  '> <Link
+                                                    href={item.link}>
+                                                    <FontAwesomeIcon
+                                                        className="h-4 w-4 mr-2 text-black group-hover:text-blue-400 " icon={item.image} />
+                                                    <span>{item.name}</span></Link> </li>))}
                                             </ul>
                                             <div className="flex flex-col items-center">
-                                                {btnname.map((item) => (<button className=' shadow my-1 w-full  px-6  hover:transition hover:bg-green-500  ' key={item.id}> <Link className='text-black h-10 w-37.5' href={item.link}>{item.name}</Link> </button>))}
+                                                {btnname.map((item) => (
+                                                    <button className=' shadow my-1 w-full text-left  pl-4 py-1 hover:text-blue-400 group hover:transition hover:bg-gray-200  ' key={item.id}>
+                                                        <Link className='text-black group-hover:text-blue-400  h-10 w-37.5' href={item.link}>
+                                                            <FontAwesomeIcon
+                                                                className="h-4 w-4 mr-2 text-black group-hover:text-blue-400 " icon={item.image} />
+                                                            <span>{item.name}</span>
+                                                        </Link>
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
                                     )}

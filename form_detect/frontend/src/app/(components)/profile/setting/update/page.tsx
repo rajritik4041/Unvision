@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Navbar from "../../components/navbar/page";
+import Navbar from "@/app/components/navbar/page";
 import { useAuth } from "@/app/components/AuthProvider/page";
 import { Country, State, City } from "country-state-city";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { faMarker } from "@fortawesome/free-solid-svg-icons";
+// import {faCloudArrowUp} from "@fortawesome/free-solid-svg-icons";
 
 type UserType = {
     first_name?: string;
@@ -40,25 +41,7 @@ export default function Update() {
         setCountries(Country.getAllCountries());
     }, []);
 
-    // useEffect(() => {
-    //     if (user) {
-    //         const countryObj = Country.getAllCountries().find(
-    //             (c) => c.name === user.country
-    //         );
-    //         const stateObj = countryObj
-    //             ? State.getStatesOfCountry(countryObj.isoCode).find(
-    //                   (s) => s.name === user.state
-    //               )
-    //             : null;
-
-    //         setData({
-    //             ...user,
-    //             country: countryObj?.isoCode || "",
-    //             state: stateObj?.isoCode || "",
-    //             city: user.city || "",
-    //         });
-    //     }
-    // }, [user]);
+   
 
     useEffect(() => {
         if (!user) return;
@@ -96,15 +79,6 @@ export default function Update() {
         }
     }, [data?.state, data?.country]);
 
-    // const UpdateSetData = (
-    //     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-    // ) => {
-    //     const { name, value } = e.target;
-    //     setData((prev) => {
-    //         if (!prev) return prev;
-    //         return { ...prev, [name]: value };
-    //     });
-    // };
     const UpdateSetData = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {

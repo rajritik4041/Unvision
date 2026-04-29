@@ -4,13 +4,26 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { setAuthTokenCookie } from "@/lib/auth-cookie";
 import { clearAuthTokenCookie } from "@/lib/auth-cookie";
+import Navbar from "@/app/components/navbar/page";
+import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera } from "@fortawesome/free-solid-svg-icons"
-type Detail = {
+// import { Feature } from "framer-motion";
+import ChatBot from "../ChatBot/page";
+type Learn = {
   icon: string;
   title: string;
   description: string;
 };
+type Features = {
+  title: string;
+  description: string;
+};
+type testimonials = {
+  message: string;
+  name: string;
+  role: string;
+}
 export default function Profile() {
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
@@ -81,62 +94,175 @@ export default function Profile() {
     }
   };
 
-  const details: Detail[] = [
+  const details: Learn[] = [
     {
       icon: "📷",
       title: "1. Capture",
       description: "Farmer snaps a photo of the animal",
     },
     {
-      icon: "📷",
-      title: "1. Capture",
-      description: "Farmer snaps a photo of the animal",
+      icon: "🔎",
+      title: "2. Classify",
+      description: "Lightweight AI analyzes on cloud device",
     },
     {
-      icon: "📷",
-      title: "1. Capture",
-      description: "Farmer snaps a photo of the animal",
+      icon: "📋",
+      title: "3. Report",
+      description: "Receive breed info and expert tips",
     },
   ];
-
+  const Featuresdata: Features[] = [
+    {
+      title: "Accurate Breed Recognition",
+      description: "Identifies animal breeds using color, body shape, horns, and facial features.",
+    },
+    {
+      title: "Breed-Specific Guidance",
+      description: "Provides insights like milk production estimates, feeding recommendations, and disease risks.",
+    },
+    {
+      title: "Lightweight & Offline-Friendly",
+      description: "Optimized for low-end devices and supports offline usage with cached results.",
+    },
+    {
+      title: "Data Storage & Reports ",
+      description: " Securely stores data in the cloud for insurance and government scheme support.",
+    }, {
+      title: "DSelf-Improving AI ",
+      description: " Continuously improves accuracy by learning from farmer-uploaded images.",
+    }, {
+      title: "Designed for Farmers",
+      description: "Simple design with large icons and support for local languages.",
+    },
+  ];
+  const testimonials: testimonials[] = [
+    {
+      message: "Is technology ne hamare dairy business ko kaafi improve kar diya hai.",
+      name: "Ramesh Yadav",
+      role: "Dairy Farmer"
+    },
+    {
+      message: "Breed recognition bahut accurate hai aur disease detection bhi helpful hai.",
+      name: "Suresh Kumar",
+      role: "Livestock Manager"
+    },
+    {
+      message: "Ab hume animals ki pehchan ke liye kisi expert par depend nahi rehna padta.",
+      name: "Pooja Singh",
+      role: "Farm Owner"
+    },
+    {
+      message: "Milk yield estimation feature kaafi useful hai planning ke liye.",
+      name: "Amit Verma",
+      role: "Dairy Entrepreneur"
+    },
+    {
+      message: "Simple interface aur fast results – gaon ke farmers ke liye perfect hai.",
+      name: "Sunita Devi",
+      role: "Small Scale Farmer"
+    },
+    {
+      message: "Offline mode bhi kaam karta hai, jo rural areas ke liye bahut zaroori hai.",
+      name: "Rajesh Patel",
+      role: "Cattle Breeder"
+    }
+  ];
   return (
-    <div className="bg-green-100 w-screen h-screen">
+    <div className="bg-green-100 w-screen h-full">
+      <Navbar />
+      <ChatBot />
       <div>
-        <div className="w-full bg-green-500 min-h-96 text-center px-3 flex justify-center flex-1 flex-col ">
-          <h1 className="text-white font-bold sm:text-4xl text-xl ">Welcome to Unvision</h1>
-          <p className="font-normal mt-4 text-white ">AI-Powered Image-Based Animal Recognition System</p>
+        <div className="w-full bg-gradient-to-r from-green-400 via-green-500 to-green-700 min-h-96 text-center px-3 flex justify-center flex-1 flex-col ">
+          <h1 className="text-white font-bold sm:text-5xl md:text-6xl lg:text-7xl text-4xl ">Welcome to Unvision</h1>
+          <p className="font-normal mt-4 text-white text-xl md:text-2xl ">AI-Powered Image-Based Animal Recognition System</p>
+          <Link href="/profile/analyze" className="w-full flex justify-center mt-6">
+            <div className="bg-green-400 font-bold text-black w-fit rounded-md text-xl py-1 px-2">
+              Upload Image
+            </div>
+          </Link>
         </div>
       </div>
-      <div>
-        <div>
+      <div className="mt-4 p-4 h-full  w-full">
+        <div className="font-bold lg:text-6xl sm:text-4xl text-2xl text-center mt-2 mb-6">Learn How It Works</div>
+        <div className="grid md:grid-cols-3 grid-cols-1 gap-6 max-w-6xl mx-auto">
           {details.map((item, index) => (
-            <div key={index}>
-              <div>{item.icon}</div>
-              <div>{item.title}</div>
-              <div>{item.description}</div>
+            <div key={index} className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:[&>h3]:text-green-400"             >
+              <div className="flex justify-center items-center w-16 h-16 mx-auto rounded-full bg-green-100 text-green-600 text-3xl mb-4 group-hover:scale-110 transition"> {item.icon}      </div>
+              <h3 className="text-xl font-semibold text-center mb-2">  {item.title} </h3>
+              <p className="text-gray-600 text-center text-lg leading-relaxed">     {item.description}  </p>
             </div>
           ))}
+
         </div>
 
       </div>
+      {/* <div className="w-full  rounded-2xl p-4 mt-6">
+          <div className="flex justify-center font-bold text-2xl mb-4">
+          🟠 IMAGES / VISUALS
+        </div>
+        <div className="bg-white rounded-2xl p-4">
+        
+        <div className="grid  md:grid-cols-2 grid-cols-1">
+          <div>
+            <div className="md:hidden flex justify-center ">
+              <img className="w-20 h-20" src="/uploads/1774162406698-235665008.png" alt="" />
+            </div>
+            <div className=" flex flex-1 flex-col justify-center md:items-baseline items-center mt-4">
+              <div className="text-xl ">
+                <ul className="list-disc text-left   pl-5 space-y-1" >
+                <li>
+                  Animals breed samples
+                </li>
+                <li>
+                  Detection results UI
+                </li>
+                <li>
+                  Dashboard preview
+                </li>
+              </ul>
+              <div>
+                👉 Purpose: grab attention + build trust
+              </div>
+              </div>
+            </div>
+
+          </div>
+          <div className="md:block hidden">
+            <img className="w-20 h-20" src="/uploads/1774162406698-235665008.png" alt="" />
+          </div>
+        </div>
+        </div>
+      </div> */}
       <div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+        <div className="mt-4 p-4 h-full  w-full">
+          <div className="font-bold lg:text-6xl sm:text-4xl text-2xl text-center mt-2 mb-6">Features & Benefits</div>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-6 max-w-6xl h-full mx-auto">
+            {Featuresdata.map((item, index) => (
+              <div key={index} className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2  hover:[&>h3]:text-green-400">
+                <h3 className="lg:text-2xl  text-xl font-bold text-center my-2"> {item.title} </h3>
+                <p className="text-gray-600 text-center text-lg  leading-relaxed"> {item.description} </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       <div>
-        <div></div>
-        <div></div>
+        <div className="mt-4 p-4 h-full  w-full">
+          <div className="font-bold lg:text-6xl sm:text-4xl text-2xl text-center mt-2 mb-6">Features & Benefits</div>
+          <div className="grid md:grid-cols-2 grid-cols-1 gap-6 max-w-6xl h-full mx-auto">
+            {testimonials.map((item, index) => (
+              <div key={index} className="group bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2  hover:[&>h3]:text-green-400">
+                <p className="text-gray-600 text-justify text-lg  leading-relaxed"> "{item.message}" </p>
+                <h3 className=" text-xl font-semibold text-left my-2  "> {item.name} </h3>
+                <p className="text-gray-600 text-left text-lg  leading-0"> {item.role} </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
-
 
 
 
