@@ -2,6 +2,7 @@
 
 import React from "react";
 import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 
 export default function OpportunitiesPage() {
   return (<div>
@@ -185,6 +186,7 @@ export default function OpportunitiesPage() {
 
       </div>
     </div>
+    <Footer />
   </div>
   );
 }

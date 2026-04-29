@@ -1,6 +1,8 @@
 "use client";
 import React, { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
+import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 type userType = { email: string; };
@@ -190,6 +192,7 @@ export default function ResetPassword() {
     return (
 
         <div className="bg-green-100 text-black min-h-screen flex justify-center items-center ">
+            <Navbar />
             <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white ">
                 <div className="text-center mb-6 text-green-700 text-2xl  font-extrabold">🌿 Reset Password</div>
                 <div className=" mt-9 " >
@@ -272,6 +275,7 @@ export default function ResetPassword() {
                     }
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

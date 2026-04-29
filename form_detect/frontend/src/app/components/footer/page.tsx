@@ -1,65 +1,174 @@
-"use client"
-import React from "react"
+"use client";
+import Image from "next/image";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faEnvelope,
+  faPhone,
+  faMapMarkerAlt
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faInstagram,
+  faLinkedin,
+  faWhatsapp
+} from "@fortawesome/free-brands-svg-icons";
 
-export default function Main() {
+export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  const quickLinks = [
+    { name: "Home", href: "/" },
+    { name: "About Us", href: "/about" },
+    { name: "Contact", href: "/contact" },
+    { name: "Opportunities", href: "/opportunities" }
+  ];
+
+  const services = [
+    { name: "Analyze", href: "/profile/analyze" },
+    { name: "Support", href: "/profile/contactus" },
+    { name: "History", href: "/profile/history" },
+    { name: "Technical Support", href: "/profile/blog" }
+  ];
+
+  const solutions = [
+    { name: "Privacy Policy", href: "/profile/policy" },
+    { name: "Terms & Conditions", href: "/profile/Terms&Condition" }
+  ];
+
+  const socialLinks = [
+    { icon: faInstagram, href: "https://www.instagram.com/raj_ritik_455", name: "Instagram" },
+    { icon: faLinkedin, href: "https://www.instagram.com/raj_ritik_455", name: "LinkedIn" },
+    { icon: faWhatsapp, href: "https://whatsapp.com/channel/0029VbCHCP4Fi8xWduAeZu2B", name: "WhatsApp" }
+  ];
+
   return (
-    <div>
+    <footer className="bg-gradient-to-br from-green-950 via-green-900 to-green-800 text-white ">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+          <div className="space-y-4">
+            <Image
+              src="/MultiDesease.svg"
+              alt="Unvision Logo"
+              width={160}
+              height={60}
+              className="h-12 w-auto"
+            />
+
+            <p className="text-sm text-green-200 leading-relaxed">
+              We build smart and reliable AI solutions for modern farming.
+              Helping farmers identify breeds, detect diseases, and improve productivity with ease.
+            </p>
+
+            <div className="flex space-x-4 pt-2">
+              {socialLinks.map((social, index) => (
+                <motion.a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-green-300 hover:text-yellow-400 transition"
+                  whileHover={{ scale: 1.2 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <FontAwesomeIcon icon={social.icon} size="lg" />
+                </motion.a>
+              ))}
+            </div>
+          </div>
 
 
-      <div className="grid lg:grid-cols-4  sm:grid-cols-1 ms:grid-cols-1 gap-10  bg-black  text-white justify-center items-center text-center">
+          <div>
+            <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              {quickLinks.map((link, index) => (
+                <li key={index}>
+                  <Link
+                    href={link.href}
+                    className="text-green-300 hover:text-yellow-400 transition text-sm"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="  grid gap-5 pt-5 justify-center items-center text-centre text-white ">
-          <h2 className="hover:text-blue-500"> Home</h2>
-          <h2 className="hover:text-blue-500">News</h2>
-          <h2 className="hover:text-blue-500">About</h2>
-          <h2 className="hover:text-blue-500">Contact Us</h2>
-          <h2 className="hover:text-blue-500"> Our Team </h2>
+  
+          <div>
+            <h3 className="font-semibold text-lg mb-4">Our Services</h3>
+            <ul className="space-y-2">
+              {services.map((service, index) => (
+                <li key={index}>
+                  <Link
+                    href={service.href}
+                    className="text-green-300 hover:text-yellow-400 transition text-sm"
+                  >
+                    {service.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+
+          <div>
+            <h3 className="font-semibold text-lg mb-4">Contact Us</h3>
+            <ul className="space-y-3">
+
+              <li className="flex items-start gap-3">
+                <FontAwesomeIcon icon={faMapMarkerAlt} className="text-yellow-400 mt-1" />
+                <span className="text-green-200 text-sm">
+                  Akbarpur, Ambedkar Nagar, Uttar Pradesh, India
+                </span>
+              </li>
+
+              <li className="flex items-center gap-3">
+                <FontAwesomeIcon icon={faPhone} className="text-yellow-400" />
+                <a
+                  href="tel:+919236134041"
+                  className="text-green-300 hover:text-yellow-400 transition text-sm"
+                >
+                  +91 9236134041
+                </a>
+              </li>
+
+              <li className="flex items-center gap-3">
+                <FontAwesomeIcon icon={faEnvelope} className="text-yellow-400" />
+                <a
+                  href="mailto:rajritik.9236@gmail.com"
+                  className="text-green-300 hover:text-yellow-400 transition text-sm"
+                >
+                  rajritik.9236@gmail.com
+                </a>
+              </li>
+
+            </ul>
+          </div>
         </div>
 
-        <div className="justify-center items-center text-centre">
-          <h2> COMMUNITY</h2>
-          <p className="pt-4">Blogs Community Ideas Developers</p>
+        <div className="border-t border-green-700 pt-6 mb-6">
+          <div className="flex flex-wrap justify-center gap-6">
+            {solutions.map((solution, index) => (
+              <Link
+                key={index}
+                href={solution.href}
+                className="text-green-300 hover:text-yellow-400 transition text-sm"
+              >
+                {solution.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
-        <div className="justify-center items-center text-centre">
-          <h2>COMPANY</h2>
-          <p className="pt-4">About us Team Where to Buy Resellers Influencers Affiliates Media Contact & Imprint</p>
+        <div className="border-t border-green-700 pt-6 text-center">
+          <p className="text-green-300 text-sm">
+            © {currentYear} <span className="text-yellow-400 font-semibold">Unvision</span>.
+            All rights reserved.
+          </p>
         </div>
 
-        <div className="justify-center items-center text-centre">
-          <h2>USEFULLINKS</h2>
-          <p className="pt-4">Warranty Product Declarations Teams of Use Privacy Policy Cookie Policy Cookie Setting</p>
-        </div>
       </div>
-
-      <div className="bg-black text-white p-10">
-        <div>
-          <footer className="flex flex-col sm:flex-row  lg:gap-10  sm:gap-4 justify-center items-center justify-content">
-            <img className="h-10 w-10 rounded-4xl border-7 border-white  " src="https://cdn-icons-png.flaticon.com/128/15047/15047435.png" alt="" />
-
-            <img className="h-10 w-10 rounded-4xl border-7 border-white " src="https://cdn-icons-png.flaticon.com/128/15707/15707749.png" alt="" />
-
-            <img className="h-10 w-10 rounded-4xl border-7 border-white " src="https://cdn-icons-png.flaticon.com/128/5969/5969020.png" alt="" />
-
-            <img className="h-10 w-10 rounded-4xl border-7 border-white " src="https://cdn-icons-png.flaticon.com/128/15707/15707820.png" alt="" />
-
-            <img className="h-10 w-10 rounded-4xl border-7 border-white " src="https://cdn-icons-png.flaticon.com/128/145/145807.png" alt="" />
-
-
-          </footer>
-          <div className="justify-center items-center justify-content grid pt-15 text-emerald-600">
-            <h3>&copyright; 2026 Raj Ritik Varma,Piyush Asthana and Mukesh Kumar. All rights reserved.</h3>
-            
-          </div>
-          <div className="text-red-500">
-            <p>Presented By:UNVISION</p>
-          </div>
-          <div className="text-indigo-600">
-            <p>MULTISKIN DESEASE</p>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  )
+    </footer>
+  );
 }

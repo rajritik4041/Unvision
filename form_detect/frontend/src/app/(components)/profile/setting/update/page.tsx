@@ -177,13 +177,7 @@ export default function Update() {
                             className="border p-2 w-full text-black"
                         />
 
-                        <input
-                            type="text"
-                            name="email"
-                            value={data.email || ""}
-                            onChange={UpdateSetData}
-                            className="border p-2 w-full text-black"
-                        />
+                
 
                         <input
                             type="text"

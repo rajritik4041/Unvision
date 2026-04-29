@@ -5,6 +5,7 @@ import Head from "next/head";
 import { motion } from "framer-motion";
 import { FaLeaf, FaChartLine } from "react-icons/fa";
 import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 import Link from "next/link";
 
 export default function Page() {
@@ -108,6 +109,7 @@ export default function Page() {
                     </motion.div>
                 </div>
             </div>
+            <Footer />
         </>
     );
 }

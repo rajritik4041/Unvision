@@ -5,7 +5,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Navbar from "../components/navbar/page"
+import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
 // import iframe
 type UserType = {
@@ -137,6 +138,7 @@ export default function Contact() {
 
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

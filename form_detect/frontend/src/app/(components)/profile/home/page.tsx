@@ -5,10 +5,8 @@ import { usePathname } from "next/navigation";
 import { setAuthTokenCookie } from "@/lib/auth-cookie";
 import { clearAuthTokenCookie } from "@/lib/auth-cookie";
 import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons"
-// import { Feature } from "framer-motion";
 import ChatBot from "../ChatBot/page";
 type Learn = {
   icon: string;
@@ -135,39 +133,38 @@ export default function Profile() {
       description: "Simple design with large icons and support for local languages.",
     },
   ];
-  const testimonials: testimonials[] = [
-    {
-      message: "Is technology ne hamare dairy business ko kaafi improve kar diya hai.",
-      name: "Ramesh Yadav",
-      role: "Dairy Farmer"
-    },
-    {
-      message: "Breed recognition bahut accurate hai aur disease detection bhi helpful hai.",
-      name: "Suresh Kumar",
-      role: "Livestock Manager"
-    },
-    {
-      message: "Ab hume animals ki pehchan ke liye kisi expert par depend nahi rehna padta.",
-      name: "Pooja Singh",
-      role: "Farm Owner"
-    },
-    {
-      message: "Milk yield estimation feature kaafi useful hai planning ke liye.",
-      name: "Amit Verma",
-      role: "Dairy Entrepreneur"
-    },
-    {
-      message: "Simple interface aur fast results – gaon ke farmers ke liye perfect hai.",
-      name: "Sunita Devi",
-      role: "Small Scale Farmer"
-    },
-    {
-      message: "Offline mode bhi kaam karta hai, jo rural areas ke liye bahut zaroori hai.",
-      name: "Rajesh Patel",
-      role: "Cattle Breeder"
-    }
-  ];
-  return (
+const testimonials: testimonials[] = [
+  {
+    message: "This technology has significantly improved our dairy business operations.",
+    name: "Ramesh Yadav",
+    role: "Dairy Farmer"
+  },
+  {
+    message: "The breed recognition is very accurate, and the disease detection feature is extremely helpful.",
+    name: "Suresh Kumar",
+    role: "Livestock Manager"
+  },
+  {
+    message: "We no longer need to rely on experts for identifying animal breeds.",
+    name: "Pooja Singh",
+    role: "Farm Owner"
+  },
+  {
+    message: "The milk yield estimation feature is very useful for planning and management.",
+    name: "Amit Verma",
+    role: "Dairy Entrepreneur"
+  },
+  {
+    message: "Simple interface and fast results make it perfect for rural farmers.",
+    name: "Sunita Devi",
+    role: "Small-Scale Farmer"
+  },
+  {
+    message: "The offline mode works well, which is very important for rural areas.",
+    name: "Rajesh Patel",
+    role: "Cattle Breeder"
+  }
+];  return (
     <div className="bg-green-100 w-screen h-full">
       <Navbar />
       <ChatBot />
@@ -260,6 +257,7 @@ export default function Profile() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

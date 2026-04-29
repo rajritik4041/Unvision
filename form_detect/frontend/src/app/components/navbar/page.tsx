@@ -171,7 +171,7 @@ function Navbar() {
                                                                                     ? `http://localhost:8000/${user.profilePic}`
                                                                                     : "/default.png"
                                                                             }
-                                                                            className="w-16 object-cover rounded-[70px]"
+                                                                            className="w-16 h-16 object-cover rounded-[70px]"
                                                                             alt="profile"
                                                                         />
                                                                     </div>
@@ -229,7 +229,7 @@ function Navbar() {
                                                         ? `http://localhost:8000/${user.profilePic}`
                                                         : "/default.png"
                                                 }
-                                                className="w-16 object-cover rounded-[70px]"
+                                                className="w-16 h-12 object-cover rounded-[70px]"
                                                 alt="profile"
                                             />
                                         )}
@@ -249,7 +249,7 @@ function Navbar() {
                                                                                 ? `http://localhost:8000/${user.profilePic}`
                                                                                 : "/default.png"
                                                                         }
-                                                                        className="w-16 object-cover rounded-[70px]"
+                                                                        className="w-16 h-16 object-cover rounded-[70px]"
                                                                         alt="profile"
                                                                     />
                                                                 </div>

@@ -5,6 +5,8 @@ import { useState, useEffect, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
+import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 
 type UserType = {
   first_name: string; last_name: string; date_of_birth: string; age: string; username: string; email: string;
@@ -129,6 +131,7 @@ export default function Signup() {
 
   return (
     <div className="bg-green-200 py-16">
+      <Navbar />
       <div className='flex justify-center  items-center min-h-screen '>
 
         <div className='border-0 rounded-lg p-6 w-full max-w-md  md:min-w-3xl   bg-gray-100 text-black  font-serif font-bold'>
@@ -389,6 +392,7 @@ export default function Signup() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

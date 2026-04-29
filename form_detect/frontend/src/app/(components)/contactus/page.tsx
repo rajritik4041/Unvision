@@ -5,6 +5,7 @@ import { FaLinkedin, FaInstagram, FaGithub, FaEnvelope } from "react-icons/fa";
 import { useForm } from "react-hook-form";
 import Link from "next/link";
 import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 
 type UserType = {
   name: string;
@@ -118,6 +119,7 @@ export default function Contact() {
         </div>
       </div>
     </div>
+    <Footer />
     </div>
 
   );

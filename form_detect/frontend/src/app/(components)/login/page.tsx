@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { setAuthTokenCookie } from "@/lib/auth-cookie";
+import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 
 type VerifyType = { email: string; password: string; };
 type ErrorType = { email?: string; password?: string; general?: string; };
@@ -64,6 +66,7 @@ function Page() {
 
   return (
     <div className="bg-green-300 ">
+      <Navbar />
       <div className="flex w-screen justify-center  items-center overflow-y-scroll h-screen ">
         <div className=" flex justify-center rounded-2xl w-full max-w-md  p-4  font-serif text-white bg-gray-100">
           <div className="w-full ">
@@ -137,6 +140,7 @@ function Page() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

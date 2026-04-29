@@ -5,6 +5,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { clearAuthTokenCookie, setAuthTokenCookie } from "@/lib/auth-cookie";
+import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 type userType = { email: string; };
 type Error2Type = {
     confirmpassword?: string; general?: string;
@@ -322,7 +324,10 @@ export default function ResetPassword() {
         "absolute left-4 top-3 text-gray-500 text-sm transition-all duration-200 pointer-events-none peer-focus:top-1 peer-focus:text-xs peer-focus:text-black-500 peer-valid:top-1 peer-valid:text-xs";
 
     return (
+        <>
+        <Navbar />
         <div className="h-screen bg-green-300  text-black flex justify-center items-center" >
+
             <div className="border-2 max-h-fit  rounded-2xl shadow-xl p-8 max-w-fit bg-white">
                 {
                     Heading ? <div>
@@ -473,5 +478,7 @@ export default function ResetPassword() {
                 }
             </div>
         </div>
+        <Footer />
+        </>
     );
 }

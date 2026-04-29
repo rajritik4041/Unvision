@@ -3,11 +3,14 @@
 import React from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
+import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 import { FaLeaf, FaChartLine } from "react-icons/fa";
 
 export default function Page() {
   return (
     <>
+    <Navbar />
       <Head>
         <title>About Us | AgroVision</title>
       </Head>
@@ -90,6 +93,7 @@ export default function Page() {
 
         </div>
       </div>
+      <Footer />
     </>
   );
 }

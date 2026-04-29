@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "@/app/components/navbar/page";
+import Footer from "@/app/components/footer/page";
 import { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -94,6 +95,7 @@ export default function ImageUpload() {
           )}
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
