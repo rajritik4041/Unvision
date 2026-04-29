@@ -82,8 +82,8 @@ export default function Signup() {
   };
   const setdata = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => { const { name, value, options, selectedIndex } = e.target as HTMLSelectElement; setUser((prev) => ({ ...prev, [name]: e.target.tagName === "SELECT" ? options[selectedIndex].text : value, })); };
   const setpage2 = async () => {
-    // const isValid = validateFirstPage();
-    // if (isValid) { setfirstpage(false); }
+    const isValid = validateFirstPae();
+    if (isValid) { setfirstpage(false); }
     setfirstpage(false);
   };
   const submitdata = async () => {

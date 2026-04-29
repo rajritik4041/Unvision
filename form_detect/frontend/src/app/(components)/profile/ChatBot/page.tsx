@@ -113,19 +113,19 @@ export default function ChatBot() {
 
 
 return (
-  <div className="relative w-screen h-screen">
+  <div className="relative  z-1">
 
 
     <button
       onClick={() => setopen(prev => !prev)}
-      className="fixed bottom-6 right-6 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center text-xl"
+      className="fixed bottom-4 right-2 bg-green-500 hover:bg-green-600 text-white rounded-full w-14 h-14 shadow-lg flex items-center justify-center text-xl"
     >
       💬
     </button>
 
 
     {open && (
-      <div className="fixed bottom-24 right-6 w-80 md:w-96 h-96 bg-white rounded-2xl shadow-2xl flex overflow-hidden">
+      <div className="fixed bottom-20 right-2 w-80 md:w-96 h-96 bg-white rounded-2xl shadow-2xl flex overflow-hidden">
         <div className="w-1/3 border-r bg-gray-50 p-2 flex flex-col">
           <button
             onClick={newChat}

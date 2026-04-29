@@ -15,7 +15,7 @@ export default function Page() {
       <div className="min-h-screen bg-gradient-to-br from-green-100 to-blue-100 px-4 py-8 border-4">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* LEFT SIDE */}
+
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
