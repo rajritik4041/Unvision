@@ -10,7 +10,6 @@ from fastapi.staticfiles import StaticFiles
 from app.core.limiter import limiter  
 from PIL import Image
 import io
-from .model import predict_image
 
 from app.routes import user, auth, chat, send, signup, login, logout, profile
 app = FastAPI()

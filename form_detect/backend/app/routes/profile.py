@@ -213,39 +213,26 @@ async def set( user=Depends(verify_token),
     }
 
 collection= db["History"]
-
-from transformers import pipeline
 from PIL import Image
+import io
+from app.model import predict_image
 
-def get_model():
-    global classifier
-    if classifier is None:
-        classifier = pipeline(
-            "image-classification",
-            model="google/vit-base-patch16-224"
-        )
-    return classifier
 @router.post("/predict")
 async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
-    
-    os.makedirs("uploads", exist_ok=True)
 
-    file_path = f"uploads/{file.filename}"
+    # 📌 image direct memory me load (no disk)
+    contents = await file.read()
+    image = Image.open(io.BytesIO(contents)).convert("RGB")
 
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(file.file, buffer)
+    # 📌 prediction
+    result = predict_image(image)
 
-    image = Image.open(file_path)
+    label = result["label"]
+    confidence = float(result["score"])
 
-    model = get_model()   # ✅ use this
-    result = model(image)
-
-    label = result[0]["label"]
-    confidence = float(result[0]["score"])
-
+    # 📌 save in DB
     await collection.insert_one({
         "user_id": str(user["_id"]),
-        "image_url": file_path,
         "label": label,
         "confidence": confidence,
         "created_at": datetime.utcnow()
@@ -255,9 +242,11 @@ async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
         "label": label,
         "confidence": confidence
     }
+
+
 @router.get("/history")
 async def get_history(user=Depends(verify_token)):
-    
+
     data = await collection.find(
         {"user_id": str(user["_id"])}
     ).to_list(length=100)
