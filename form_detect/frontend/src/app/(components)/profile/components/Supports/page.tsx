@@ -61,12 +61,12 @@ function page() {
         <a href="/profile/g"> 1-About More</a>
       </div>
 
-      <div className='pt-4 text-blue-500 text-2xl'>
+      <div className='pt-4 text-blue-500 text-2xl pb-5'>
         <a href="/profile/policy">2- Terms And Conditions</a>
       </div>
 
 
-      <div className='grid grid-cols-2 justify-center items-center content-center gap-10 pt-10 pb-10 w-full h-full fit-content bg-[linear-gradient(to_right,rgba(255,0,0,0.5),rgba(0,0,255,0.8))]'>
+      <div className='grid md:grid-cols-2 sm:grid-cols-1 justify-center items-center content-center gap-10 pt-10 pb-10 w-full h-full fit-content bg-[linear-gradient(to_right,rgba(255,0,0,0.5),rgba(0,0,255,0.8))]'>
 
         <div className='grid place-items-center max-w-80 h-60 p-4 bg-white rounded-lg shadow-lg mx-auto transition hover:scale-105 hover:shadow-xl hover:bg-purple-500 hover:text-white'>
 
