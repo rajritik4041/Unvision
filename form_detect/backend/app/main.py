@@ -49,12 +49,22 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://unvision.vercel.app"
+        "https://unvision.vercel.app",
+        "https://www.apnawebtech.online",
+        "https://apnawebtech.online",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def root():
+    return {"status": "ok", "service": "unvision-api"}
+
+@app.get("/health")
+async def health():
+    return {"status": "healthy"}
 
 app.include_router(chat.router)
 app.include_router(send.router)
