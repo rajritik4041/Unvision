@@ -4,6 +4,9 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../../components/navbar/page";
 import { useAuth } from "@/app/components/AuthProvider/page";
 import { Country, State, City } from "country-state-city";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import { faMarker } from "@fortawesome/free-solid-svg-icons";
 
 type UserType = {
     first_name?: string;
@@ -37,24 +40,47 @@ export default function Update() {
         setCountries(Country.getAllCountries());
     }, []);
 
-    useEffect(() => {
-        if (user) {
-            const countryObj = Country.getAllCountries().find(
-                (c) => c.name === user.country
-            );
-            const stateObj = countryObj
-                ? State.getStatesOfCountry(countryObj.isoCode).find(
-                      (s) => s.name === user.state
-                  )
-                : null;
+    // useEffect(() => {
+    //     if (user) {
+    //         const countryObj = Country.getAllCountries().find(
+    //             (c) => c.name === user.country
+    //         );
+    //         const stateObj = countryObj
+    //             ? State.getStatesOfCountry(countryObj.isoCode).find(
+    //                   (s) => s.name === user.state
+    //               )
+    //             : null;
 
-            setData({
-                ...user,
-                country: countryObj?.isoCode || "",
-                state: stateObj?.isoCode || "",
-                city: user.city || "",
-            });
-        }
+    //         setData({
+    //             ...user,
+    //             country: countryObj?.isoCode || "",
+    //             state: stateObj?.isoCode || "",
+    //             city: user.city || "",
+    //         });
+    //     }
+    // }, [user]);
+
+    useEffect(() => {
+        if (!user) return;
+
+        // ✅ Find country (name OR isoCode)
+        const countryObj = Country.getAllCountries().find(
+            (c) => c.name === user.country || c.isoCode === user.country
+        );
+
+        // ✅ Find state
+        const stateObj = countryObj
+            ? State.getStatesOfCountry(countryObj.isoCode).find(
+                (s) => s.name === user.state || s.isoCode === user.state
+            )
+            : null;
+
+        setData({
+            ...user,
+            country: countryObj?.isoCode || "",
+            state: stateObj?.isoCode || "",
+            city: user.city || "",
+        });
     }, [user]);
 
     useEffect(() => {
@@ -70,16 +96,39 @@ export default function Update() {
         }
     }, [data?.state, data?.country]);
 
+    // const UpdateSetData = (
+    //     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    // ) => {
+    //     const { name, value } = e.target;
+    //     setData((prev) => {
+    //         if (!prev) return prev;
+    //         return { ...prev, [name]: value };
+    //     });
+    // };
     const UpdateSetData = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
+
         setData((prev) => {
             if (!prev) return prev;
-            return { ...prev, [name]: value };
+
+            let updated = { ...prev, [name]: value };
+
+            // 🔥 Reset state & city when country changes
+            if (name === "country") {
+                updated.state = "";
+                updated.city = "";
+            }
+
+            // 🔥 Reset city when state changes
+            if (name === "state") {
+                updated.city = "";
+            }
+
+            return updated;
         });
     };
-
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             setProfileFile(e.target.files[0]);
@@ -106,7 +155,7 @@ export default function Update() {
         await fetch("http://localhost:8000/profile/set", {
             method: "POST",
             body: formData,
-              credentials: "include", 
+            credentials: "include",
         });
     };
 
@@ -120,7 +169,15 @@ export default function Update() {
                 ) : data ? (
                     <form onSubmit={SubmitUpdateData} className="space-y-3">
 
-                        <input type="file" accept="image/*" onChange={handleImageChange} />
+                        <label className="cursor-pointer inline-block">
+                            <FontAwesomeIcon icon={faPenToSquare} className="text-xl text-blue-500" />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="hidden"
+                            />
+                        </label>
 
                         <input
                             type="text"
@@ -232,8 +289,10 @@ export default function Update() {
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
                         </select>
-
-                        <input type="submit" value="Submit" />
+                        <label htmlFor="">
+                            <FontAwesomeIcon icon={faMarker} />
+                            <input type="submit" value="Update" />
+                        </label>
                     </form>
                 ) : (
                     <p>No user</p>

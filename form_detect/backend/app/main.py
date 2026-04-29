@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request , UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from slowapi import Limiter
@@ -8,6 +8,10 @@ from slowapi.errors import RateLimitExceeded
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from app.core.limiter import limiter  
+from PIL import Image
+import io
+from .model import predict_image
+
 from app.routes import user, auth, chat, send, signup, login, logout, profile
 app = FastAPI()
 
@@ -61,3 +65,15 @@ app.include_router(signup.router)
 app.include_router(login.router)
 app.include_router(logout.router)
 app.include_router(profile.router)
+
+# @app.post("/predict")
+# async def predict(file: UploadFile = File(...)):
+#     contents = await file.read()
+#     image = Image.open(io.BytesIO(contents))
+
+#     result = predict_image(image)
+
+#     return {
+#         "label": result["label"],
+#         "confidence": float(result["score"])
+#     }

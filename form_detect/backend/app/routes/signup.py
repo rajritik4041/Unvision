@@ -110,13 +110,18 @@ class SignupModel(BaseModel):
     @field_validator("age")
     def validate_age(cls, v, values):
         dob = values.data.get("date_of_birth")
+
+        if v < 18:
+            raise ValueError("Age must be at least 18")
+
         if dob:
             today = date.today()
             calculated_age = today.year - dob.year - (
-                (today.month, today.day) < (dob.month, dob.day)
-            )
-            if calculated_age != v:
-                raise ValueError("Age mismatch")
+                 (today.month, today.day) < (dob.month, dob.day)
+        )
+        if calculated_age != v:
+            raise ValueError("Age mismatch with date of birth")
+
         return v
     
 

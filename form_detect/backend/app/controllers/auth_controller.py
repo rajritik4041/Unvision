@@ -2,6 +2,7 @@ from fastapi.responses import RedirectResponse
 from ..routes.utils import create_token
 from datetime import datetime
 from app.database.connection import db
+import os
 
 
 async def handle_login(provider: str, user: dict):
@@ -94,10 +95,10 @@ async def handle_login(provider: str, user: dict):
             )
 
 
-    token =  create_token({"email": email})
+    token = create_token({"email": email})
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
     response = RedirectResponse(
-        # url=f"https://unvision.vercel.app/profile/home?token={token}",
-        url=f"http://localhost:3000/profile/home?token={token}",
+        url=f"{frontend_url}/profile/home?token={token}",
         status_code=302
     )
     response.set_cookie(

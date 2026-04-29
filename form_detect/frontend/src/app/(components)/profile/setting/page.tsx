@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import Navbar from "../components/navbar/page"
+import Navbar from '@/app/components/navbar/page'
 function page() {
   return (
     <div>

@@ -21,6 +21,10 @@ export default function ResetPassword() {
     const [page3, setpage3] = useState<boolean>(false)
     const [page4, setpage4] = useState<boolean>(false)
     const [page5, setpage5] = useState<boolean>(false)
+    const [loading1, setloading1] = useState<boolean>(false)
+    const [loading2, setloading2] = useState<boolean>(false)
+    const [loading3, setloading3] = useState<boolean>(false)
+    const [loading4, setloading4] = useState<boolean>(false)
     const [errors, setErrors] = useState<ErrorType>({});
     const [errors2, setErrors2] = useState<ErrorType>({});
     const [user, setUser] = useState<userType>({
@@ -82,6 +86,7 @@ export default function ResetPassword() {
         }
 
     };
+
 
     const SetClick1 = async () => {
         setpage2(false)
@@ -196,7 +201,10 @@ export default function ResetPassword() {
                                 <label htmlFor="email" className={setlabelclass} >  Email : </label>
                             </div>
                             {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
-                            <div className="text-center w-full ">
+                            <div className="text-center w-full flex justify-around ">
+                                <div className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" >
+                                    <Link href="/login">
+                                        &nbsp; Back  &nbsp;</Link></div>
                                 <input type="submit" value="Submit" className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" />
                             </div>
                         </form>
@@ -212,6 +220,7 @@ export default function ResetPassword() {
                                 <input type="password" name="confirmPassword" onChange={setdata2} />
                                 {errors.confirmPassword && (<p style={{ color: "red", fontSize: 12, }}>{errors.confirmPassword}</p>)}
                                 <input type="submit" value="Submited" />
+
                             </form>
                         </div>
                     </div> :
@@ -240,17 +249,13 @@ export default function ResetPassword() {
                                         <label htmlFor="email" className={setlabelclass} >Email : </label>
                                     </div>
                                     {errors.general && (<p style={{ color: "red", textAlign: "center" }}> {errors.general} </p>)}
-                                    <div className="text-center w-full ">
+                                    <div className="text-center w-full flex justify-around ">
+                                        <div className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" >
+                                            <Link href="/login">
+                                                &nbsp; Back  &nbsp;</Link></div>
                                         <input type="submit" value="Submit" className=" text-black-700 w-fit text-center bg-green-500 mt-4 rounded-lg py-1 px-3" /></div>
                                 </form>
-                                <div className="mt-2 w-full text-center  ">
 
-                                    <p className=" text-black-700 w-full text-center mt-4 rounded-lg " >
-                                        <Link className="w-96  bg-red-600  rounded-lg py-1 px-3 text-center " href="/">
-                                            Back</Link>
-                                    </p>
-
-                                </div>
                             </div>
                         </div> :
                         page5 ?

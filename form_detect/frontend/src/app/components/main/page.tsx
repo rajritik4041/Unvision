@@ -1,53 +1,56 @@
-"use client";
+// "use client";
+// import React, { useState } from "react";
+// import axios from "axios";
 
-import React, { useState } from "react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
+// export default function ImageUpload() {
+//   const [file, setFile] = useState<File | null>(null);
+//   const [result, setResult] = useState<any>(null);
 
-type FormDataType = {
-  file: FileList;
-};
+//   const handleUpload = async () => {
+//     if (!file) return;
 
-function Main() {
-  const { register, handleSubmit } = useForm<FormDataType>();
-  const [image, setImage] = useState<File | null>(null);
-  const setData = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setImage(e.target.files[0]);
-    }
-  };
-  const onSubmit = async (data: FormDataType) => {
-    const formData = new FormData();
-    if (data.file && data.file.length > 0) { formData.append("file", data.file[0]); }
-    else if (image) { formData.append("file", image); }
-    else { alert("Please select file"); return; }
-    await fetch("/api/upload", { method: "POST", body: formData, });
-  };
+//     const formData = new FormData();
+//     formData.append("file", file);
 
-  return (
+//     const res = await axios.post(
+//       "http://localhost:8000/predict",
+//       formData
+//     );
+
+//     setResult(res.data);
+//   };
+
+//   return (
+//     <div className="p-5">
+//       <input
+//         type="file"
+//         onChange={(e) => setFile(e.target.files?.[0] || null)}
+//       />
+
+//       <button
+//         onClick={handleUpload}
+//         className="bg-blue-500 text-white px-4 py-2 mt-2"
+//       >
+//         Upload
+//       </button>
+
+//       {result && (
+//         <div className="mt-4">
+//           <h2>Animal: {result.label}</h2>
+//           <p>Confidence: {result.confidence}</p>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+"use client"
+import React from "react"
+import Footer from "@/app/components/footer/page"
+export  default function Main() {
+  return(
+
     <div>
-      <div className="flex justify-center items-center m-1.5">
-        <div>
-          <li className="m-1.5">
-            <Link href="/reviews">Reviews</Link>
-          </li>
-        </div>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <label>ENTER FILE :-</label>
-
-          <input
-            type="file"
-            accept="image/*"
-            className="border-2 w-52 p-1 m-1.5"
-            {...register("file")}
-            onChange={setData}
-          />
-          <input type="submit" value="Submit" />
-        </form>
-      </div>
+    footer
     </div>
-  );
+  )
 }
-
-export default Main;
