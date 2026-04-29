@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request , UploadFile, File
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from slowapi import Limiter
@@ -8,8 +8,8 @@ from slowapi.errors import RateLimitExceeded
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 from app.core.limiter import limiter  
-from PIL import Image
-import io
+import os
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.routes import user, auth, chat, send, signup, login, logout, profile
 app = FastAPI()
@@ -18,7 +18,35 @@ app = FastAPI()
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+APP_DIR = os.path.dirname(os.path.abspath(__file__))          # .../backend/app
+BACKEND_DIR = os.path.dirname(APP_DIR)                       # .../backend
+UPLOADS_DIR = os.path.join(BACKEND_DIR, "uploads")           # .../backend/uploads
+os.makedirs(UPLOADS_DIR, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOADS_DIR), name="uploads")
+
+MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", str(20 * 1024 * 1024)))  # default: 20MB
+
+class MaxUploadSizeMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        # Enforce a hard upper limit early to avoid intermittent failures on big files.
+        # Applies to multipart uploads, especially /predict and profile picture uploads.
+        content_length = request.headers.get("content-length")
+        if content_length is not None:
+            try:
+                if int(content_length) > MAX_UPLOAD_BYTES:
+                    return JSONResponse(
+                        status_code=413,
+                        content={
+                            "success": False,
+                            "message": f"File too large. Max allowed is {MAX_UPLOAD_BYTES // (1024 * 1024)}MB."
+                        },
+                    )
+            except ValueError:
+                # If content-length is malformed, just continue and let downstream handle it.
+                pass
+        return await call_next(request)
+
+app.add_middleware(MaxUploadSizeMiddleware)
 
 @app.exception_handler(RateLimitExceeded)
 async def handle_rate_limit(request: Request, exc: RateLimitExceeded):

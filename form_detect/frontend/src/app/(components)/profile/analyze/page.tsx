@@ -71,7 +71,8 @@ export default function ImageUpload() {
       setResult(res.data);
     } catch (err: any) {
       console.log("ERROR:", err.response?.data || err.message);
-      setError(err.response?.data?.message || "Upload failed");
+      const data = err.response?.data;
+      setError(data?.message || data?.detail || "Upload failed");
     } finally {
       setLoading(false);
     }

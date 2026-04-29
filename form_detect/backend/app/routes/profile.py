@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import date, datetime, timedelta
 import os
@@ -8,6 +8,8 @@ from typing import Optional
 from dotenv import load_dotenv
 load_dotenv()
 import re
+import asyncio
+import logging
 from .utils import  verify_token
 router = APIRouter()
 
@@ -189,10 +191,11 @@ async def set( user=Depends(verify_token),
         update_data["gender"] = gender
 
     if file:
-        os.makedirs("uploads", exist_ok=True)
+        os.makedirs(UPLOADS_DIR, exist_ok=True)
         file_path = f"uploads/{file.filename}"
+        disk_path = os.path.join(UPLOADS_DIR, file.filename)
 
-        with open(file_path, "wb") as f:
+        with open(disk_path, "wb") as f:
             f.write(await file.read())
 
         update_data["profilePic"] = file_path
@@ -214,18 +217,80 @@ async def set( user=Depends(verify_token),
 
 collection= db["History"]
 from PIL import Image
+from PIL import UnidentifiedImageError
 import io
 from app.model import predict_image
+
+logger = logging.getLogger(__name__)
+
+MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", str(20 * 1024 * 1024)))  # default: 20MB
+APP_DIR = os.path.dirname(os.path.abspath(__file__))             # .../backend/app/routes
+BACKEND_DIR = os.path.abspath(os.path.join(APP_DIR, "..", "..")) # .../backend
+UPLOADS_DIR = os.path.join(BACKEND_DIR, "uploads")               # .../backend/uploads
+
+async def _read_upload_limited(file: UploadFile, max_bytes: int) -> bytes:
+    total = 0
+    chunks: list[bytes] = []
+    while True:
+        chunk = await file.read(1024 * 1024)  # 1MB chunks
+        if not chunk:
+            break
+        total += len(chunk)
+        if total > max_bytes:
+            raise HTTPException(
+                status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                detail=f"File too large. Max allowed is {max_bytes // (1024 * 1024)}MB.",
+            )
+        chunks.append(chunk)
+    return b"".join(chunks)
 
 @router.post("/predict")
 async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
 
-    # 📌 image direct memory me load (no disk)
-    contents = await file.read()
-    image = Image.open(io.BytesIO(contents)).convert("RGB")
+    if not file or not file.filename:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No file provided.",
+        )
 
-    # 📌 prediction
-    result = predict_image(image)
+    # quick allow-list: browsers may omit/lie, but helps fail fast
+    if file.content_type and not file.content_type.startswith("image/"):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Only image uploads are supported.",
+        )
+
+    contents = await _read_upload_limited(file, MAX_UPLOAD_BYTES)
+    if not contents:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Empty file.",
+        )
+
+    try:
+        with Image.open(io.BytesIO(contents)) as im:
+            image = im.convert("RGB")
+    except UnidentifiedImageError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid image file.",
+        )
+    except Exception as e:
+        logger.exception("Image decode failed: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Could not read image.",
+        )
+
+    # Run model inference off the event loop to reduce intermittent timeouts.
+    try:
+        result = await asyncio.to_thread(predict_image, image)
+    except Exception as e:
+        logger.exception("Model inference failed: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Prediction failed. Please try again.",
+        )
 
     label = result["label"]
     confidence = float(result["score"])
