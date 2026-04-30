@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status, Request
 from pydantic import BaseModel, EmailStr, field_validator
 from datetime import date, datetime, timedelta
 import os
@@ -8,7 +8,6 @@ from typing import Optional
 from dotenv import load_dotenv
 load_dotenv()
 import re
-import asyncio
 import logging
 from .utils import  verify_token
 router = APIRouter()
@@ -219,11 +218,13 @@ collection= db["History"]
 from PIL import Image
 from PIL import UnidentifiedImageError
 import io
-from app.model import predict_image
+import httpx
 
 logger = logging.getLogger(__name__)
 
 MAX_UPLOAD_BYTES = int(os.getenv("MAX_UPLOAD_BYTES", str(20 * 1024 * 1024)))  # default: 20MB
+MODEL_API_BASE = os.getenv("MODEL_API_BASE", "https://model.apnawebtech.online").rstrip("/")
+MODEL_API_TOKEN = os.getenv("MODEL_API_TOKEN")  # optional fallback token
 APP_DIR = os.path.dirname(os.path.abspath(__file__))             # .../backend/app/routes
 BACKEND_DIR = os.path.abspath(os.path.join(APP_DIR, "..", "..")) # .../backend
 UPLOADS_DIR = os.path.join(BACKEND_DIR, "uploads")               # .../backend/uploads
@@ -245,7 +246,11 @@ async def _read_upload_limited(file: UploadFile, max_bytes: int) -> bytes:
     return b"".join(chunks)
 
 @router.post("/predict")
-async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
+async def predict(
+    request: Request,
+    file: UploadFile = File(...),
+    user=Depends(verify_token),
+):
 
     if not file or not file.filename:
         raise HTTPException(
@@ -282,18 +287,58 @@ async def predict(file: UploadFile = File(...), user=Depends(verify_token)):
             detail="Could not read image.",
         )
 
-    # Run model inference off the event loop to reduce intermittent timeouts.
+    # Forward to external model API (model is hosted separately now).
+    auth_header = request.headers.get("authorization")
+    if not auth_header and MODEL_API_TOKEN:
+        auth_header = f"Bearer {MODEL_API_TOKEN}"
+
+    headers: dict[str, str] = {}
+    if auth_header:
+        headers["Authorization"] = auth_header
+
     try:
-        result = await asyncio.to_thread(predict_image, image)
-    except Exception as e:
-        logger.exception("Model inference failed: %s", e)
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            resp = await client.post(
+                f"{MODEL_API_BASE}/predict",
+                headers=headers,
+                files={
+                    "file": (
+                        file.filename,
+                        contents,
+                        file.content_type or "application/octet-stream",
+                    )
+                },
+            )
+            resp.raise_for_status()
+            result = resp.json()
+    except httpx.HTTPStatusError as e:
+        detail = "Model API request failed."
+        try:
+            detail = e.response.json()
+        except Exception:
+            detail = e.response.text or detail
+        logger.error("Model API error: %s", detail)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Prediction failed. Please try again.",
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=detail,
+        )
+    except Exception as e:
+        logger.exception("Model API call failed: %s", e)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Prediction service unavailable. Please try again.",
         )
 
-    label = result["label"]
-    confidence = float(result["score"])
+    label = result.get("label")
+    confidence = result.get("confidence")
+    if label is None or confidence is None:
+        logger.error("Unexpected model API response: %s", result)
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Unexpected response from prediction service.",
+        )
+
+    confidence = float(confidence)
 
     # 📌 save in DB
     await collection.insert_one({
