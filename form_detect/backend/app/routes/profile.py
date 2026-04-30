@@ -288,13 +288,14 @@ async def predict(
         )
 
     # Forward to external model API (model is hosted separately now).
-    auth_header = request.headers.get("authorization")
-    if not auth_header and MODEL_API_TOKEN:
-        auth_header = f"Bearer {MODEL_API_TOKEN}"
-
+    # Important: model service uses its own bearer token (not this backend's user JWT).
     headers: dict[str, str] = {}
-    if auth_header:
-        headers["Authorization"] = auth_header
+    if MODEL_API_TOKEN:
+        headers["Authorization"] = f"Bearer {MODEL_API_TOKEN}"
+    else:
+        auth_header = request.headers.get("authorization")
+        if auth_header:
+            headers["Authorization"] = auth_header
 
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
