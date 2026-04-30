@@ -88,7 +88,6 @@ export default function Signup() {
   const setpage2 = async () => {
     const isValid = validateFirstPae();
     if (isValid) { setfirstpage(false); }
-    setfirstpage(false);
   };
   const submitdata = async () => {
     const res = await fetch(`${api}/signup`,
