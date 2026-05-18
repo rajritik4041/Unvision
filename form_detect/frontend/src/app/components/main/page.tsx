@@ -115,30 +115,30 @@ export default function Profile() {
   }, []);
   const container = useRef<HTMLDivElement | null>(null);
 
-  useGSAP(() => {
-    const ScrollTrigger = require("gsap/ScrollTrigger").default;
-    gsap.registerPlugin(ScrollTrigger);
+//   useGSAP(() => {
+//     const ScrollTrigger = require("gsap/ScrollTrigger").default;
+//     gsap.registerPlugin(ScrollTrigger);
 
-    // const cards = gsap.utils.toArray(".works");
+//     // const cards = gsap.utils.toArray(".works");
 
-    // cards.forEach((card: any) => {
-    gsap.fromTo(
-      ".works",
-      { scale: 0, opacity: 0 },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.5,
-        scrollTrigger: {
-          trigger: ".works",
-          start: "top 75%",
-          toggleActions: "play none none none",
-          scrub : 0.2
-        },
-      }
-    );
-  // });
-}, { scope: container });
+//     // cards.forEach((card: any) => {
+//     gsap.fromTo(
+//       ".works",
+//       { scale: 0, opacity: 0 },
+//       {
+//         scale: 1,
+//         opacity: 1,
+//         duration: 0.5,
+//         scrollTrigger: {
+//           trigger: ".works",
+//           start: "top 75%",
+//           toggleActions: "play none none none",
+//           scrub : 0.2
+//         },
+//       }
+//     );
+//   // });
+// }, { scope: container });
 
 
 return (
