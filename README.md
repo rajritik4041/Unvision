@@ -1,2 +1,2 @@
-# New
-new abd
+# Unvision
+Unvision is an innovative technology platform dedicated to transforming modern agriculture through Artificial Intelligence (AI). We provide smart solutions for breed identification, disease detection, milk yield estimation, and farm management to help farmers improve productivity and make informed decisions. Our user-friendly and reliable tools are designed to support dairy farmers, cattle breeders, and agricultural entrepreneurs with accurate insights, even in rural environments. At Apna Web Tech, we aim to bridge the gap between technology and farming for a smarter and more sustainable future.
